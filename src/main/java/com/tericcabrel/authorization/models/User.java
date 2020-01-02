@@ -3,15 +3,11 @@ package com.tericcabrel.authorization.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.*;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Document(collection = "users")
-public class User {
-    @MongoId(FieldType.OBJECT_ID)
-    private String id;
-
+public class User extends BaseModel {
     private String firstName;
 
     private String lastName;
@@ -34,10 +30,6 @@ public class User {
 
     private Coordinates coordinates;
 
-    private Date createdAt;
-
-    private Date updatedAt;
-
     @DBRef
     private Set<Role> roles;
 
@@ -54,16 +46,6 @@ public class User {
         this.enabled = true;
         this.confirmed = false;
         roles = new HashSet<>();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public User setId(String id) {
-        this.id = id;
-
-        return this;
     }
 
     public String getFirstName() {
@@ -153,24 +135,6 @@ public class User {
 
     public User setCoordinates(Coordinates coordinates) {
         this.coordinates = coordinates;
-        return this;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public User setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public User setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
         return this;
     }
 
