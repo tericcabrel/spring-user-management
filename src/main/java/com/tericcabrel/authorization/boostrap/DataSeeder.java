@@ -4,7 +4,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,12 +41,9 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
             if (role == null) {
                 role = new Role();
-                Date dateNow = new Date();
 
                 role.setName(key)
-                    .setDescription(value)
-                    .setCreatedAt(dateNow)
-                    .setUpdatedAt(dateNow);
+                    .setDescription(value);
 
                 roleRepository.save(role);
             }
@@ -79,11 +75,6 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
                 role = roleRepository.findByName("ROLE_ADMIN");
 
                 u.getRoles().add(role);
-
-                Date dateNow = new Date();
-
-                u.setCreatedAt(dateNow)
-                 .setUpdatedAt(dateNow);
 
                 userRepository.save(u);
             }
