@@ -30,6 +30,8 @@ public class User {
 
     private String avatar;
 
+    private String timezone;
+
     private Coordinates coordinates;
 
     private Date createdAt;
@@ -133,6 +135,15 @@ public class User {
 
     public User setAvatar(String avatar) {
         this.avatar = avatar;
+        return this;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public User setTimezone(String timezone) {
+        this.timezone = timezone;
         return this;
     }
 

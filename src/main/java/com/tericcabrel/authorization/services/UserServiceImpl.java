@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
                 .setConfirmed(false)
                 .setEnabled(true)
                 .setAvatar(null)
+                .setTimezone(userDto.getTimezone())
                 .setCoordinates(userDto.getCoordinates())
                 .setCreatedAt(dateNow)
                 .setUpdatedAt(dateNow);
