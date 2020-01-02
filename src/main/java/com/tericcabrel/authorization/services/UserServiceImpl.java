@@ -2,13 +2,14 @@ package com.tericcabrel.authorization.services;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.models.User;
@@ -16,14 +17,14 @@ import com.tericcabrel.authorization.repositories.UserRepository;
 import com.tericcabrel.authorization.services.interfaces.UserService;
 
 @Service(value = "userService")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserDetailsService, UserService {
     private UserRepository userRepository;
 
-    // private BCryptPasswordEncoder bcryptEncoder;
+    private BCryptPasswordEncoder bcryptEncoder;
 
-    public UserServiceImpl(UserRepository userRepository/*, BCryptPasswordEncoder bcryptEncoder*/) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bcryptEncoder) {
         this.userRepository = userRepository;
-        // this.bcryptEncoder = bcryptEncoder;
+        this.bcryptEncoder = bcryptEncoder;
     }
 
     @Override
@@ -34,8 +35,7 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(userDto.getEmail())
                 .setFirstName(userDto.getFirstName())
                 .setLastName(userDto.getLastName())
-                .setPassword(userDto.getPassword())
-                // .setPassword(bcryptEncoder.encode(userDto.getPassword()))
+                .setPassword(bcryptEncoder.encode(userDto.getPassword()))
                 .setGender(userDto.getGender())
                 .setConfirmed(false)
                 .setEnabled(true)
@@ -88,5 +88,24 @@ public class UserServiceImpl implements UserService {
         }
 
         return null;
+    }
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username);
+
+        if(user == null){
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+            user.getEmail(), user.getPassword(), getAuthority(user)
+        );
+    }
+
+    private Set<SimpleGrantedAuthority> getAuthority(User user) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+
+        return authorities;
     }
 }
