@@ -5,6 +5,10 @@ import com.tericcabrel.authorization.constraints.FieldMatch;
 import javax.validation.constraints.*;
 
 import com.tericcabrel.authorization.models.Coordinates;
+import com.tericcabrel.authorization.models.Role;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @FieldMatch.List({
     @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
@@ -38,6 +42,12 @@ public class UserDto {
     private boolean confirmed;
 
     private Coordinates coordinates;
+
+    private Set<Role> roles;
+
+    public UserDto() {
+        roles = new HashSet<>();
+    }
 
     public String getFirstName() {
         return firstName;
@@ -135,6 +145,15 @@ public class UserDto {
 
     public UserDto setCoordinates(Coordinates coordinates) {
         this.coordinates = coordinates;
+        return this;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public UserDto setRoles(Set<Role> roles) {
+        this.roles = roles;
         return this;
     }
 }

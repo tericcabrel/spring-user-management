@@ -1,10 +1,10 @@
 package com.tericcabrel.authorization.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.*;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -40,7 +40,7 @@ public class User {
     private Set<Role> roles;
 
     public User() {
-
+        roles = new HashSet<>();
     }
 
     public User(String firstName, String lastName, String email, String password, String gender) {
@@ -51,6 +51,7 @@ public class User {
         this.gender = gender;
         this.enabled = true;
         this.confirmed = false;
+        roles = new HashSet<>();
     }
 
     public String getId() {
@@ -159,6 +160,15 @@ public class User {
 
     public User setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public User setRoles(Set<Role> roles) {
+        this.roles = roles;
         return this;
     }
 }
