@@ -2,19 +2,15 @@ package com.tericcabrel.authorization.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.*;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Document(collection = "users")
 public class User {
-    @Id
-    private ObjectId _id;
+    @MongoId(FieldType.OBJECT_ID)
+    private String id;
 
     private String firstName;
 
@@ -23,7 +19,6 @@ public class User {
     private String gender;
 
     @Field("email")
-    @Indexed(unique = true)
     private String email;
 
     @JsonIgnore
@@ -37,12 +32,16 @@ public class User {
 
     private Coordinates coordinates;
 
-    private ZonedDateTime createdAt;
+    private Date createdAt;
 
-    private ZonedDateTime updatedAt;
+    private Date updatedAt;
 
     @DBRef
     private Set<Role> roles;
+
+    public User() {
+
+    }
 
     public User(String firstName, String lastName, String email, String password, String gender) {
         this.firstName = firstName;
@@ -54,12 +53,13 @@ public class User {
         this.confirmed = false;
     }
 
-    public ObjectId get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public User set_id(ObjectId _id) {
-        this._id = _id;
+    public User setId(String id) {
+        this.id = id;
+
         return this;
     }
 
@@ -144,20 +144,20 @@ public class User {
         return this;
     }
 
-    public ZonedDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public User setCreatedAt(ZonedDateTime createdAt) {
+    public User setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
         return this;
     }
 
-    public ZonedDateTime getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public User setUpdatedAt(ZonedDateTime updatedAt) {
+    public User setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
         return this;
     }

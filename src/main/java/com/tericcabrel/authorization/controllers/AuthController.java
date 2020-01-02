@@ -3,6 +3,7 @@ package com.tericcabrel.authorization.controllers;
 import com.tericcabrel.authorization.dtos.LoginUserDto;
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.services.interfaces.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -12,9 +13,17 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthController {
 
+    private UserService userService;
+
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
+
     @PostMapping(value = "/register")
     public User registerUser(@Valid @RequestBody UserDto userDto) {
-        return null;
+        User user = userService.save(userDto);
+
+        return user;
     }
 
     @PostMapping(value = "/login")

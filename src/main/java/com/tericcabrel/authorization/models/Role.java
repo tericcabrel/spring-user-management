@@ -12,7 +12,6 @@ public class Role {
     private ObjectId _id;
 
     @Field(name = "name")
-    @Indexed(unique = true)
     private String name;
 
     private String description;
