@@ -1,5 +1,7 @@
 package com.tericcabrel.authorization.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,7 +17,6 @@ import java.util.Set;
 import com.tericcabrel.authorization.dtos.LoginUserDto;
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.common.ApiResponse;
 import com.tericcabrel.authorization.models.common.AuthToken;
 import com.tericcabrel.authorization.services.interfaces.RoleService;
@@ -51,18 +52,18 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register")
-    public User registerUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserDto userDto) {
         Role role = roleService.findById(ROLE_USER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
 
         userDto.setRoles(roles);
 
-        return userService.save(userDto);
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), userService.save(userDto)));
     }
 
     @PostMapping(value = "/login")
-    public ApiResponse<AuthToken> register(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
+    public ResponseEntity<ApiResponse> register(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginUserDto.getEmail(),
@@ -76,6 +77,8 @@ public class AuthController {
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
         String refreshToken = Helpers.generateRandomString(25);
 
-        return new ApiResponse<>(200, new AuthToken(token, refreshToken, expirationDate.getTime()));
+        return ResponseEntity.ok(
+                new ApiResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken, expirationDate.getTime()))
+        );
     }
 }

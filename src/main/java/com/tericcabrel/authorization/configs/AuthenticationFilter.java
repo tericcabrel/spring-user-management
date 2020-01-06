@@ -15,12 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.tericcabrel.authorization.utils.Constants.HEADER_STRING;
-import static com.tericcabrel.authorization.utils.Constants.TOKEN_PREFIX;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 
-public class AuthenticationFilter extends OncePerRequestFilter {
+import static com.tericcabrel.authorization.utils.Constants.*;
 
+public class AuthenticationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     private JwtTokenUtil jwtTokenUtil;
@@ -44,11 +43,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
-                logger.error("an error occured during getting username from token", e);
+                logger.error(JWT_ILLEGAL_ARGUMENT_MESSAGE, e);
             } catch (ExpiredJwtException e) {
-                logger.warn("the token is expired and not valid anymore", e);
+                logger.warn(JWT_EXPIRED_MESSAGE, e);
             } catch(SignatureException e){
-                logger.error("Authentication Failed. Username or Password not valid.");
+                logger.error(JWT_SIGNATURE_MESSAGE);
             }
         } else {
             logger.warn("couldn't find bearer string, will ignore the header");

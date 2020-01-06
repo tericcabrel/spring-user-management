@@ -1,13 +1,11 @@
 package com.tericcabrel.authorization.controllers;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import com.tericcabrel.authorization.dtos.UserDto;
-import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.common.ApiResponse;
 import com.tericcabrel.authorization.services.interfaces.UserService;
 
@@ -22,33 +20,41 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public ApiResponse<List<User>> all(){
-        return new ApiResponse<>(HttpStatus.OK.value(), userService.findAll());
+    public ResponseEntity<ApiResponse> all(){
+        return ResponseEntity.ok(
+                new ApiResponse(HttpStatus.OK.value(), userService.findAll())
+        );
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
-    public ApiResponse<User> one(@PathVariable String id){
-        return new ApiResponse<>(HttpStatus.OK.value(), userService.findById(id));
+    public ResponseEntity<ApiResponse> one(@PathVariable String id){
+        return ResponseEntity.ok(
+                new ApiResponse(HttpStatus.OK.value(), userService.findById(id))
+        );
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}")
-    public ApiResponse<User> update(@PathVariable String id, @RequestBody UserDto userDto) {
-        return new ApiResponse<>(HttpStatus.OK.value(), userService.update(id, userDto));
+    public ResponseEntity<ApiResponse> update(@PathVariable String id, @RequestBody UserDto userDto) {
+        return ResponseEntity.ok(
+                new ApiResponse(HttpStatus.OK.value(), userService.update(id, userDto))
+        );
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}/password")
-    public ApiResponse<User> updatePassword(@PathVariable String  id, @RequestBody UserDto userDto) {
-        return new ApiResponse<>(HttpStatus.OK.value(), userService.update(id, userDto));
+    public ResponseEntity<ApiResponse> updatePassword(@PathVariable String  id, @RequestBody UserDto userDto) {
+        return ResponseEntity.ok(
+                new ApiResponse(HttpStatus.OK.value(), userService.update(id, userDto))
+        );
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable String id) {
+    public ResponseEntity delete(@PathVariable String id) {
         userService.delete(id);
 
-        return new ApiResponse<>(HttpStatus.OK.value(),null);
+        return ResponseEntity.noContent().build();
     }
 }
