@@ -1,5 +1,7 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.models.redis.RefreshToken;
+import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,16 +41,20 @@ public class AuthController {
 
     private JwtTokenUtil jwtTokenUtil;
 
+    private RefreshTokenRepository refreshTokenRepository;
+
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtTokenUtil jwtTokenUtil,
         UserService userService,
-        RoleService roleService
+        RoleService roleService,
+        RefreshTokenRepository refreshTokenRepository
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
         this.roleService = roleService;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @PostMapping(value = "/register")
@@ -76,6 +82,9 @@ public class AuthController {
 
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
         String refreshToken = Helpers.generateRandomString(25);
+
+        RefreshToken refreshTokenObject = new RefreshToken("user_id", refreshToken);
+        refreshTokenRepository.save(refreshTokenObject);
 
         return ResponseEntity.ok(
                 new ApiResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken, expirationDate.getTime()))
