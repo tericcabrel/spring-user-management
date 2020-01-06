@@ -21,6 +21,7 @@ import com.tericcabrel.authorization.models.common.AuthToken;
 import com.tericcabrel.authorization.services.interfaces.RoleService;
 import com.tericcabrel.authorization.services.interfaces.UserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
+import com.tericcabrel.authorization.utils.Helpers;
 
 import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
 
@@ -64,8 +65,8 @@ public class AuthController {
     public ApiResponse<AuthToken> register(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginUserDto.getEmail(),
-                        loginUserDto.getPassword()
+                    loginUserDto.getEmail(),
+                    loginUserDto.getPassword()
                 )
         );
 
@@ -73,7 +74,8 @@ public class AuthController {
         final String token = jwtTokenUtil.createToken(authentication);
 
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
+        String refreshToken = Helpers.generateRandomString(25);
 
-        return new ApiResponse<>(200, new AuthToken(token, expirationDate.getTime()));
+        return new ApiResponse<>(200, new AuthToken(token, refreshToken, expirationDate.getTime()));
     }
 }
