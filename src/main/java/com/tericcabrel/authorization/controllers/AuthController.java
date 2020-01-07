@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import com.tericcabrel.authorization.dtos.LoginUserDto;
@@ -78,12 +80,14 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String token = jwtTokenUtil.createToken(authentication);
+        final String token = jwtTokenUtil.createTokenFromAuth(authentication);
 
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
         String refreshToken = Helpers.generateRandomString(25);
 
-        RefreshToken refreshTokenObject = new RefreshToken("user_id", refreshToken);
+        User user = userService.findByEmail(loginUserDto.getEmail());
+
+        RefreshToken refreshTokenObject = new RefreshToken(user.getId(), refreshToken);
         refreshTokenRepository.save(refreshTokenObject);
 
         return ResponseEntity.ok(
