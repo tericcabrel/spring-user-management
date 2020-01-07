@@ -15,7 +15,6 @@ import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import com.tericcabrel.authorization.dtos.LoginUserDto;
