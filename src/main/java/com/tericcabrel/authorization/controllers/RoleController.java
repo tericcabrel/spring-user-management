@@ -69,7 +69,7 @@ public class RoleController {
         Arrays.stream(roleUpdateDto.getRoles()).forEach(role -> {
             Role roleObject = roleService.findByName(role);
 
-            if (roleObject != null) {
+            if (roleObject != null && !user.hasRole(role)) {
                 user.addRole(roleObject);
             }
         });

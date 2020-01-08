@@ -3,7 +3,9 @@ package com.tericcabrel.authorization.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.*;
 
+import java.lang.reflect.Array;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -151,5 +153,11 @@ public class User extends BaseModel {
         this.roles.add(role);
 
         return this;
+    }
+
+    public boolean hasRole(String roleName) {
+        Optional<Role> roleItem = this.roles.stream().filter(role -> role.getName().equals(roleName)).findFirst();
+
+        return roleItem.isPresent();
     }
 }
