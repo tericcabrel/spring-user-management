@@ -96,6 +96,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             if(updateUserDto.getGender() != null) {
                 user.setGender(updateUserDto.getGender());
             }
+            if(updateUserDto.getAvatar() != null) {
+                user.setAvatar(updateUserDto.getAvatar());
+            }
             if(updateUserDto.getCoordinates() != null) {
                 user.setCoordinates(updateUserDto.getCoordinates());
             }

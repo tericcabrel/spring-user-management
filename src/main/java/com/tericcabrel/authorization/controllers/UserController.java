@@ -1,29 +1,41 @@
 package com.tericcabrel.authorization.controllers;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.validation.Valid;
+
+import com.tericcabrel.authorization.models.common.ApiResponse;
+import com.tericcabrel.authorization.services.interfaces.UserService;
 import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
 import com.tericcabrel.authorization.models.User;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import com.tericcabrel.authorization.services.FileStorageService;
 
-import com.tericcabrel.authorization.dtos.UserDto;
-import com.tericcabrel.authorization.models.common.ApiResponse;
-import com.tericcabrel.authorization.services.interfaces.UserService;
-
-import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
     private UserService userService;
 
-    public UserController(UserService userService) {
+    FileStorageService fileStorageService;
+
+    public UserController(UserService userService, FileStorageService fileStorageService) {
         this.userService = userService;
+        this.fileStorageService = fileStorageService;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -80,5 +92,37 @@ public class UserController {
         userService.delete(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/picture")
+    public ResponseEntity<ApiResponse> uploadPicture(
+            @PathVariable String id, @RequestParam("file") MultipartFile file, @RequestParam("action") String action
+    ) throws IOException {
+        User user;
+        UpdateUserDto updateUserDto = new UpdateUserDto();
+
+        System.out.println(file);
+        System.out.println(action);
+
+        if (action.equals("u")) {
+            String fileName = fileStorageService.storeFile(file);
+
+            updateUserDto.setAvatar(fileName);
+
+            user = userService.update(id, updateUserDto);
+        } else {
+            user = userService.findById(id);
+
+            Resource resource = fileStorageService.loadFileAsResource(user.getAvatar());git
+
+            boolean deleted = resource.getFile().delete();
+
+            if (deleted) {
+                user.setAvatar(null);
+                userService.update(user);
+            }
+        }
+
+        return ResponseEntity.ok().body(new ApiResponse(HttpStatus.OK.value(), user));
     }
 }

@@ -15,6 +15,8 @@ public class UpdateUserDto {
 
     private String gender;
 
+    private String avatar;
+
     private boolean enabled;
 
     private boolean confirmed;
@@ -61,6 +63,15 @@ public class UpdateUserDto {
 
     public UpdateUserDto setGender(String gender) {
         this.gender = gender;
+        return this;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public UpdateUserDto setAvatar(String avatar) {
+        this.avatar = avatar;
         return this;
     }
 
