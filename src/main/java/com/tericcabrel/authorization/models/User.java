@@ -146,4 +146,10 @@ public class User extends BaseModel {
         this.roles = roles;
         return this;
     }
+
+    public User addRole(Role role) {
+        this.roles.add(role);
+
+        return this;
+    }
 }

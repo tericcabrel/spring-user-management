@@ -90,6 +90,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return null;
     }
 
+    public void update(User user) {
+        userRepository.save(user);
+    }
+
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
 
