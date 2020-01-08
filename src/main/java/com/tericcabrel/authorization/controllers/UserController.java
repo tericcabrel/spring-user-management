@@ -1,6 +1,7 @@
 package com.tericcabrel.authorization.controllers;
 
 import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
+import com.tericcabrel.authorization.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
 import com.tericcabrel.authorization.models.User;
 import org.springframework.http.HttpStatus;
@@ -53,9 +54,9 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable String id, @Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<ApiResponse> update(@PathVariable String id, @RequestBody UpdateUserDto updateUserDto) {
         return ResponseEntity.ok(
-                new ApiResponse(HttpStatus.OK.value(), userService.update(id, userDto))
+                new ApiResponse(HttpStatus.OK.value(), userService.update(id, updateUserDto))
         );
     }
 
