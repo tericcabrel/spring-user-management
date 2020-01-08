@@ -1,5 +1,7 @@
 package com.tericcabrel.authorization.services;
 
+import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
+import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -93,6 +95,24 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void update(User user) {
         userRepository.save(user);
     }
+
+    @Override
+    public User updatePassword(String id, UpdatePasswordDto updatePasswordDto) {
+        User user = findById(id);
+
+        if(user != null) {
+            if (bcryptEncoder.matches(updatePasswordDto.getCurrentPassword(), user.getPassword())) {
+                user.setPassword(bcryptEncoder.encode(updatePasswordDto.getNewPassword()));
+
+                userRepository.save(user);
+            } else {
+                return null;
+            }
+        }
+
+        return user;
+    }
+
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
