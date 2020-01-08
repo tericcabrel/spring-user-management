@@ -3,10 +3,11 @@ package com.tericcabrel.authorization.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.*;
 
-import java.lang.reflect.Array;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Document(collection = "users")
 public class User extends BaseModel {
@@ -159,5 +160,13 @@ public class User extends BaseModel {
         Optional<Role> roleItem = this.roles.stream().filter(role -> role.getName().equals(roleName)).findFirst();
 
         return roleItem.isPresent();
+    }
+
+    public User removeRole(Role role) {
+        Stream<Role> newRoles = this.roles.stream().filter(role1 -> !role1.getName().equals(role.getName()));
+
+        this.roles = newRoles.collect(Collectors.toSet());
+
+        return this;
     }
 }

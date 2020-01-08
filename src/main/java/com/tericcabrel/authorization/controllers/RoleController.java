@@ -82,7 +82,18 @@ public class RoleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/revoke")
     public ResponseEntity revokeRoles(@Valid @RequestBody RoleUpdateDto roleUpdateDto) {
+        User user = userService.findById(roleUpdateDto.getUserId());
 
-        return ResponseEntity.ok().body("");
+        Arrays.stream(roleUpdateDto.getRoles()).forEach(role -> {
+            Role roleObject = roleService.findByName(role);
+
+            if (roleObject != null && user.hasRole(role)) {
+                user.removeRole(roleObject);
+            }
+        });
+
+        userService.update(user);
+
+        return ResponseEntity.ok().body(user);
     }
 }
