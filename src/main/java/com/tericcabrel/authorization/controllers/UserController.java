@@ -9,29 +9,32 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.Length;
 
+import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.common.ApiResponse;
-import com.tericcabrel.authorization.services.interfaces.UserService;
 import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.dtos.UpdateUserDto;
-import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
-import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.services.FileStorageService;
+import com.tericcabrel.authorization.services.interfaces.UserService;
+import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
 
-import java.io.File;
 import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/users")
+@Validated
 public class UserController {
     private UserService userService;
 
-    FileStorageService fileStorageService;
+    private FileStorageService fileStorageService;
 
     public UserController(UserService userService, FileStorageService fileStorageService) {
         this.userService = userService;
@@ -96,9 +99,15 @@ public class UserController {
 
     @PostMapping("/{id}/picture")
     public ResponseEntity<ApiResponse> uploadPicture(
-            @PathVariable String id, @RequestParam("file") MultipartFile file, @RequestParam("action") String action
+            @PathVariable String id,
+            @RequestParam(name = "file", required = false) MultipartFile file,
+            @RequestParam("action")
+            @Pattern(regexp = "[ud]", message = "The valid value can be \"u\" or \"d\"")
+            @Length(max = 1, message = "This field length can\'t be greater than 1")
+            @NotBlank(message = "This field is required")
+                    String action
     ) throws IOException {
-        User user;
+        User user = null;
         UpdateUserDto updateUserDto = new UpdateUserDto();
 
         if (action.equals("u")) {
@@ -107,17 +116,21 @@ public class UserController {
             updateUserDto.setAvatar(fileName);
 
             user = userService.update(id, updateUserDto);
-        } else {
+        } else if (action.equals("d")) {
             user = userService.findById(id);
 
-            Resource resource = fileStorageService.loadFileAsResource(user.getAvatar());
+            if (user.getAvatar() != null) {
+                Resource resource = fileStorageService.loadFileAsResource(user.getAvatar());
 
-            boolean deleted = resource.getFile().delete();
+                boolean deleted = resource.getFile().delete();
 
-            if (deleted) {
-                user.setAvatar(null);
-                userService.update(user);
+                if (deleted) {
+                    user.setAvatar(null);
+                    userService.update(user);
+                }
             }
+        } else {
+            System.out.println("Unknown action!");
         }
 
         return ResponseEntity.ok().body(new ApiResponse(HttpStatus.OK.value(), user));
