@@ -1,12 +1,15 @@
 package com.tericcabrel.authorization.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 
+import com.tericcabrel.authorization.utils.Helpers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
@@ -25,7 +28,7 @@ public class FileStorageService {
 
     @Autowired
     public FileStorageService(Environment env) {
-        this.fileStorageLocation = Paths.get(env.getProperty("file.upload-dir", "./uploads"))
+        this.fileStorageLocation = Paths.get(env.getProperty("file.upload-dir", "./uploads/avatars"))
                 .toAbsolutePath().normalize();
 
         try {
@@ -37,7 +40,7 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file) {
         // Normalize file name
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = new Date().getTime() + "-user." + Helpers.getFileExtension(file.getOriginalFilename());
 
         try {
             // Check if the file's name contains invalid characters

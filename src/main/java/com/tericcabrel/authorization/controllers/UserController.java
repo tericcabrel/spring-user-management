@@ -101,9 +101,6 @@ public class UserController {
         User user;
         UpdateUserDto updateUserDto = new UpdateUserDto();
 
-        System.out.println(file);
-        System.out.println(action);
-
         if (action.equals("u")) {
             String fileName = fileStorageService.storeFile(file);
 
@@ -113,7 +110,7 @@ public class UserController {
         } else {
             user = userService.findById(id);
 
-            Resource resource = fileStorageService.loadFileAsResource(user.getAvatar());git
+            Resource resource = fileStorageService.loadFileAsResource(user.getAvatar());
 
             boolean deleted = resource.getFile().delete();
 
