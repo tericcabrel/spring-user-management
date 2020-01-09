@@ -1,8 +1,10 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,6 +46,8 @@ public class AuthController {
 
     private RefreshTokenRepository refreshTokenRepository;
 
+    ApplicationEventPublisher eventPublisher;
+
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtTokenUtil jwtTokenUtil,
@@ -66,7 +70,12 @@ public class AuthController {
 
         userDto.setRoles(roles);
 
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), userService.save(userDto)));
+        // User user = userService.save(userDto);
+        User u = userService.findByEmail("tericcabrel@yahoo.com");
+
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(u));
+
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), null));
     }
 
     @PostMapping(value = "/login")

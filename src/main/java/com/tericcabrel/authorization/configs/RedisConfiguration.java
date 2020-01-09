@@ -13,9 +13,6 @@ public class RedisConfiguration {
     public LettuceConnectionFactory redisConnectionFactory() {
         LettuceConnectionFactory factory = new LettuceConnectionFactory();
 
-        factory.setHostName("localhost");
-        factory.setPort(6379);
-
         return factory;
     }
 
