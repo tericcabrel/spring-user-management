@@ -46,25 +46,27 @@ public class AuthController {
 
     private RefreshTokenRepository refreshTokenRepository;
 
-    ApplicationEventPublisher eventPublisher;
+    private ApplicationEventPublisher eventPublisher;
 
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtTokenUtil jwtTokenUtil,
         UserService userService,
         RoleService roleService,
-        RefreshTokenRepository refreshTokenRepository
+        RefreshTokenRepository refreshTokenRepository,
+        ApplicationEventPublisher eventPublisher
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
         this.roleService = roleService;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @PostMapping(value = "/register")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserDto userDto) {
-        Role role = roleService.findById(ROLE_USER);
+        Role role = roleService.findByName(ROLE_USER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
 
