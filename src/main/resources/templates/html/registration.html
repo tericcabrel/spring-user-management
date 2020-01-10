@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:remove="all">Registration confirmation</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <h1>Confirm your account</h1>
+        <div>Welcome to Identity <b th:text="${name}">name</b> !</div>
+        <p>
+            Your account has been created on our platform; here is your login information
+            <br/><br/>
+            Email address : <b th:text="${email}">email</b><br/>
+            <br/>
+            To confirm the validity of your email address, please click on the link below
+        </p>
+        <p style="text-align: left;">
+            <a class="link" href="#" th:href="${url}">Confirm my account</a>
+        </p>
+        <br>
+        <p>
+            <img src="images/spring.png" data-th-src="|cid:springLogo|" height="80" />
+        </p>
+        <p>
+            Regards, <br />
+            &emsp; <em>The Identity Team</em>
+        </p>
+    </body>
+</html>
