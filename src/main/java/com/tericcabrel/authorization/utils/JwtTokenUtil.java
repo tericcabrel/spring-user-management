@@ -1,5 +1,7 @@
 package com.tericcabrel.authorization.utils;
 
+import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.models.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -47,15 +49,26 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    public String createToken(Authentication authentication) {
+    public String createTokenFromAuth(Authentication authentication) {
         final String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+
+        return generateToken(authentication.getName(), authorities);
+    }
+
+    public String createTokenFromUser(User user) {
+        String authorities = user.getRoles().stream().map(Role::getName).collect(Collectors.joining());
+
+        return generateToken(user.getEmail(), authorities);
+    }
+
+    private String generateToken(String username, String authorities) {
         long currentTimestampInMillis = System.currentTimeMillis();
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(username)
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
                 .setIssuedAt(new Date(currentTimestampInMillis))

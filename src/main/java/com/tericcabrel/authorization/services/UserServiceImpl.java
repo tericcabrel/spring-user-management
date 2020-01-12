@@ -1,5 +1,7 @@
 package com.tericcabrel.authorization.services;
 
+import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
+import com.tericcabrel.authorization.dtos.UpdateUserDto;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -74,13 +76,32 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User update(String id, UserDto userDto) {
+    public User update(String id, UpdateUserDto updateUserDto) {
         User user = findById(id);
 
         if(user != null) {
             // All properties must exists in the DTO even if you don't intend to update it
             // Otherwise, it will set to null
-            BeanUtils.copyProperties(userDto, user, "password");
+            // BeanUtils.copyProperties(userDto, user, "password");
+
+            if(updateUserDto.getFirstName() != null) {
+                user.setFirstName(updateUserDto.getFirstName());
+            }
+            if(updateUserDto.getLastName() != null) {
+                user.setLastName(updateUserDto.getLastName());
+            }
+            if(updateUserDto.getTimezone() != null) {
+                user.setTimezone(updateUserDto.getTimezone());
+            }
+            if(updateUserDto.getGender() != null) {
+                user.setGender(updateUserDto.getGender());
+            }
+            if(updateUserDto.getAvatar() != null) {
+                user.setAvatar(updateUserDto.getAvatar());
+            }
+            if(updateUserDto.getCoordinates() != null) {
+                user.setCoordinates(updateUserDto.getCoordinates());
+            }
 
             userRepository.save(user);
 
@@ -89,6 +110,28 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         return null;
     }
+
+    public void update(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public User updatePassword(String id, UpdatePasswordDto updatePasswordDto) {
+        User user = findById(id);
+
+        if(user != null) {
+            if (bcryptEncoder.matches(updatePasswordDto.getCurrentPassword(), user.getPassword())) {
+                user.setPassword(bcryptEncoder.encode(updatePasswordDto.getNewPassword()));
+
+                userRepository.save(user);
+            } else {
+                return null;
+            }
+        }
+
+        return user;
+    }
+
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);

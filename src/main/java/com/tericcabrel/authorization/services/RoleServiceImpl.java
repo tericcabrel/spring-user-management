@@ -64,7 +64,7 @@ public class RoleServiceImpl implements RoleService {
 
         if(role != null) {
             role.setName(roleDto.getName());
-            role.setName(roleDto.getDescription());
+            role.setDescription(roleDto.getDescription());
 
             roleRepository.save(role);
 

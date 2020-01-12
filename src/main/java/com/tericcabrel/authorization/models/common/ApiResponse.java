@@ -1,6 +1,6 @@
 package com.tericcabrel.authorization.models.common;
 
-public class ApiResponse<T> {
+public class ApiResponse {
     private int status;
 
     private Object data;
