@@ -23,9 +23,13 @@ public class AccountConfirmationServiceImpl implements AccountConfirmationServic
     public AccountConfirmation save(User user, String token) {
         AccountConfirmation newAccountConfirmation = new AccountConfirmation();
         Date dateNow = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dateNow);
+        c.add(Calendar.DATE, 2);
 
         newAccountConfirmation.setUser(user)
                 .setToken(token)
+                .setExpireAt(c.getTime().getTime())
                 .setCreatedAt(dateNow)
                 .setUpdatedAt(dateNow);
 

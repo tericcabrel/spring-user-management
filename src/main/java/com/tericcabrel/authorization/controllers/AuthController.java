@@ -1,9 +1,12 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
+import com.tericcabrel.authorization.models.AccountConfirmation;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
+import com.tericcabrel.authorization.services.interfaces.AccountConfirmationService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,13 +52,16 @@ public class AuthController {
 
     private ApplicationEventPublisher eventPublisher;
 
+    private AccountConfirmationService accountConfirmationService;
+
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtTokenUtil jwtTokenUtil,
         UserService userService,
         RoleService roleService,
         RefreshTokenRepository refreshTokenRepository,
-        ApplicationEventPublisher eventPublisher
+        ApplicationEventPublisher eventPublisher,
+        AccountConfirmationService accountConfirmationService
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -62,6 +69,7 @@ public class AuthController {
         this.roleService = roleService;
         this.refreshTokenRepository = refreshTokenRepository;
         this.eventPublisher = eventPublisher;
+        this.accountConfirmationService = accountConfirmationService;
     }
 
     @PostMapping(value = "/register")
@@ -103,5 +111,36 @@ public class AuthController {
         return ResponseEntity.ok(
                 new ApiResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken, expirationDate.getTime()))
         );
+    }
+
+    @PostMapping(value = "/confirm-account")
+    public ResponseEntity<ApiResponse> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
+        AccountConfirmation accountConfirmation = accountConfirmationService.findByToken(validateTokenDto.getToken());
+        HashMap<String, String> result = new HashMap<>();
+
+        if (accountConfirmation == null) {
+            result.put("message", "The token is invalid!");
+
+            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+        }
+
+        Date dateNow = new Date();
+
+        if (accountConfirmation.getExpireAt() < dateNow.getTime()) {
+            result.put("message", "You token has been expired!");
+
+            accountConfirmationService.delete(accountConfirmation.getId());
+
+            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+        }
+
+        User user = userService.findById(accountConfirmation.getUser().getId());
+
+        user.setConfirmed(true);
+        userService.update(user);
+
+        result.put("message", "Your account confirmed successfully!");
+
+        return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.OK.value(), result));
     }
 }
