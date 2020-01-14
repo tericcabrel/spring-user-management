@@ -97,13 +97,26 @@ public class AuthController {
                 )
         );
 
+        User user = userService.findByEmail(loginUserDto.getEmail());
+        HashMap<String, String> result = new HashMap<>();
+
+        if (!user.isEnabled()) {
+            result.put("data", "Your account has been deactivated!");
+
+            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+        }
+
+        if (!user.isConfirmed()) {
+            result.put("data", "Your account isn't confirmed yet!");
+
+            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+        }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = jwtTokenUtil.createTokenFromAuth(authentication);
 
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
         String refreshToken = Helpers.generateRandomString(25);
-
-        User user = userService.findByEmail(loginUserDto.getEmail());
 
         RefreshToken refreshTokenObject = new RefreshToken(user.getId(), refreshToken);
         refreshTokenRepository.save(refreshTokenObject);
