@@ -1,7 +1,9 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.dtos.ForgotPasswordDto;
 import com.tericcabrel.authorization.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
+import com.tericcabrel.authorization.events.OnResetPasswordEvent;
 import com.tericcabrel.authorization.models.AccountConfirmation;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
@@ -73,7 +75,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<ApiResponse> register(@Valid @RequestBody UserDto userDto) {
         Role role = roleService.findByName(ROLE_USER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
@@ -89,7 +91,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<ApiResponse> register(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
+    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginUserDto.getEmail(),
@@ -155,5 +157,23 @@ public class AuthController {
         result.put("message", "Your account confirmed successfully!");
 
         return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.OK.value(), result));
+    }
+
+    @PostMapping(value = "/forgot-password")
+    public ResponseEntity<ApiResponse> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) {
+        User user = userService.findByEmail(forgotPasswordDto.getEmail());
+        HashMap<String, String> result = new HashMap<>();
+
+        if (user == null) {
+            result.put("message", "No user found with this email!");
+
+            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+        }
+
+        eventPublisher.publishEvent(new OnResetPasswordEvent(user));
+
+        result.put("message", "A password reset link has been sent to your email box!");
+
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), result));
     }
 }
