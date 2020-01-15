@@ -1,14 +1,12 @@
 package com.tericcabrel.authorization.controllers;
 
-import com.tericcabrel.authorization.dtos.ForgotPasswordDto;
 import com.tericcabrel.authorization.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
-import com.tericcabrel.authorization.events.OnResetPasswordEvent;
-import com.tericcabrel.authorization.models.AccountConfirmation;
+import com.tericcabrel.authorization.models.ConfirmAccount;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
-import com.tericcabrel.authorization.services.interfaces.AccountConfirmationService;
+import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +52,7 @@ public class AuthController {
 
     private ApplicationEventPublisher eventPublisher;
 
-    private AccountConfirmationService accountConfirmationService;
+    private ConfirmAccountService confirmAccountService;
 
     public AuthController(
         AuthenticationManager authenticationManager,
@@ -63,7 +61,7 @@ public class AuthController {
         RoleService roleService,
         RefreshTokenRepository refreshTokenRepository,
         ApplicationEventPublisher eventPublisher,
-        AccountConfirmationService accountConfirmationService
+        ConfirmAccountService confirmAccountService
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -71,7 +69,7 @@ public class AuthController {
         this.roleService = roleService;
         this.refreshTokenRepository = refreshTokenRepository;
         this.eventPublisher = eventPublisher;
-        this.accountConfirmationService = accountConfirmationService;
+        this.confirmAccountService = confirmAccountService;
     }
 
     @PostMapping(value = "/register")
@@ -130,26 +128,24 @@ public class AuthController {
 
     @PostMapping(value = "/confirm-account")
     public ResponseEntity<ApiResponse> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
-        AccountConfirmation accountConfirmation = accountConfirmationService.findByToken(validateTokenDto.getToken());
+        ConfirmAccount confirmAccount = confirmAccountService.findByToken(validateTokenDto.getToken());
         HashMap<String, String> result = new HashMap<>();
 
-        if (accountConfirmation == null) {
+        if (confirmAccount == null) {
             result.put("message", "The token is invalid!");
 
             return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
         }
 
-        Date dateNow = new Date();
-
-        if (accountConfirmation.getExpireAt() < dateNow.getTime()) {
+        if (confirmAccount.getExpireAt() < new Date().getTime()) {
             result.put("message", "You token has been expired!");
 
-            accountConfirmationService.delete(accountConfirmation.getId());
+            confirmAccountService.delete(confirmAccount.getId());
 
             return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
         }
 
-        User user = userService.findById(accountConfirmation.getUser().getId());
+        User user = userService.findById(confirmAccount.getUser().getId());
 
         user.setConfirmed(true);
         userService.update(user);
@@ -157,23 +153,5 @@ public class AuthController {
         result.put("message", "Your account confirmed successfully!");
 
         return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.OK.value(), result));
-    }
-
-    @PostMapping(value = "/forgot-password")
-    public ResponseEntity<ApiResponse> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) {
-        User user = userService.findByEmail(forgotPasswordDto.getEmail());
-        HashMap<String, String> result = new HashMap<>();
-
-        if (user == null) {
-            result.put("message", "No user found with this email!");
-
-            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
-        }
-
-        eventPublisher.publishEvent(new OnResetPasswordEvent(user));
-
-        result.put("message", "A password reset link has been sent to your email box!");
-
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), result));
     }
 }

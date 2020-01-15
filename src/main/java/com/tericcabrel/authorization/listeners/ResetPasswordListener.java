@@ -2,7 +2,7 @@ package com.tericcabrel.authorization.listeners;
 
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.services.interfaces.PasswordResetService;
+import com.tericcabrel.authorization.services.interfaces.ResetPasswordService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
@@ -17,25 +17,25 @@ import javax.mail.internet.MimeMessage;
 import java.util.UUID;
 
 @Component
-public class PasswordResetListener implements ApplicationListener<OnResetPasswordEvent> {
+public class ResetPasswordListener implements ApplicationListener<OnResetPasswordEvent> {
     private static final String TEMPLATE_NAME = "html/password-reset";
     private static final String MAIL_SUBJECT = "Password Reset";
 
     private Environment environment;
 
-    private PasswordResetService passwordResetService;
+    private ResetPasswordService resetPasswordService;
 
     private JavaMailSender mailSender;
 
     private TemplateEngine htmlTemplateEngine;
 
-    public PasswordResetListener(
-            PasswordResetService passwordResetService,
+    public ResetPasswordListener(
+            ResetPasswordService resetPasswordService,
             JavaMailSender mailSender,
             Environment environment,
             TemplateEngine htmlTemplateEngine
     ) {
-        this.passwordResetService = passwordResetService;
+        this.resetPasswordService = resetPasswordService;
         this.mailSender = mailSender;
         this.environment = environment;
         this.htmlTemplateEngine = htmlTemplateEngine;
@@ -49,7 +49,7 @@ public class PasswordResetListener implements ApplicationListener<OnResetPasswor
     private void sendResetPasswordEmail(OnResetPasswordEvent event) {
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
-        passwordResetService.save(user, token);
+        resetPasswordService.save(user, token);
 
         String confirmationUrl = environment.getProperty("app.url.password-reset") + "?token=" + token;
 

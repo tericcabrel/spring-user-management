@@ -132,6 +132,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return user;
     }
 
+    @Override
+    public User updatePassword(String id, String newPassword) {
+        User user = findById(id);
+
+        if(user != null) {
+            user.setPassword(bcryptEncoder.encode(newPassword));
+        }
+
+        return user;
+    }
+
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);

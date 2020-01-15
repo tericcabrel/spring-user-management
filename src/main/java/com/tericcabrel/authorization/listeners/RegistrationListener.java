@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMessage;
 
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.services.interfaces.AccountConfirmationService;
+import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
 
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
@@ -29,19 +29,19 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     private Environment environment;
 
-    private AccountConfirmationService accountConfirmationService;
+    private ConfirmAccountService confirmAccountService;
 
     private JavaMailSender mailSender;
 
     private TemplateEngine htmlTemplateEngine;
 
     public RegistrationListener(
-            AccountConfirmationService accountConfirmationService,
+            ConfirmAccountService confirmAccountService,
             JavaMailSender mailSender,
             Environment environment,
             TemplateEngine htmlTemplateEngine
     ) {
-        this.accountConfirmationService = accountConfirmationService;
+        this.confirmAccountService = confirmAccountService;
         this.mailSender = mailSender;
         this.environment = environment;
         this.htmlTemplateEngine = htmlTemplateEngine;
@@ -55,7 +55,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
-        accountConfirmationService.save(user, token);
+        confirmAccountService.save(user, token);
 
         String confirmationUrl = environment.getProperty("app.url.confirm-account") + "?token=" + token;
 

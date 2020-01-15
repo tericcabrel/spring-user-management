@@ -1,9 +1,9 @@
 package com.tericcabrel.authorization.services;
 
-import com.tericcabrel.authorization.models.PasswordReset;
+import com.tericcabrel.authorization.models.ResetPassword;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.repositories.PasswordResetRepository;
-import com.tericcabrel.authorization.services.interfaces.PasswordResetService;
+import com.tericcabrel.authorization.services.interfaces.ResetPasswordService;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -11,34 +11,32 @@ import java.util.*;
 
 
 @Service(value = "passwordResetService")
-public class PasswordResetServiceImpl implements PasswordResetService {
+public class ResetPasswordServiceImpl implements ResetPasswordService {
     private PasswordResetRepository passwordResetRepository;
 
-    public PasswordResetServiceImpl(PasswordResetRepository passwordResetRepository) {
+    public ResetPasswordServiceImpl(PasswordResetRepository passwordResetRepository) {
         this.passwordResetRepository = passwordResetRepository;
     }
 
     @Override
-    public PasswordReset save(User user, String token) {
-        PasswordReset newPasswordReset = new PasswordReset();
+    public ResetPassword save(User user, String token) {
+        ResetPassword newResetPassword = new ResetPassword();
 
         Date dateNow = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(dateNow);
         c.add(Calendar.DATE, 2);
 
-        newPasswordReset.setUser(user)
+        newResetPassword.setUser(user)
                 .setToken(token)
-                .setExpireAt(c.getTime().getTime())
-                .setCreatedAt(dateNow)
-                .setUpdatedAt(dateNow);
+                .setExpireAt(c.getTime().getTime());
 
-        return passwordResetRepository.save(newPasswordReset);
+        return passwordResetRepository.save(newResetPassword);
     }
 
     @Override
-    public List<PasswordReset> findAll() {
-        List<PasswordReset> list = new ArrayList<>();
+    public List<ResetPassword> findAll() {
+        List<ResetPassword> list = new ArrayList<>();
         passwordResetRepository.findAll().iterator().forEachRemaining(list::add);
 
         return list;
@@ -50,13 +48,13 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     }
 
     @Override
-    public PasswordReset findByToken(String token) {
+    public ResetPassword findByToken(String token) {
         return passwordResetRepository.findByToken(token);
     }
 
     @Override
-    public PasswordReset findById(String id) {
-        Optional<PasswordReset> optionalPasswordReset = passwordResetRepository.findById(new ObjectId(id));
+    public ResetPassword findById(String id) {
+        Optional<ResetPassword> optionalPasswordReset = passwordResetRepository.findById(new ObjectId(id));
 
         return optionalPasswordReset.orElse(null);
     }

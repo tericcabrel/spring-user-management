@@ -23,4 +23,6 @@ public interface UserService {
     void update(User user);
 
     User updatePassword(String id, UpdatePasswordDto updatePasswordDto);
+
+    User updatePassword(String id, String newPassword);
 }
