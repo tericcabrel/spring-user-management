@@ -78,6 +78,9 @@ public class ResetPasswordController {
 
         result.put("message", "Your password has been resetted successfully!");
 
+        // Avoid the user or malicious person to reuse the link to change the password
+        resetPasswordService.delete(resetPassword.getId());
+
         return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.OK.value(), result));
     }
 }

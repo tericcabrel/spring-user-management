@@ -138,6 +138,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         if(user != null) {
             user.setPassword(bcryptEncoder.encode(newPassword));
+            userRepository.save(user);
         }
 
         return user;
