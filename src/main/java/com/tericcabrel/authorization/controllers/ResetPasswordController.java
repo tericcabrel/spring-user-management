@@ -1,12 +1,5 @@
 package com.tericcabrel.authorization.controllers;
 
-import com.tericcabrel.authorization.dtos.*;
-import com.tericcabrel.authorization.events.OnResetPasswordEvent;
-import com.tericcabrel.authorization.models.ResetPassword;
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ApiResponse;
-import com.tericcabrel.authorization.services.interfaces.ResetPasswordService;
-import com.tericcabrel.authorization.services.interfaces.UserService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +9,29 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.tericcabrel.authorization.dtos.*;
+import com.tericcabrel.authorization.models.ResetPassword;
+import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.common.ApiResponse;
+import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
+import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.events.OnResetPasswordEvent;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 public class ResetPasswordController {
 
-    private UserService userService;
+    private IUserService userService;
 
     private ApplicationEventPublisher eventPublisher;
 
-    private ResetPasswordService resetPasswordService;
+    private IResetPasswordService resetPasswordService;
 
     public ResetPasswordController(
-        UserService userService,
+        IUserService userService,
         ApplicationEventPublisher eventPublisher,
-        ResetPasswordService resetPasswordService
+        IResetPasswordService resetPasswordService
     ) {
         this.userService = userService;
         this.eventPublisher = eventPublisher;

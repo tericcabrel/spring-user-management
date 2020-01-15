@@ -1,14 +1,13 @@
 package com.tericcabrel.authorization.dtos;
 
-import com.tericcabrel.authorization.constraints.FieldMatch;
-
 import javax.validation.constraints.*;
-
-import com.tericcabrel.authorization.models.Coordinates;
-import com.tericcabrel.authorization.models.Role;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.tericcabrel.authorization.models.Coordinates;
+import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.constraints.FieldMatch;
 
 @FieldMatch.List({
     @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")

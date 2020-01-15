@@ -5,7 +5,7 @@ import com.tericcabrel.authorization.models.User;
 
 import java.util.List;
 
-public interface ResetPasswordService {
+public interface IResetPasswordService {
     ResetPassword save(User user, String token);
 
     List<ResetPassword> findAll();

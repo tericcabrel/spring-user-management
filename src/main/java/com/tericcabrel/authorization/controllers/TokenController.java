@@ -1,17 +1,5 @@
 package com.tericcabrel.authorization.controllers;
 
-import com.tericcabrel.authorization.dtos.LoginUserDto;
-import com.tericcabrel.authorization.dtos.RefreshTokenDto;
-import com.tericcabrel.authorization.dtos.ValidateTokenDto;
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ApiResponse;
-import com.tericcabrel.authorization.models.common.AuthToken;
-import com.tericcabrel.authorization.models.redis.RefreshToken;
-import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
-import com.tericcabrel.authorization.services.interfaces.UserService;
-import com.tericcabrel.authorization.utils.JwtTokenUtil;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.SignatureException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -23,7 +11,20 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
+
 import static com.tericcabrel.authorization.utils.Constants.*;
+
+import com.tericcabrel.authorization.dtos.RefreshTokenDto;
+import com.tericcabrel.authorization.dtos.ValidateTokenDto;
+import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.common.ApiResponse;
+import com.tericcabrel.authorization.models.common.AuthToken;
+import com.tericcabrel.authorization.models.redis.RefreshToken;
+import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
+import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.utils.JwtTokenUtil;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -35,10 +36,10 @@ public class TokenController {
 
     private RefreshTokenRepository refreshTokenRepository;
 
-    private UserService userService;
+    private IUserService userService;
 
     public TokenController(
-            JwtTokenUtil jwtTokenUtil, RefreshTokenRepository refreshTokenRepository, UserService userService
+            JwtTokenUtil jwtTokenUtil, RefreshTokenRepository refreshTokenRepository, IUserService userService
     ) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.refreshTokenRepository = refreshTokenRepository;

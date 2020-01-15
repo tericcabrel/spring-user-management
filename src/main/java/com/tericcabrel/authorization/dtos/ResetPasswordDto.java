@@ -1,9 +1,9 @@
 package com.tericcabrel.authorization.dtos;
 
-import com.tericcabrel.authorization.constraints.FieldMatch;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.tericcabrel.authorization.constraints.FieldMatch;
 
 @FieldMatch.List({
     @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")

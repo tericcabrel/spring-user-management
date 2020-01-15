@@ -1,12 +1,5 @@
 package com.tericcabrel.authorization.controllers;
 
-import com.tericcabrel.authorization.dtos.RoleDto;
-import com.tericcabrel.authorization.dtos.RoleUpdateDto;
-import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ApiResponse;
-import com.tericcabrel.authorization.services.interfaces.RoleService;
-import com.tericcabrel.authorization.services.interfaces.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,14 +8,22 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Arrays;
 
+import com.tericcabrel.authorization.dtos.RoleDto;
+import com.tericcabrel.authorization.dtos.RoleUpdateDto;
+import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.common.ApiResponse;
+import com.tericcabrel.authorization.services.interfaces.IRoleService;
+import com.tericcabrel.authorization.services.interfaces.IUserService;
+
 @RestController
 @RequestMapping(value = "/roles")
 public class RoleController {
-    private UserService userService;
+    private IRoleService roleService;
 
-    private RoleService roleService;
+    private IUserService userService;
 
-    public RoleController(UserService userService, RoleService roleService) {
+    public RoleController(IUserService userService, IRoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }

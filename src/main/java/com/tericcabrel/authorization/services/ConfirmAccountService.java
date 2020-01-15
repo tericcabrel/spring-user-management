@@ -8,14 +8,14 @@ import java.util.*;
 import com.tericcabrel.authorization.models.ConfirmAccount;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.repositories.ConfirmAccountRepository;
-import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
+import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
 
 
 @Service(value = "confirmAccountService")
-public class ConfirmAccountServiceImpl implements ConfirmAccountService {
+public class ConfirmAccountService implements IConfirmAccountService {
     private ConfirmAccountRepository confirmAccountRepository;
 
-    public ConfirmAccountServiceImpl(ConfirmAccountRepository confirmAccountRepository) {
+    public ConfirmAccountService(ConfirmAccountRepository confirmAccountRepository) {
         this.confirmAccountRepository = confirmAccountRepository;
     }
 

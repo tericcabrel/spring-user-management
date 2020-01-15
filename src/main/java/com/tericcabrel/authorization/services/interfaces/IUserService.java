@@ -7,7 +7,7 @@ import com.tericcabrel.authorization.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.models.User;
 
-public interface UserService {
+public interface IUserService {
     User save(UserDto userDto);
 
     List<User> findAll();

@@ -1,12 +1,5 @@
 package com.tericcabrel.authorization.controllers;
 
-import com.tericcabrel.authorization.dtos.ValidateTokenDto;
-import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
-import com.tericcabrel.authorization.models.ConfirmAccount;
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.redis.RefreshToken;
-import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
-import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,26 +16,33 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
+
 import com.tericcabrel.authorization.dtos.LoginUserDto;
 import com.tericcabrel.authorization.dtos.UserDto;
+import com.tericcabrel.authorization.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.models.Role;
 import com.tericcabrel.authorization.models.common.ApiResponse;
 import com.tericcabrel.authorization.models.common.AuthToken;
-import com.tericcabrel.authorization.services.interfaces.RoleService;
-import com.tericcabrel.authorization.services.interfaces.UserService;
+import com.tericcabrel.authorization.models.ConfirmAccount;
+import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.redis.RefreshToken;
+import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
+import com.tericcabrel.authorization.services.interfaces.IRoleService;
+import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 import com.tericcabrel.authorization.utils.Helpers;
-
-import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
+import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private UserService userService;
+    private IUserService userService;
 
-    private RoleService roleService;
+    private IRoleService roleService;
 
     private AuthenticationManager authenticationManager;
 
@@ -52,16 +52,16 @@ public class AuthController {
 
     private ApplicationEventPublisher eventPublisher;
 
-    private ConfirmAccountService confirmAccountService;
+    private IConfirmAccountService confirmAccountService;
 
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtTokenUtil jwtTokenUtil,
-        UserService userService,
-        RoleService roleService,
+        IUserService userService,
+        IRoleService roleService,
         RefreshTokenRepository refreshTokenRepository,
         ApplicationEventPublisher eventPublisher,
-        ConfirmAccountService confirmAccountService
+        IConfirmAccountService confirmAccountService
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -80,12 +80,11 @@ public class AuthController {
 
         userDto.setRoles(roles);
 
-        // User user = userService.save(userDto);
-        User u = userService.findByEmail("tericcabrel@yahoo.com");
+        User user = userService.save(userDto);
 
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(u));
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
 
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), null));
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), user));
     }
 
     @PostMapping(value = "/login")

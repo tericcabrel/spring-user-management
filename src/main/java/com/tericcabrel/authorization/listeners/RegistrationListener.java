@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMessage;
 
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
+import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
 
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
@@ -29,14 +29,14 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     private Environment environment;
 
-    private ConfirmAccountService confirmAccountService;
+    private IConfirmAccountService confirmAccountService;
 
     private JavaMailSender mailSender;
 
     private TemplateEngine htmlTemplateEngine;
 
     public RegistrationListener(
-            ConfirmAccountService confirmAccountService,
+            IConfirmAccountService confirmAccountService,
             JavaMailSender mailSender,
             Environment environment,
             TemplateEngine htmlTemplateEngine

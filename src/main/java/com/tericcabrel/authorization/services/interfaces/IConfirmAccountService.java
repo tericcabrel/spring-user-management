@@ -5,7 +5,7 @@ import com.tericcabrel.authorization.models.User;
 
 import java.util.List;
 
-public interface ConfirmAccountService {
+public interface IConfirmAccountService {
     ConfirmAccount save(User user, String token);
 
     List<ConfirmAccount> findAll();

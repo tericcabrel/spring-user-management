@@ -16,27 +16,27 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.io.IOException;
+
 import org.hibernate.validator.constraints.Length;
 
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ApiResponse;
 import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.dtos.UpdateUserDto;
-import com.tericcabrel.authorization.services.FileStorageService;
-import com.tericcabrel.authorization.services.interfaces.UserService;
+import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.common.ApiResponse;
 import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
-
-import java.io.IOException;
+import com.tericcabrel.authorization.services.FileStorageService;
+import com.tericcabrel.authorization.services.interfaces.IUserService;
 
 @RestController
 @RequestMapping(value = "/users")
 @Validated
 public class UserController {
-    private UserService userService;
+    private IUserService userService;
 
     private FileStorageService fileStorageService;
 
-    public UserController(UserService userService, FileStorageService fileStorageService) {
+    public UserController(IUserService userService, FileStorageService fileStorageService) {
         this.userService = userService;
         this.fileStorageService = fileStorageService;
     }

@@ -8,20 +8,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.tericcabrel.authorization.utils.Constants.ROLE_ADMIN;
+import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
+
+import com.tericcabrel.authorization.dtos.RoleDto;
+import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.models.Role;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.repositories.RoleRepository;
-import com.tericcabrel.authorization.repositories.UserRepository;
+import com.tericcabrel.authorization.services.interfaces.IRoleService;
+import com.tericcabrel.authorization.services.interfaces.IUserService;
 
 @Component
 public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
-    private RoleRepository roleRepository;
+    private IRoleService roleService;
 
-    private UserRepository userRepository;
+    private IUserService userService;
 
-    public DataSeeder(RoleRepository roleRepository, UserRepository userRepository) {
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
+    public DataSeeder(IRoleService roleService, IUserService userService) {
+        this.roleService = roleService;
+        this.userService = userService;
     }
 
     @Override
@@ -33,27 +38,27 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     private void loadRoles() {
         HashMap<String, String> roles = new HashMap<>();
-        roles.put("ROLE_USER", "User role");
-        roles.put("ROLE_ADMIN", "Admin role");
+        roles.put(ROLE_USER, "User role");
+        roles.put(ROLE_ADMIN, "Admin role");
 
         roles.forEach((key, value) -> {
-            Role role = roleRepository.findByName(key);
+            Role role = roleService.findByName(key);
 
             if (role == null) {
-                role = new Role();
+                RoleDto roleDto = new RoleDto();
 
-                role.setName(key)
+                roleDto.setName(key)
                     .setDescription(value);
 
-                roleRepository.save(role);
+                roleService.save(roleDto);
             }
         });
     }
 
     private void loadUsers() {
-        Set<User> users = new HashSet<User>() {};
+        Set<UserDto> users = new HashSet<UserDto>() {};
 
-        User admin = new User()
+        UserDto admin = new UserDto()
                 .setEmail("admin@admin.com")
                 .setFirstName("Admin")
                 .setLastName("User")
@@ -63,20 +68,20 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
                 .setGender("M")
                 .setTimezone("Africa/Douala")
                 .setCoordinates(null)
-                .setPassword("$2a$10$4NHGIKeU5EPSicQdEL3O7uuJoA.D6otB74g38XXeTw59xXOBHcLU2");
+                .setPassword("secret");
 
         users.add(admin);
 
-        users.forEach((u) -> {
-            User obj = userRepository.findByEmail(u.getEmail());
+        users.forEach((userDto) -> {
+            User obj = userService.findByEmail(userDto.getEmail());
             Role role;
 
             if (obj == null ){
-                role = roleRepository.findByName("ROLE_ADMIN");
+                role = roleService.findByName(ROLE_ADMIN);
 
-                u.getRoles().add(role);
+                userDto.getRoles().add(role);
 
-                userRepository.save(u);
+                userService.save(userDto);
             }
         });
     }

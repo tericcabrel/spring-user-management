@@ -1,20 +1,20 @@
 package com.tericcabrel.authorization.services;
 
-import com.tericcabrel.authorization.models.ResetPassword;
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.repositories.PasswordResetRepository;
-import com.tericcabrel.authorization.services.interfaces.ResetPasswordService;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import com.tericcabrel.authorization.models.ResetPassword;
+import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.repositories.PasswordResetRepository;
+import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
 
 @Service(value = "passwordResetService")
-public class ResetPasswordServiceImpl implements ResetPasswordService {
+public class ResetPasswordService implements IResetPasswordService {
     private PasswordResetRepository passwordResetRepository;
 
-    public ResetPasswordServiceImpl(PasswordResetRepository passwordResetRepository) {
+    public ResetPasswordService(PasswordResetRepository passwordResetRepository) {
         this.passwordResetRepository = passwordResetRepository;
     }
 
@@ -22,9 +22,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     public ResetPassword save(User user, String token) {
         ResetPassword newResetPassword = new ResetPassword();
 
-        Date dateNow = new Date();
         Calendar c = Calendar.getInstance();
-        c.setTime(dateNow);
+        c.setTime(new Date());
         c.add(Calendar.DATE, 2);
 
         newResetPassword.setUser(user)

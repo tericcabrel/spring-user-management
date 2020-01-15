@@ -1,8 +1,5 @@
 package com.tericcabrel.authorization.listeners;
 
-import com.tericcabrel.authorization.events.OnResetPasswordEvent;
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.services.interfaces.ResetPasswordService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
@@ -16,6 +13,10 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.UUID;
 
+import com.tericcabrel.authorization.events.OnResetPasswordEvent;
+import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
+
 @Component
 public class ResetPasswordListener implements ApplicationListener<OnResetPasswordEvent> {
     private static final String TEMPLATE_NAME = "html/password-reset";
@@ -23,14 +24,14 @@ public class ResetPasswordListener implements ApplicationListener<OnResetPasswor
 
     private Environment environment;
 
-    private ResetPasswordService resetPasswordService;
+    private IResetPasswordService resetPasswordService;
 
     private JavaMailSender mailSender;
 
     private TemplateEngine htmlTemplateEngine;
 
     public ResetPasswordListener(
-            ResetPasswordService resetPasswordService,
+            IResetPasswordService resetPasswordService,
             JavaMailSender mailSender,
             Environment environment,
             TemplateEngine htmlTemplateEngine
