@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.controllers;
 
+import io.swagger.annotations.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,19 +12,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
 
 import com.tericcabrel.authorization.dtos.LoginUserDto;
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.dtos.ValidateTokenDto;
-import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.models.common.ApiResponse;
+import com.tericcabrel.authorization.models.common.ServiceResponse;
 import com.tericcabrel.authorization.models.common.AuthToken;
+import com.tericcabrel.authorization.models.Role;
 import com.tericcabrel.authorization.models.ConfirmAccount;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
@@ -38,6 +36,7 @@ import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
+@Api(tags = "Authorization management", value = "Authorization management", description = "Operations pertaining to registration, authentication and account confirmation")
 public class AuthController {
 
     private IUserService userService;
@@ -72,8 +71,9 @@ public class AuthController {
         this.confirmAccountService = confirmAccountService;
     }
 
+    @ApiOperation(value = "Register a new user in the system", response = ServiceResponse.class)
     @PostMapping(value = "/register")
-    public ResponseEntity<ApiResponse> register(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<ServiceResponse> register(@Valid @RequestBody UserDto userDto) {
         Role role = roleService.findByName(ROLE_USER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
@@ -84,11 +84,18 @@ public class AuthController {
 
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
 
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), user));
+        return ResponseEntity.ok(new ServiceResponse(HttpStatus.OK.value(), user));
     }
 
+    @ApiOperation(value = "Authenticate an user", response = ServiceResponse.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Authenticated successfully!"),
+        @ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet"),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+        @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
+    })
     @PostMapping(value = "/login")
-    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
+    public ResponseEntity<ServiceResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginUserDto.getEmail(),
@@ -102,13 +109,13 @@ public class AuthController {
         if (!user.isEnabled()) {
             result.put("data", "Your account has been deactivated!");
 
-            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
         }
 
         if (!user.isConfirmed()) {
             result.put("data", "Your account isn't confirmed yet!");
 
-            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -121,19 +128,24 @@ public class AuthController {
         refreshTokenRepository.save(refreshTokenObject);
 
         return ResponseEntity.ok(
-                new ApiResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken, expirationDate.getTime()))
+            new ServiceResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken, expirationDate.getTime()))
         );
     }
 
+    @ApiOperation(value = "Confirm the account of an user", response = ServiceResponse.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Account confirmed successfully!"),
+        @ApiResponse(code = 400, message = "The token is invalid | The token has been expired"),
+    })
     @PostMapping(value = "/confirm-account")
-    public ResponseEntity<ApiResponse> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
+    public ResponseEntity<ServiceResponse> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
         ConfirmAccount confirmAccount = confirmAccountService.findByToken(validateTokenDto.getToken());
         HashMap<String, String> result = new HashMap<>();
 
         if (confirmAccount == null) {
             result.put("message", "The token is invalid!");
 
-            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
         }
 
         if (confirmAccount.getExpireAt() < new Date().getTime()) {
@@ -141,7 +153,7 @@ public class AuthController {
 
             confirmAccountService.delete(confirmAccount.getId());
 
-            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
         }
 
         User user = userService.findById(confirmAccount.getUser().getId());
@@ -151,6 +163,6 @@ public class AuthController {
 
         result.put("message", "Your account confirmed successfully!");
 
-        return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.OK.value(), result));
+        return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.OK.value(), result));
     }
 }

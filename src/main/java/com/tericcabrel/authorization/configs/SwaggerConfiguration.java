@@ -11,17 +11,25 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfiguration {
     @Bean
-    public Docket api() {
+    public Docket api(SwaggerProperties swaggerProperties) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.tericcabrel.authorization.controllers"))
                 .paths(PathSelectors.regex("/.*"))
                 .build()
-                .apiInfo(apiEndPointsInfo());
+                .apiInfo(apiEndPointsInfo())
+                .produces(DEFAULT_PRODUCES_AND_CONSUMES)
+                .consumes(DEFAULT_PRODUCES_AND_CONSUMES)
+                .pathMapping("/")
+                .useDefaultResponseMessages(Boolean.valueOf(swaggerProperties.getUseDefaultResponseMessages()));
     }
 
     private ApiInfo apiEndPointsInfo() {
@@ -33,4 +41,6 @@ public class SwaggerConfiguration {
                 .version("1.0")
                 .build();
     }
+
+    private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = new HashSet<>(Arrays.asList("application/json"));
 }

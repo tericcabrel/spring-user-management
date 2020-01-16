@@ -23,7 +23,7 @@ import org.hibernate.validator.constraints.Length;
 import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ApiResponse;
+import com.tericcabrel.authorization.models.common.ServiceResponse;
 import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
 import com.tericcabrel.authorization.services.FileStorageService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
@@ -43,41 +43,41 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<ApiResponse> all(){
+    public ResponseEntity<ServiceResponse> all(){
         return ResponseEntity.ok(
-                new ApiResponse(HttpStatus.OK.value(), userService.findAll())
+                new ServiceResponse(HttpStatus.OK.value(), userService.findAll())
         );
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse> currentUser(){
+    public ResponseEntity<ServiceResponse> currentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         return ResponseEntity.ok(
-                new ApiResponse(HttpStatus.OK.value(), userService.findByEmail(authentication.getName()))
+                new ServiceResponse(HttpStatus.OK.value(), userService.findByEmail(authentication.getName()))
         );
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> one(@PathVariable String id){
+    public ResponseEntity<ServiceResponse> one(@PathVariable String id){
         return ResponseEntity.ok(
-                new ApiResponse(HttpStatus.OK.value(), userService.findById(id))
+                new ServiceResponse(HttpStatus.OK.value(), userService.findById(id))
         );
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable String id, @RequestBody UpdateUserDto updateUserDto) {
+    public ResponseEntity<ServiceResponse> update(@PathVariable String id, @RequestBody UpdateUserDto updateUserDto) {
         return ResponseEntity.ok(
-                new ApiResponse(HttpStatus.OK.value(), userService.update(id, updateUserDto))
+                new ServiceResponse(HttpStatus.OK.value(), userService.update(id, updateUserDto))
         );
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}/password")
-    public ResponseEntity<ApiResponse> updatePassword(
+    public ResponseEntity<ServiceResponse> updatePassword(
             @PathVariable String id, @Valid @RequestBody UpdatePasswordDto updatePasswordDto
     ) throws PasswordNotMatchException {
         User user = userService.updatePassword(id, updatePasswordDto);
@@ -86,7 +86,7 @@ public class UserController {
             throw new PasswordNotMatchException("The current password don't match!");
         }
 
-        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), user));
+        return ResponseEntity.ok(new ServiceResponse(HttpStatus.OK.value(), user));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/picture")
-    public ResponseEntity<ApiResponse> uploadPicture(
+    public ResponseEntity<ServiceResponse> uploadPicture(
             @PathVariable String id,
             @RequestParam(name = "file", required = false) MultipartFile file,
             @RequestParam("action")
@@ -133,6 +133,6 @@ public class UserController {
             System.out.println("Unknown action!");
         }
 
-        return ResponseEntity.ok().body(new ApiResponse(HttpStatus.OK.value(), user));
+        return ResponseEntity.ok().body(new ServiceResponse(HttpStatus.OK.value(), user));
     }
 }

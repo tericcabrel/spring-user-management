@@ -19,7 +19,7 @@ import static com.tericcabrel.authorization.utils.Constants.*;
 import com.tericcabrel.authorization.dtos.RefreshTokenDto;
 import com.tericcabrel.authorization.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ApiResponse;
+import com.tericcabrel.authorization.models.common.ServiceResponse;
 import com.tericcabrel.authorization.models.common.AuthToken;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
@@ -47,7 +47,7 @@ public class TokenController {
     }
 
     @PostMapping(value = "/validate")
-    public ResponseEntity<ApiResponse> validate(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
+    public ResponseEntity<ServiceResponse> validate(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
         String username = null;
         HashMap<String, String> result = new HashMap<>();
 
@@ -66,33 +66,33 @@ public class TokenController {
 
         if (username != null) {
             result.put("message", "success");
-            return ResponseEntity.ok(new ApiResponse(200, result));
+            return ResponseEntity.ok(new ServiceResponse(200, result));
         }
 
-        return ResponseEntity.badRequest().body(new ApiResponse(400, result));
+        return ResponseEntity.badRequest().body(new ServiceResponse(400, result));
     }
 
     @PostMapping(value = "/refresh")
-    public ResponseEntity<ApiResponse> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
+    public ResponseEntity<ServiceResponse> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         RefreshToken refreshToken = refreshTokenRepository.findByValue(refreshTokenDto.getToken());
         HashMap<String, String> result = new HashMap<>();
 
         if (refreshToken == null) {
             result.put("message", "The token is Invalid!");
-            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
         }
 
         User user = userService.findById(refreshToken.getId());
         if (user == null) {
             result.put("message", "The token is unallocated!");
-            return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
         }
 
         String token = jwtTokenUtil.createTokenFromUser(user);
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
 
         return ResponseEntity.ok(
-                new ApiResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken.getValue(), expirationDate.getTime()))
+                new ServiceResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken.getValue(), expirationDate.getTime()))
         );
     }
 }

@@ -13,28 +13,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tericcabrel.authorization.models.common.ApiResponse;
+import com.tericcabrel.authorization.models.common.ServiceResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        ApiResponse response = new ApiResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PasswordNotMatchException.class)
     public ResponseEntity<?> passwordNotMatchException(PasswordNotMatchException ex, WebRequest request) {
-        ApiResponse response = new ApiResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<?> fileNotFoundException(FileNotFoundException ex, WebRequest request) {
-        ApiResponse response = new ApiResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
         ex.printStackTrace();
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileStorageException.class)
     public ResponseEntity<?> fileStorageException(FileStorageException ex, WebRequest request) {
-        ApiResponse response = new ApiResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         ex.printStackTrace();
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
         HashMap<String, HashMap<String,String>> result = new HashMap<>();
         result.put("errors", errors);
 
-        ApiResponse response = new ApiResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), result);
+        ServiceResponse response = new ServiceResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), result);
 
         return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
     }
@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
         HashMap<String, HashMap<String, List<String>>> result = new HashMap<>();
         result.put("errors", errors);
 
-        ApiResponse response = new ApiResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), result);
+        ServiceResponse response = new ServiceResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), result);
 
         return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
     }
@@ -98,14 +98,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {
         ex.printStackTrace();
 
-        ApiResponse response = new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> badCredentialsException(BadCredentialsException ex, WebRequest request) {
-        ApiResponse response = new ApiResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
