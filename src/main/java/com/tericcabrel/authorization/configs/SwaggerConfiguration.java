@@ -9,6 +9,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.UiConfiguration;
+import springfox.documentation.swagger.web.UiConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
@@ -40,6 +42,12 @@ public class SwaggerConfiguration {
                 // .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .version("1.0")
                 .build();
+    }
+
+    @Bean
+    public UiConfiguration tryItOutConfig() {
+        final String[] methodsWithTryItOutButton = { "" };
+        return UiConfigurationBuilder.builder().supportedSubmitMethods(methodsWithTryItOutButton).build();
     }
 
     private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = new HashSet<>(Arrays.asList("application/json"));
