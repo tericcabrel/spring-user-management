@@ -42,6 +42,7 @@ public class UserDto {
     @NotBlank(message = "This field is required")
     private String confirmPassword;
 
+    @ApiModelProperty(notes = "User gender")
     private String gender;
 
     private String avatar;
