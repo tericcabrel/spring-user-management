@@ -1,5 +1,9 @@
 package com.tericcabrel.authorization.controllers;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,7 @@ import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 
+@Api(tags = "Token management", description = "Operations pertaining to token validation or refresh")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/token")
@@ -46,6 +51,12 @@ public class TokenController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "Validate a token", response = ServiceResponse.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The token is valid"),
+        @ApiResponse(code = 400, message = "Invalid token | The token has expired"),
+        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+    })
     @PostMapping(value = "/validate")
     public ResponseEntity<ServiceResponse> validate(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
         String username = null;
@@ -72,6 +83,12 @@ public class TokenController {
         return ResponseEntity.badRequest().body(new ServiceResponse(400, result));
     }
 
+    @ApiOperation(value = "Refresh token by generating new one", response = ServiceResponse.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "The token is valid"),
+        @ApiResponse(code = 400, message = "Invalid token | The token is unallocated"),
+        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+    })
     @PostMapping(value = "/refresh")
     public ResponseEntity<ServiceResponse> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         RefreshToken refreshToken = refreshTokenRepository.findByValue(refreshTokenDto.getToken());
@@ -92,7 +109,7 @@ public class TokenController {
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
 
         return ResponseEntity.ok(
-                new ServiceResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken.getValue(), expirationDate.getTime()))
+            new ServiceResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken.getValue(), expirationDate.getTime()))
         );
     }
 }

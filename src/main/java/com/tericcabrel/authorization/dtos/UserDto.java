@@ -12,10 +12,10 @@ import com.tericcabrel.authorization.models.Coordinates;
 import com.tericcabrel.authorization.models.Role;
 import com.tericcabrel.authorization.constraints.FieldMatch;
 
+@ApiModel(value = "RegisterParam", description = "Parameters required to create or update user")
 @FieldMatch.List({
     @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
 })
-@ApiModel(value = "RegisterParam", description = "Parameters required to create or update user")
 public class UserDto {
     @ApiModelProperty(notes = "User first name", required = true)
     @NotBlank(message = "The first name is required")
