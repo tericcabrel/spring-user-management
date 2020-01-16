@@ -1,5 +1,9 @@
 package com.tericcabrel.authorization.controllers;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,7 @@ import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
 
+@Api(tags = "Password reset management", description = "Operations pertaining to user's reset password process")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
@@ -38,6 +43,12 @@ public class ResetPasswordController {
         this.resetPasswordService = resetPasswordService;
     }
 
+    @ApiOperation(value = "Request a link to reset the password", response = ServiceResponse.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Reset link sent to the mail box successfully!"),
+            @ApiResponse(code = 400, message = "No user found with the email provided"),
+            @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+    })
     @PostMapping(value = "/forgot-password")
     public ResponseEntity<ServiceResponse> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) {
         User user = userService.findByEmail(forgotPasswordDto.getEmail());
@@ -56,6 +67,12 @@ public class ResetPasswordController {
         return ResponseEntity.ok(new ServiceResponse(HttpStatus.OK.value(), result));
     }
 
+    @ApiOperation(value = "Change the user password through a reset token", response = ServiceResponse.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The action completed successfully!"),
+            @ApiResponse(code = 400, message = "The token is invalid or has expired"),
+            @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+    })
     @PostMapping(value = "/reset-password")
     public ResponseEntity<ServiceResponse> resetPassword(@Valid @RequestBody ResetPasswordDto passwordResetDto) {
         ResetPassword resetPassword = resetPasswordService.findByToken(passwordResetDto.getToken());

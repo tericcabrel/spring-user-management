@@ -33,10 +33,10 @@ import com.tericcabrel.authorization.utils.JwtTokenUtil;
 import com.tericcabrel.authorization.utils.Helpers;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 
+@Api(tags = "Authorization management", description = "Operations pertaining to registration, authentication and account confirmation")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
-@Api(tags = "Authorization management", value = "Authorization management", description = "Operations pertaining to registration, authentication and account confirmation")
 public class AuthController {
 
     private IUserService userService;
@@ -93,6 +93,7 @@ public class AuthController {
         @ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet"),
         @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
         @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
+        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
     })
     @PostMapping(value = "/login")
     public ResponseEntity<ServiceResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
