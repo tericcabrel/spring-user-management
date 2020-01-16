@@ -14,6 +14,7 @@ import springfox.documentation.swagger.web.UiConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,13 +32,14 @@ public class SwaggerConfiguration {
                 .produces(DEFAULT_PRODUCES_AND_CONSUMES)
                 .consumes(DEFAULT_PRODUCES_AND_CONSUMES)
                 .pathMapping("/")
+                .protocols(Collections.singleton("HTTP"))
                 .useDefaultResponseMessages(Boolean.valueOf(swaggerProperties.getUseDefaultResponseMessages()));
     }
 
     private ApiInfo apiEndPointsInfo() {
         return new ApiInfoBuilder().title("Identity authorization service")
                 .description("REST API to manage user's registration and authentication, role management and token generation and validation")
-                .contact(new Contact("Eric Cabrel TIOGO", "www.tericcabrel.com", "tericcabrel@gmail.com"))
+                .contact(new Contact("Eric Cabrel TIOGO", "http://tericcabrel.com", "tericcabrel@gmail.com"))
                 // .license("Apache 2.0")
                 // .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .version("1.0")
@@ -50,5 +52,5 @@ public class SwaggerConfiguration {
         return UiConfigurationBuilder.builder().supportedSubmitMethods(methodsWithTryItOutButton).build();
     }
 
-    private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = new HashSet<>(Arrays.asList("application/json"));
+    private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = new HashSet<>(Collections.singletonList("application/json"));
 }
