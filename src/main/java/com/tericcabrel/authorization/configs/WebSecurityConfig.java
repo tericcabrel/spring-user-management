@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf()
             .disable()
             .authorizeRequests()
-            .antMatchers("/auth/*", "/token/*").permitAll()
+            .antMatchers("/auth/*", "/token/*", "/swagger-ui.html", "/webjars/springfox-swagger-ui/*").permitAll()
             .anyRequest().authenticated()
             .and()
             .exceptionHandling()
