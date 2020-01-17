@@ -79,7 +79,10 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
             if (obj == null ){
                 role = roleService.findByName(ROLE_ADMIN);
 
-                userDto.getRoles().add(role);
+                Set<Role> userRoles = new HashSet<>();
+                userRoles.add(role);
+
+                userDto.setRoles(userRoles);
 
                 userService.save(userDto);
             }

@@ -59,6 +59,7 @@ public class UserDto {
     private Set<Role> roles;
 
     public UserDto() {
+        enabled = true;
         roles = new HashSet<>();
     }
 

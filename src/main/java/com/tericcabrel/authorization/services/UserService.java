@@ -3,7 +3,6 @@ package com.tericcabrel.authorization.services;
 import org.bson.types.ObjectId;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,8 +16,8 @@ import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.dtos.UpdateUserDto;
 
-@Service(value = "userService")
-public class UserService implements UserDetailsService, IUserService {
+@Service
+public class UserService implements IUserService {
     private UserRepository userRepository;
 
     private BCryptPasswordEncoder bCryptEncoder;
@@ -41,7 +40,8 @@ public class UserService implements UserDetailsService, IUserService {
                 .setEnabled(userDto.isEnabled())
                 .setAvatar(null)
                 .setTimezone(userDto.getTimezone())
-                .setCoordinates(userDto.getCoordinates());
+                .setCoordinates(userDto.getCoordinates())
+                .setRoles(userDto.getRoles());
 
         return userRepository.save(newUser);
     }
