@@ -1,0 +1,48 @@
+version: "2"
+services:
+  app:
+    container_name: identity-authorization
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ~/Desktop/CODING/Docker/volumes/identity-authorization/uploads:/var/identity-authorization/uploads
+      - ~/Desktop/CODING/Docker/volumes/identity-authorization/logs:/var/identity-authorization/logs
+    ports:
+      - "8403:8403"
+    links:
+      - mongodb
+      - redisdb
+    depends_on:
+      - mongodb
+      - redisdb
+    environment:
+      WAIT_HOSTS: redisdb:6379, mongodb:27017
+    networks:
+      - identitynetwork
+  mongodb:
+    container_name: identity-authorization-mongo
+    image: mongo
+    volumes:
+      - ~/Desktop/CODING/Docker/volumes/identity-authorization/mongo:/data/db
+    ports:
+      - "27000:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=zegeek
+      - MONGO_INITDB_ROOT_PASSWORD=supratecgeek
+      - MONGO_INITDB_DATABASE=admin
+    networks:
+      - identitynetwork
+  redisdb:
+    container_name: identity-authorization-redis
+    image: redis
+    volumes:
+      - ~/Desktop/CODING/Docker/volumes/identity-authorization/redis:/data/db
+    ports:
+      - "6500:6379"
+    networks:
+      - identitynetwork
+networks:
+  identitynetwork:
+    driver: bridge

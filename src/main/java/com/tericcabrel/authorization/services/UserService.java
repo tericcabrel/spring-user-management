@@ -1,6 +1,7 @@
 package com.tericcabrel.authorization.services;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,7 +12,7 @@ import java.util.*;
 
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.repositories.UserRepository;
+import com.tericcabrel.authorization.repositories.mongo.UserRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.dtos.UpdateUserDto;
@@ -20,11 +21,11 @@ import com.tericcabrel.authorization.dtos.UpdateUserDto;
 public class UserService implements IUserService {
     private UserRepository userRepository;
 
+    @Autowired
     private BCryptPasswordEncoder bCryptEncoder;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.bCryptEncoder = bCryptEncoder;
     }
 
     @Override

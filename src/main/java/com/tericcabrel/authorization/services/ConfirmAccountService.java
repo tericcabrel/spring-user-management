@@ -7,7 +7,7 @@ import java.util.*;
 
 import com.tericcabrel.authorization.models.ConfirmAccount;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.repositories.ConfirmAccountRepository;
+import com.tericcabrel.authorization.repositories.mongo.ConfirmAccountRepository;
 import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
 
 

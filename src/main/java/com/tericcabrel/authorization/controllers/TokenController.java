@@ -26,7 +26,7 @@ import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.common.ServiceResponse;
 import com.tericcabrel.authorization.models.common.AuthToken;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
-import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
+import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 

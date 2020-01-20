@@ -25,7 +25,7 @@ import com.tericcabrel.authorization.models.Role;
 import com.tericcabrel.authorization.models.ConfirmAccount;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
-import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
+import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;

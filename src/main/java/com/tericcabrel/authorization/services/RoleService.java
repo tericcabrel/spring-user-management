@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import com.tericcabrel.authorization.dtos.RoleDto;
 import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.repositories.RoleRepository;
+import com.tericcabrel.authorization.repositories.mongo.RoleRepository;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
 
 @Service(value = "roleService")
