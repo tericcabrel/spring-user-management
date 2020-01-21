@@ -1,10 +1,5 @@
 package com.tericcabrel.authorization.utils;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 public class Helpers {
     /**
      * Generates a random string of the length passed in parameter

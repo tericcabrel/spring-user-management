@@ -1,11 +1,11 @@
 package com.tericcabrel.authorization.models.common;
 
-public class ApiResponse {
+public class ServiceResponse {
     private int status;
 
     private Object data;
 
-    public ApiResponse(int status, Object data) {
+    public ServiceResponse(int status, Object data) {
         this.status = status;
         this.data = data;
     }

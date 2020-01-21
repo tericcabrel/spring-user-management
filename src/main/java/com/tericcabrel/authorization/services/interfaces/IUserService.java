@@ -6,8 +6,9 @@ import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.models.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService {
+public interface IUserService extends UserDetailsService {
     User save(UserDto userDto);
 
     List<User> findAll();
@@ -23,4 +24,6 @@ public interface UserService {
     void update(User user);
 
     User updatePassword(String id, UpdatePasswordDto updatePasswordDto);
+
+    User updatePassword(String id, String newPassword);
 }

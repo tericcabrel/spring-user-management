@@ -1,10 +1,11 @@
 package com.tericcabrel.authorization.constraints.validators;
 
-import com.tericcabrel.authorization.constraints.FieldMatch;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import com.tericcabrel.authorization.constraints.FieldMatch;
 
 public class FieldMatchValidator implements ConstraintValidator <FieldMatch, Object > {
 

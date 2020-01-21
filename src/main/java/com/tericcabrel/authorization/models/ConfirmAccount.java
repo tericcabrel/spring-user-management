@@ -1,15 +1,10 @@
 package com.tericcabrel.authorization.models;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "password_resets")
-public class PasswordReset {
-    @Id
-    private ObjectId _id;
-
+@Document(collection = "accounts_confirmation")
+public class ConfirmAccount extends BaseModel {
     @DBRef
     private User user;
 
@@ -17,20 +12,11 @@ public class PasswordReset {
 
     private long expireAt;
 
-    public ObjectId get_id() {
-        return _id;
-    }
-
-    public PasswordReset set_id(ObjectId _id) {
-        this._id = _id;
-        return this;
-    }
-
     public User getUser() {
         return user;
     }
 
-    public PasswordReset setUser(User user) {
+    public ConfirmAccount setUser(User user) {
         this.user = user;
         return this;
     }
@@ -39,7 +25,7 @@ public class PasswordReset {
         return token;
     }
 
-    public PasswordReset setToken(String token) {
+    public ConfirmAccount setToken(String token) {
         this.token = token;
         return this;
     }
@@ -48,7 +34,7 @@ public class PasswordReset {
         return expireAt;
     }
 
-    public PasswordReset setExpireAt(long expireAt) {
+    public ConfirmAccount setExpireAt(long expireAt) {
         this.expireAt = expireAt;
         return this;
     }

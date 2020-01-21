@@ -1,12 +1,13 @@
 package com.tericcabrel.authorization.listeners;
 
-import com.tericcabrel.authorization.models.BaseModel;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+
+import com.tericcabrel.authorization.models.BaseModel;
 
 @Component
 public class ModelUpdateListener extends AbstractMongoEventListener<BaseModel> {

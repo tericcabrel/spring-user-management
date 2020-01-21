@@ -1,12 +1,9 @@
 package com.tericcabrel.authorization.services;
 
-import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
-import com.tericcabrel.authorization.dtos.UpdateUserDto;
 import org.bson.types.ObjectId;
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,37 +12,37 @@ import java.util.*;
 
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.repositories.UserRepository;
-import com.tericcabrel.authorization.services.interfaces.UserService;
+import com.tericcabrel.authorization.repositories.mongo.UserRepository;
+import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
+import com.tericcabrel.authorization.dtos.UpdateUserDto;
 
-@Service(value = "userService")
-public class UserServiceImpl implements UserDetailsService, UserService {
+@Service
+public class UserService implements IUserService {
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder bcryptEncoder;
+    @Autowired
+    private BCryptPasswordEncoder bCryptEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bcryptEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.bcryptEncoder = bcryptEncoder;
     }
 
     @Override
     public User save(UserDto userDto) {
         User newUser = new User();
-        Date dateNow = new Date();
 
         newUser.setEmail(userDto.getEmail())
                 .setFirstName(userDto.getFirstName())
                 .setLastName(userDto.getLastName())
-                .setPassword(bcryptEncoder.encode(userDto.getPassword()))
+                .setPassword(bCryptEncoder.encode(userDto.getPassword()))
                 .setGender(userDto.getGender())
-                .setConfirmed(false)
-                .setEnabled(true)
+                .setConfirmed(userDto.isConfirmed())
+                .setEnabled(userDto.isEnabled())
                 .setAvatar(null)
                 .setTimezone(userDto.getTimezone())
                 .setCoordinates(userDto.getCoordinates())
-                .setCreatedAt(dateNow)
-                .setUpdatedAt(dateNow);
+                .setRoles(userDto.getRoles());
 
         return userRepository.save(newUser);
     }
@@ -120,13 +117,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = findById(id);
 
         if(user != null) {
-            if (bcryptEncoder.matches(updatePasswordDto.getCurrentPassword(), user.getPassword())) {
-                user.setPassword(bcryptEncoder.encode(updatePasswordDto.getNewPassword()));
+            if (bCryptEncoder.matches(updatePasswordDto.getCurrentPassword(), user.getPassword())) {
+                user.setPassword(bCryptEncoder.encode(updatePasswordDto.getNewPassword()));
 
                 userRepository.save(user);
             } else {
                 return null;
             }
+        }
+
+        return user;
+    }
+
+    @Override
+    public User updatePassword(String id, String newPassword) {
+        User user = findById(id);
+
+        if(user != null) {
+            user.setPassword(bCryptEncoder.encode(newPassword));
+            userRepository.save(user);
         }
 
         return user;
@@ -141,7 +150,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
 
         return new org.springframework.security.core.userdetails.User(
-            user.getEmail(), user.getPassword(), getAuthority(user)
+            user.getEmail(), user.getPassword(), true, true, true, true, getAuthority(user)
         );
     }
 

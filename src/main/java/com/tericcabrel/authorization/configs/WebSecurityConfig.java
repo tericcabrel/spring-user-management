@@ -10,12 +10,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.annotation.Resource;
-
+import com.tericcabrel.authorization.services.UserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 
 @Configuration
@@ -23,8 +21,8 @@ import com.tericcabrel.authorization.utils.JwtTokenUtil;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Resource(name = "userService")
-    private UserDetailsService userDetailsService;
+    @Autowired
+    private UserService userService;
 
     private JwtTokenUtil jwtTokenUtil;
 
@@ -43,13 +41,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
+        auth.userDetailsService(userService)
                 .passwordEncoder(encoder());
     }
 
     @Bean
     public AuthenticationFilter authenticationTokenFilterBean() throws Exception {
-        return new AuthenticationFilter(userDetailsService, jwtTokenUtil);
+        return new AuthenticationFilter(userService, jwtTokenUtil);
     }
 
     @Override
@@ -60,7 +58,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf()
             .disable()
             .authorizeRequests()
-            .antMatchers("/auth/*", "/token/*").permitAll()
+            .antMatchers(
+                    "/auth/*",
+                    "/token/*",
+                    "/v2/api-docs",
+                    "/swagger-resources/**",
+                    "/swagger-ui.html**",
+                    "/webjars/**",
+                    "favicon.ico"
+            ).permitAll()
             .anyRequest().authenticated()
             .and()
             .exceptionHandling()

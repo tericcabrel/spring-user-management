@@ -1,34 +1,31 @@
 package com.tericcabrel.authorization.services;
 
-import com.tericcabrel.authorization.dtos.RoleDto;
-import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.repositories.RoleRepository;
-import com.tericcabrel.authorization.services.interfaces.RoleService;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.tericcabrel.authorization.dtos.RoleDto;
+import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.repositories.mongo.RoleRepository;
+import com.tericcabrel.authorization.services.interfaces.IRoleService;
+
 @Service(value = "roleService")
-public class RoleServiceImpl implements RoleService {
+public class RoleService implements IRoleService {
     private RoleRepository roleRepository;
 
-    public RoleServiceImpl(RoleRepository roleRepository) {
+    public RoleService(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
     @Override
     public Role save(RoleDto roleDto) {
         Role newRole = new Role();
-        Date dateNow = new Date();
 
         newRole.setName(roleDto.getName())
-                .setDescription(roleDto.getDescription())
-                .setCreatedAt(dateNow)
-                .setUpdatedAt(dateNow);
+               .setDescription(roleDto.getDescription());
 
         return roleRepository.save(newRole);
     }

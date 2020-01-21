@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 @Configuration
-@EnableRedisRepositories
+@EnableRedisRepositories(value = "com.tericcabrel.authorization.repositories.redis")
 public class RedisConfiguration {
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {

@@ -1,7 +1,5 @@
 package com.tericcabrel.authorization.utils;
 
-import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.models.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +17,8 @@ import java.util.stream.Collectors;
 import io.jsonwebtoken.*;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
+import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.models.User;
 
 @Component
 public class JwtTokenUtil implements Serializable {
