@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.models.common.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -27,7 +28,6 @@ import org.hibernate.validator.constraints.Length;
 import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ServiceResponse;
 import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
 import com.tericcabrel.authorization.services.FileStorageService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
@@ -48,9 +48,9 @@ public class UserController {
 
     @ApiOperation(value = "Get all users", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "List retrieved successfully!"),
-        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-        @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
+        @ApiResponse(code = 200, message = "List retrieved successfully!", response = UserListResponse.class),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = "You don't have the right to access to this resource", response = BadRequestResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
@@ -62,8 +62,8 @@ public class UserController {
 
     @ApiOperation(value = "Get the authenticated user", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "User retrieved successfully!"),
-        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+        @ApiResponse(code = 200, message = "User retrieved successfully!", response = UserResponse.class),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource", response = BadRequestResponse.class),
     })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
@@ -77,9 +77,9 @@ public class UserController {
 
     @ApiOperation(value = "Get one user", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Item retrieved successfully!"),
-        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-        @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
+        @ApiResponse(code = 200, message = "Item retrieved successfully!", response = UserResponse.class),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = "You don't have the right to access to this resource", response = BadRequestResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
@@ -91,10 +91,10 @@ public class UserController {
 
     @ApiOperation(value = "Update an user", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "User updated successfully!"),
-        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-        @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+        @ApiResponse(code = 200, message = "User updated successfully!", response = UserResponse.class),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = "You don't have the right to access to this resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}")
@@ -106,11 +106,11 @@ public class UserController {
 
     @ApiOperation(value = "Update user password", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The password updated successfully!"),
-        @ApiResponse(code = 400, message = "The current password is invalid"),
-        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-        @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+        @ApiResponse(code = 200, message = "The password updated successfully!", response = UserResponse.class),
+        @ApiResponse(code = 400, message = "The current password is invalid", response = BadRequestResponse.class),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = "You don't have the right to access to this resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}/password")
@@ -128,9 +128,9 @@ public class UserController {
 
     @ApiOperation(value = "Delete an user", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 204, message = "User deleted successfully!"),
-        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-        @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
+        @ApiResponse(code = 204, message = "User deleted successfully!", response = SuccessResponse.class),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = "You don't have the right to access to this resource", response = BadRequestResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
@@ -142,11 +142,11 @@ public class UserController {
 
     @ApiOperation(value = "Change or delete user picture", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The picture updated/deleted successfully!"),
-        @ApiResponse(code = 400, message = "An IOException occurred!"),
-        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-        @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+        @ApiResponse(code = 200, message = "The picture updated/deleted successfully!", response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = "An IOException occurred!", response = BadRequestResponse.class),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = "You don't have the right to access to this resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
     })
     @PostMapping("/{id}/picture")
     public ResponseEntity<ServiceResponse> uploadPicture(
