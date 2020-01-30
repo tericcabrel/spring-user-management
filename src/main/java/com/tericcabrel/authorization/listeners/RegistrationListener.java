@@ -8,12 +8,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
@@ -58,6 +60,8 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         confirmAccountService.save(user, token);
 
         String confirmationUrl = environment.getProperty("app.url.confirm-account") + "?token=" + token;
+        String mailFrom = environment.getProperty("spring.mail.properties.mail.smtp.from");
+        String mailFromName = environment.getProperty("mail.from.name", "Identity");
 
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         final MimeMessageHelper email;
@@ -66,7 +70,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
             email.setTo(user.getEmail());
             email.setSubject(MAIL_SUBJECT);
-            email.setFrom(environment.getProperty("mail.from.name", "Identity"));
+            email.setFrom(new InternetAddress(mailFrom, mailFromName));
 
             final Context ctx = new Context(LocaleContextHolder.getLocale());
             ctx.setVariable("email", user.getEmail());
@@ -83,7 +87,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
             email.addInline("springLogo", clr, PNG_MIME);
 
             mailSender.send(mimeMessage);
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
