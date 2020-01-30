@@ -19,8 +19,7 @@ import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
 import com.tericcabrel.authorization.dtos.LoginUserDto;
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.dtos.ValidateTokenDto;
-import com.tericcabrel.authorization.models.common.ServiceResponse;
-import com.tericcabrel.authorization.models.common.AuthToken;
+import com.tericcabrel.authorization.models.common.*;
 import com.tericcabrel.authorization.models.Role;
 import com.tericcabrel.authorization.models.ConfirmAccount;
 import com.tericcabrel.authorization.models.User;
@@ -72,6 +71,10 @@ public class AuthController {
     }
 
     @ApiOperation(value = "Register a new user in the system", response = ServiceResponse.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Registered successfully!", response = UserResponse.class),
+        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
+    })
     @PostMapping(value = "/register")
     public ResponseEntity<ServiceResponse> register(@Valid @RequestBody UserDto userDto) {
         Role role = roleService.findByName(ROLE_USER);
@@ -89,11 +92,10 @@ public class AuthController {
 
     @ApiOperation(value = "Authenticate an user", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Authenticated successfully!"),
-        @ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet"),
-        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-        @ApiResponse(code = 403, message = "You don't have the right to access to this resource"),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+        @ApiResponse(code = 200, message = "Authenticated successfully!", response = AuthTokenResponse.class),
+        @ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet", response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = "You don't have the right to access to this resource", response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/login")
     public ResponseEntity<ServiceResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
@@ -129,14 +131,14 @@ public class AuthController {
         refreshTokenRepository.save(refreshTokenObject);
 
         return ResponseEntity.ok(
-            new ServiceResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken, expirationDate.getTime()))
+            new ServiceResponse(HttpStatus.OK.value(), new AuthTokenResponse(token, refreshToken, expirationDate.getTime()))
         );
     }
 
     @ApiOperation(value = "Confirm the account of an user", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Account confirmed successfully!"),
-        @ApiResponse(code = 400, message = "The token is invalid | The token has been expired"),
+        @ApiResponse(code = 200, message = "Account confirmed successfully!", response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = "The token is invalid | The token has been expired", response = BadRequestResponse.class),
     })
     @PostMapping(value = "/confirm-account")
     public ResponseEntity<ServiceResponse> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {

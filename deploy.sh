@@ -4,7 +4,7 @@ cd src/main/resources
 
 mv application.properties application.old.properties
 
-cp application.example.properties application.properties
+cp application-example.properties application.properties
 
 nano application.properties
 

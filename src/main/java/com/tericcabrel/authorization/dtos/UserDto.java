@@ -56,6 +56,7 @@ public class UserDto {
     @ApiModelProperty(notes = "Geographic location of the user")
     private Coordinates coordinates;
 
+    @ApiModelProperty(hidden = true)
     private Set<Role> roles;
 
     public UserDto() {

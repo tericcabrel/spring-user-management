@@ -19,23 +19,30 @@ import com.tericcabrel.authorization.models.common.ServiceResponse;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private HashMap<String, String> formatMessage(String message) {
+        HashMap<String, String> result = new HashMap<>();
+        result.put("message", message);
+
+        return result;
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        ServiceResponse response = new ServiceResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.NOT_FOUND.value(), formatMessage(ex.getMessage()));
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PasswordNotMatchException.class)
     public ResponseEntity<?> passwordNotMatchException(PasswordNotMatchException ex, WebRequest request) {
-        ServiceResponse response = new ServiceResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.BAD_REQUEST.value(), formatMessage(ex.getMessage()));
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<?> fileNotFoundException(FileNotFoundException ex, WebRequest request) {
-        ServiceResponse response = new ServiceResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.NOT_FOUND.value(), formatMessage(ex.getMessage()));
         ex.printStackTrace();
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -43,7 +50,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileStorageException.class)
     public ResponseEntity<?> fileStorageException(FileStorageException ex, WebRequest request) {
-        ServiceResponse response = new ServiceResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.BAD_REQUEST.value(), formatMessage(ex.getMessage()));
         ex.printStackTrace();
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -97,14 +104,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> accessDeniedException(AccessDeniedException ex, WebRequest request) {
-        ServiceResponse response = new ServiceResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.FORBIDDEN.value(), formatMessage(ex.getMessage()));
 
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> badCredentialsException(BadCredentialsException ex, WebRequest request) {
-        ServiceResponse response = new ServiceResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.UNAUTHORIZED.value(), formatMessage(ex.getMessage()));
 
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
@@ -113,7 +120,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {
         ex.printStackTrace();
 
-        ServiceResponse response = new ServiceResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+        ServiceResponse response = new ServiceResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), formatMessage(ex.getMessage()));
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

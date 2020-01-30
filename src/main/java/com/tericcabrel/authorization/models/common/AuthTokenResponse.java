@@ -1,11 +1,11 @@
 package com.tericcabrel.authorization.models.common;
 
-public class AuthToken {
+public class AuthTokenResponse {
     private String accessToken;
     private String refreshToken;
     private long expiresIn;
 
-    public AuthToken(String accessToken, String refreshToken, long expiresIn){
+    public AuthTokenResponse(String accessToken, String refreshToken, long expiresIn){
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expiresIn = expiresIn;
@@ -23,7 +23,7 @@ public class AuthToken {
         return refreshToken;
     }
 
-    public AuthToken setRefreshToken(String refreshToken) {
+    public AuthTokenResponse setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
         return this;
     }

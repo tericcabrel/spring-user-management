@@ -24,7 +24,7 @@ import com.tericcabrel.authorization.dtos.RefreshTokenDto;
 import com.tericcabrel.authorization.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.models.common.ServiceResponse;
-import com.tericcabrel.authorization.models.common.AuthToken;
+import com.tericcabrel.authorization.models.common.AuthTokenResponse;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
@@ -109,7 +109,7 @@ public class TokenController {
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
 
         return ResponseEntity.ok(
-            new ServiceResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken.getValue(), expirationDate.getTime()))
+            new ServiceResponse(HttpStatus.OK.value(), new AuthTokenResponse(token, refreshToken.getValue(), expirationDate.getTime()))
         );
     }
 }
