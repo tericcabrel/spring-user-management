@@ -14,8 +14,6 @@ import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
 import java.util.*;
 
-import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
-
 import com.tericcabrel.authorization.dtos.LoginUserDto;
 import com.tericcabrel.authorization.dtos.UserDto;
 import com.tericcabrel.authorization.dtos.ValidateTokenDto;
@@ -31,6 +29,8 @@ import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 import com.tericcabrel.authorization.utils.Helpers;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
+
+import static com.tericcabrel.authorization.utils.Constants.*;
 
 @Api(tags = "Authorization management", description = "Operations pertaining to registration, authentication and account confirmation")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -73,7 +73,7 @@ public class AuthController {
     @ApiOperation(value = "Register a new user in the system", response = ServiceResponse.class)
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Registered successfully!", response = UserResponse.class),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/register")
     public ResponseEntity<ServiceResponse> register(@Valid @RequestBody UserDto userDto) {
@@ -94,8 +94,8 @@ public class AuthController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Authenticated successfully!", response = AuthTokenResponse.class),
         @ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet", response = BadRequestResponse.class),
-        @ApiResponse(code = 403, message = "You don't have the right to access to this resource", response = BadRequestResponse.class),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
+        @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/login")
     public ResponseEntity<ServiceResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {

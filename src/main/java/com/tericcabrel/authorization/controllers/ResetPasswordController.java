@@ -13,6 +13,8 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
 
+import static com.tericcabrel.authorization.utils.Constants.INVALID_DATA_MESSAGE;
+
 import com.tericcabrel.authorization.models.common.BadRequestResponse;
 import com.tericcabrel.authorization.models.common.InvalidDataResponse;
 import com.tericcabrel.authorization.models.common.SuccessResponse;
@@ -23,6 +25,7 @@ import com.tericcabrel.authorization.models.common.ServiceResponse;
 import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
+
 
 @Api(tags = "Password reset management", description = "Operations pertaining to user's reset password process")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -50,7 +53,7 @@ public class ResetPasswordController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Reset link sent to the mail box successfully!", response = SuccessResponse.class),
             @ApiResponse(code = 400, message = "No user found with the email provided", response = BadRequestResponse.class),
-            @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
+            @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/forgot-password")
     public ResponseEntity<ServiceResponse> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) {
@@ -74,7 +77,7 @@ public class ResetPasswordController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "The action completed successfully!", response = SuccessResponse.class),
             @ApiResponse(code = 400, message = "The token is invalid or has expired", response = BadRequestResponse.class),
-            @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
+            @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/reset-password")
     public ResponseEntity<ServiceResponse> resetPassword(@Valid @RequestBody ResetPasswordDto passwordResetDto) {

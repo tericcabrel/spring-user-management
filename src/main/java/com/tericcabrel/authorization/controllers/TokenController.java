@@ -1,6 +1,5 @@
 package com.tericcabrel.authorization.controllers;
 
-import com.tericcabrel.authorization.models.common.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -21,6 +20,7 @@ import io.jsonwebtoken.SignatureException;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
+import com.tericcabrel.authorization.models.common.*;
 import com.tericcabrel.authorization.dtos.RefreshTokenDto;
 import com.tericcabrel.authorization.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.models.User;
@@ -54,7 +54,7 @@ public class TokenController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The token is valid", response = SuccessResponse.class),
         @ApiResponse(code = 400, message = "Invalid token | The token has expired", response = BadRequestResponse.class),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/validate")
     public ResponseEntity<ServiceResponse> validate(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
@@ -86,7 +86,7 @@ public class TokenController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "New access token generated successfully", response = AuthTokenResponse.class),
         @ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = BadRequestResponse.class),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid", response = InvalidDataResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/refresh")
     public ResponseEntity<ServiceResponse> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
