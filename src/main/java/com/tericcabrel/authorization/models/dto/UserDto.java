@@ -17,6 +17,9 @@ import com.tericcabrel.authorization.constraints.FieldMatch;
 @FieldMatch.List({
     @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
 })
+@IsUnique.List({
+    @IsUnique(property = "email", repository = "UserRepository", message = "This email already exists!")
+})
 public class UserDto {
     @ApiModelProperty(notes = "User first name", required = true)
     @NotBlank(message = "The first name is required")
@@ -27,7 +30,6 @@ public class UserDto {
     private String lastName;
 
     @ApiModelProperty(notes = "User email address", required = true)
-    @IsUnique(model = "User", property = "Email", message = "This email already exists!")
     @Email(message = "Email address is not valid")
     @NotBlank(message = "The email address is required")
     private String email;

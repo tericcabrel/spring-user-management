@@ -35,4 +35,18 @@ public class Helpers {
 
         return fileNameParts[fileNameParts.length - 1];
     }
+
+    /**
+     * Transform to uppercase the first character of a string
+     *
+     * @param str
+     *
+     * @return the string capitalized
+     */
+    public static String capitalize(String str) {
+        char[] chars = str.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+
+        return String.valueOf(chars);
+    }
 }
