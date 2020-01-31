@@ -5,6 +5,7 @@ import javax.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.tericcabrel.authorization.constraints.IsUnique;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -26,6 +27,7 @@ public class UserDto {
     private String lastName;
 
     @ApiModelProperty(notes = "User email address", required = true)
+    @IsUnique(model = "User", property = "Email", message = "This email already exists!")
     @Email(message = "Email address is not valid")
     @NotBlank(message = "The email address is required")
     private String email;
