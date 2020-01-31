@@ -18,9 +18,9 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
-import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
+import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {

@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import com.tericcabrel.authorization.models.ResetPassword;
-import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.mongo.ResetPassword;
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.repositories.mongo.PasswordResetRepository;
 import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
 

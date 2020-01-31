@@ -1,7 +1,7 @@
 package com.tericcabrel.authorization.services.interfaces;
 
-import com.tericcabrel.authorization.dtos.RoleDto;
-import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.models.dto.RoleDto;
+import com.tericcabrel.authorization.models.mongo.Role;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.dtos;
+package com.tericcabrel.authorization.models.dto;
 
 import javax.validation.constraints.*;
 
@@ -8,8 +8,8 @@ import java.util.Set;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import com.tericcabrel.authorization.models.Coordinates;
-import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.models.mongo.Coordinates;
+import com.tericcabrel.authorization.models.mongo.Role;
 import com.tericcabrel.authorization.constraints.FieldMatch;
 
 @ApiModel(value = "RegisterParam", description = "Parameters required to create or update user")

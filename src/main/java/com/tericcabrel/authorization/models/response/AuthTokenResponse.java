@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models.common;
+package com.tericcabrel.authorization.models.response;
 
 public class AuthTokenResponse {
     private String accessToken;

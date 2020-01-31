@@ -1,6 +1,4 @@
-package com.tericcabrel.authorization.models.common;
-
-import com.tericcabrel.authorization.models.User;
+package com.tericcabrel.authorization.models.response;
 
 import java.util.HashMap;
 import java.util.List;

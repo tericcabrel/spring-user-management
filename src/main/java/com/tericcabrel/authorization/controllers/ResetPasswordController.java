@@ -15,13 +15,14 @@ import java.util.HashMap;
 
 import static com.tericcabrel.authorization.utils.Constants.INVALID_DATA_MESSAGE;
 
-import com.tericcabrel.authorization.models.common.BadRequestResponse;
-import com.tericcabrel.authorization.models.common.InvalidDataResponse;
-import com.tericcabrel.authorization.models.common.SuccessResponse;
-import com.tericcabrel.authorization.dtos.*;
-import com.tericcabrel.authorization.models.ResetPassword;
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ServiceResponse;
+import com.tericcabrel.authorization.models.dto.ForgotPasswordDto;
+import com.tericcabrel.authorization.models.dto.ResetPasswordDto;
+import com.tericcabrel.authorization.models.response.BadRequestResponse;
+import com.tericcabrel.authorization.models.response.InvalidDataResponse;
+import com.tericcabrel.authorization.models.response.SuccessResponse;
+import com.tericcabrel.authorization.models.mongo.ResetPassword;
+import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.response.ServiceResponse;
 import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;

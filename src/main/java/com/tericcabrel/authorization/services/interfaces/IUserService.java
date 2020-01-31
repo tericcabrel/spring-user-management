@@ -2,10 +2,10 @@ package com.tericcabrel.authorization.services.interfaces;
 
 import java.util.List;
 
-import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
-import com.tericcabrel.authorization.dtos.UpdateUserDto;
-import com.tericcabrel.authorization.dtos.UserDto;
-import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.dto.UpdatePasswordDto;
+import com.tericcabrel.authorization.models.dto.UpdateUserDto;
+import com.tericcabrel.authorization.models.dto.UserDto;
+import com.tericcabrel.authorization.models.mongo.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface IUserService extends UserDetailsService {

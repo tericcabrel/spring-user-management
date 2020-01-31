@@ -1,13 +1,11 @@
-package com.tericcabrel.authorization.models.common;
+package com.tericcabrel.authorization.models.response;
 
-import com.tericcabrel.authorization.models.User;
-
-public class UserResponse {
+public class ServiceResponse {
     private int status;
 
-    private User data;
+    private Object data;
 
-    public UserResponse(int status, User data) {
+    public ServiceResponse(int status, Object data) {
         this.status = status;
         this.data = data;
     }
@@ -20,11 +18,11 @@ public class UserResponse {
         this.status = status;
     }
 
-    public User getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(User result) {
+    public void setData(Object result) {
         this.data = result;
     }
 }

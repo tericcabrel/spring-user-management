@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tericcabrel.authorization.models.common.ServiceResponse;
+import com.tericcabrel.authorization.models.response.ServiceResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

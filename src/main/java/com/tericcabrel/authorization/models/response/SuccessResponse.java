@@ -1,13 +1,13 @@
-package com.tericcabrel.authorization.models.common;
+package com.tericcabrel.authorization.models.response;
 
 import java.util.HashMap;
 
-public class BadRequestResponse {
+public class SuccessResponse {
     private int status;
 
     private HashMap<String, String> data;
 
-    public BadRequestResponse(int status, HashMap<String, String> data) {
+    public SuccessResponse(int status, HashMap<String, String> data) {
         this.status = status;
         this.data = data;
     }

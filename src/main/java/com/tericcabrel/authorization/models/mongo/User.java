@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models;
+package com.tericcabrel.authorization.models.mongo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.*;

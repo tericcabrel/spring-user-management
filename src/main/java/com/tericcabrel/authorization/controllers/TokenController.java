@@ -20,14 +20,15 @@ import io.jsonwebtoken.SignatureException;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
-import com.tericcabrel.authorization.models.common.*;
-import com.tericcabrel.authorization.dtos.RefreshTokenDto;
-import com.tericcabrel.authorization.dtos.ValidateTokenDto;
-import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.response.*;
+import com.tericcabrel.authorization.models.dto.RefreshTokenDto;
+import com.tericcabrel.authorization.models.dto.ValidateTokenDto;
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
+
 
 @Api(tags = "Token management", description = "Operations pertaining to token validation or refresh")
 @CrossOrigin(origins = "*", maxAge = 3600)

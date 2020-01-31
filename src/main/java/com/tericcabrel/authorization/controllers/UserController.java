@@ -26,10 +26,10 @@ import org.hibernate.validator.constraints.Length;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
-import com.tericcabrel.authorization.models.common.*;
-import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
-import com.tericcabrel.authorization.dtos.UpdateUserDto;
-import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.response.*;
+import com.tericcabrel.authorization.models.dto.UpdatePasswordDto;
+import com.tericcabrel.authorization.models.dto.UpdateUserDto;
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
 import com.tericcabrel.authorization.services.FileStorageService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;

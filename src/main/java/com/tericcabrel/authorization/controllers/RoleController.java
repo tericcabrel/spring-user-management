@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Arrays;
 
-import com.tericcabrel.authorization.models.common.*;
-import com.tericcabrel.authorization.dtos.RoleDto;
-import com.tericcabrel.authorization.dtos.RoleUpdateDto;
-import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.models.User;
+import static com.tericcabrel.authorization.utils.Constants.*;
+
+import com.tericcabrel.authorization.models.response.*;
+import com.tericcabrel.authorization.models.dto.RoleDto;
+import com.tericcabrel.authorization.models.dto.RoleUpdateDto;
+import com.tericcabrel.authorization.models.mongo.Role;
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 
-import static com.tericcabrel.authorization.utils.Constants.*;
 
 @Api(tags = "Role management", description = "Operations pertaining to role creation, update, assign, revoke, fetch and delete")
 @RestController

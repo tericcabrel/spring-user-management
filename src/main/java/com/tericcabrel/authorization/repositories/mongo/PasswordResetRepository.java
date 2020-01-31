@@ -4,7 +4,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import com.tericcabrel.authorization.models.ResetPassword;
+import com.tericcabrel.authorization.models.mongo.ResetPassword;
 
 @Repository
 public interface PasswordResetRepository extends MongoRepository<ResetPassword, ObjectId> {

@@ -1,10 +1,10 @@
-package com.tericcabrel.authorization.models;
+package com.tericcabrel.authorization.models.mongo;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "password_resets")
-public class ResetPassword extends BaseModel {
+@Document(collection = "accounts_confirmation")
+public class ConfirmAccount extends BaseModel {
     @DBRef
     private User user;
 
@@ -16,7 +16,7 @@ public class ResetPassword extends BaseModel {
         return user;
     }
 
-    public ResetPassword setUser(User user) {
+    public ConfirmAccount setUser(User user) {
         this.user = user;
         return this;
     }
@@ -25,7 +25,7 @@ public class ResetPassword extends BaseModel {
         return token;
     }
 
-    public ResetPassword setToken(String token) {
+    public ConfirmAccount setToken(String token) {
         this.token = token;
         return this;
     }
@@ -34,7 +34,7 @@ public class ResetPassword extends BaseModel {
         return expireAt;
     }
 
-    public ResetPassword setExpireAt(long expireAt) {
+    public ConfirmAccount setExpireAt(long expireAt) {
         this.expireAt = expireAt;
         return this;
     }

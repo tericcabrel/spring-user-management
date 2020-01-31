@@ -14,13 +14,15 @@ import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
 import java.util.*;
 
-import com.tericcabrel.authorization.dtos.LoginUserDto;
-import com.tericcabrel.authorization.dtos.UserDto;
-import com.tericcabrel.authorization.dtos.ValidateTokenDto;
-import com.tericcabrel.authorization.models.common.*;
-import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.models.ConfirmAccount;
-import com.tericcabrel.authorization.models.User;
+import static com.tericcabrel.authorization.utils.Constants.*;
+
+import com.tericcabrel.authorization.models.dto.LoginUserDto;
+import com.tericcabrel.authorization.models.dto.UserDto;
+import com.tericcabrel.authorization.models.dto.ValidateTokenDto;
+import com.tericcabrel.authorization.models.response.*;
+import com.tericcabrel.authorization.models.mongo.Role;
+import com.tericcabrel.authorization.models.mongo.ConfirmAccount;
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
@@ -30,7 +32,6 @@ import com.tericcabrel.authorization.utils.JwtTokenUtil;
 import com.tericcabrel.authorization.utils.Helpers;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 
-import static com.tericcabrel.authorization.utils.Constants.*;
 
 @Api(tags = "Authorization management", description = "Operations pertaining to registration, authentication and account confirmation")
 @CrossOrigin(origins = "*", maxAge = 3600)

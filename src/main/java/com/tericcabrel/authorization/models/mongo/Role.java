@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models;
+package com.tericcabrel.authorization.models.mongo;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

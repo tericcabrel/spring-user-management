@@ -1,6 +1,6 @@
-package com.tericcabrel.authorization.models.common;
+package com.tericcabrel.authorization.models.response;
 
-import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.mongo.User;
 
 import java.util.Set;
 

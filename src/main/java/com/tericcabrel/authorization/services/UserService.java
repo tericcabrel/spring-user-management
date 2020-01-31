@@ -10,19 +10,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import com.tericcabrel.authorization.dtos.UserDto;
-import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.dto.UserDto;
+import com.tericcabrel.authorization.models.dto.UpdatePasswordDto;
+import com.tericcabrel.authorization.models.dto.UpdateUserDto;
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.repositories.mongo.UserRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
-import com.tericcabrel.authorization.dtos.UpdatePasswordDto;
-import com.tericcabrel.authorization.dtos.UpdateUserDto;
+
 
 @Service
 public class UserService implements IUserService {
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptEncoder;
+    private BCryptPasswordEncoder bCryptEncoder; // Fails when injected by the constructor
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;

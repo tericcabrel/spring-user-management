@@ -1,11 +1,13 @@
-package com.tericcabrel.authorization.models.common;
+package com.tericcabrel.authorization.models.response;
 
-public class ServiceResponse {
+import com.tericcabrel.authorization.models.mongo.Role;
+
+public class RoleResponse {
     private int status;
 
-    private Object data;
+    private Role data;
 
-    public ServiceResponse(int status, Object data) {
+    public RoleResponse(int status, Role data) {
         this.status = status;
         this.data = data;
     }
@@ -18,11 +20,11 @@ public class ServiceResponse {
         this.status = status;
     }
 
-    public Object getData() {
+    public Role getData() {
         return data;
     }
 
-    public void setData(Object result) {
+    public void setData(Role result) {
         this.data = result;
     }
 }
