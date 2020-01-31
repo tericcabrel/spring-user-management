@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.utils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,9 @@ import com.tericcabrel.authorization.models.mongo.User;
 @Component
 public class JwtTokenUtil implements Serializable {
 
+    @Value("${app.jwt.secret.key}")
+    private String jwtSecretKey;
+
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
@@ -40,7 +44,7 @@ public class JwtTokenUtil implements Serializable {
 
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(SIGNING_KEY)
+                .setSigningKey(jwtSecretKey)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -71,7 +75,7 @@ public class JwtTokenUtil implements Serializable {
         return Jwts.builder()
                 .setSubject(username)
                 .claim(AUTHORITIES_KEY, authorities)
-                .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
+                .signWith(SignatureAlgorithm.HS256, jwtSecretKey)
                 .setIssuedAt(new Date(currentTimestampInMillis))
                 .setExpiration(new Date(currentTimestampInMillis + (TOKEN_LIFETIME_SECONDS * 1000)))
                 .compact();
@@ -87,7 +91,7 @@ public class JwtTokenUtil implements Serializable {
             final String token, final Authentication existingAuth, final UserDetails userDetails
     ) {
 
-        final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
+        final JwtParser jwtParser = Jwts.parser().setSigningKey(jwtSecretKey);
 
         final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
 
