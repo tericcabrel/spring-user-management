@@ -1,5 +1,9 @@
 package com.tericcabrel.authorization.utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class Helpers {
     /**
      * Generates a random string of the length passed in parameter
@@ -48,5 +52,23 @@ public class Helpers {
         chars[0] = Character.toUpperCase(chars[0]);
 
         return String.valueOf(chars);
+    }
+
+    public static HashMap<String, List<String>> updateErrorHashMap(
+        HashMap<String, List<String>> errors, String field, String message
+    ) {
+        if (errors.containsKey(field)) {
+            List<String> strings = errors.get(field);
+            strings.add(message);
+
+            errors.put(field, strings);
+        } else {
+            List<String> strings = new ArrayList<>();
+            strings.add(message);
+
+            errors.put(field, strings);
+        }
+
+        return errors;
     }
 }

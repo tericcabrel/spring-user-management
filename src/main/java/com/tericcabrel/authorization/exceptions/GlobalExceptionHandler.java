@@ -1,16 +1,20 @@
 package com.tericcabrel.authorization.exceptions;
 
+import com.tericcabrel.authorization.utils.Helpers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.ConstraintViolationException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,20 +82,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
         HashMap<String, List<String>> errors = new HashMap<>();
 
-        ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
-            String field = fieldError.getField();
+        ex.getBindingResult().getAllErrors().forEach(objectError -> {
+            String field = "";
 
-            if (errors.containsKey(field)) {
-                List<String> strings = errors.get(field);
-                strings.add(fieldError.getDefaultMessage());
-
-                errors.put(field, strings);
-            } else {
-                List<String> strings = new ArrayList<>();
-                strings.add(fieldError.getDefaultMessage());
-
-                errors.put(field, strings);
+            if (objectError.getArguments() != null && objectError.getArguments().length >= 2) {
+                field = objectError.getArguments()[1].toString();
             }
+
+            if (field.length() > 0) {
+                Helpers.updateErrorHashMap(errors, field, objectError.getDefaultMessage());
+            }
+        });
+
+        ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
+            Helpers.updateErrorHashMap(errors, fieldError.getField(), fieldError.getDefaultMessage());
         });
 
         HashMap<String, HashMap<String, List<String>>> result = new HashMap<>();

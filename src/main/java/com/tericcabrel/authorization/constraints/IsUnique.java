@@ -11,12 +11,12 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+@Constraint(validatedBy = IsUniqueValidator.class)
 @Target({
     TYPE, FIELD,
     ANNOTATION_TYPE
 })
 @Retention(RUNTIME)
-@Constraint(validatedBy = IsUniqueValidator.class)
 @Documented
 public @interface IsUnique {
     String message() default "{constraints.is-unique}";
