@@ -1,6 +1,6 @@
 package com.tericcabrel.authorization.constraints.validators;
 
-import com.tericcabrel.authorization.constraints.IsUnique;
+import com.tericcabrel.authorization.constraints.Exists;
 import com.tericcabrel.authorization.utils.Helpers;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.context.ApplicationContext;
@@ -11,19 +11,19 @@ import javax.validation.ConstraintValidatorContext;
 import java.lang.reflect.InvocationTargetException;
 
 @Component
-public class IsUniqueValidator implements ConstraintValidator <IsUnique, Object> {
+public class ExistsValidator implements ConstraintValidator <Exists, Object> {
 
     private String propertyName;
     private String repositoryName;
 
     private final ApplicationContext applicationContext;
 
-    public IsUniqueValidator(ApplicationContext applicationContext) {
+    public ExistsValidator(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
     @Override
-    public void initialize(final IsUnique constraintAnnotation) {
+    public void initialize(final Exists constraintAnnotation) {
         propertyName = constraintAnnotation.property();
         repositoryName = constraintAnnotation.repository();
     }
@@ -48,6 +48,6 @@ public class IsUniqueValidator implements ConstraintValidator <IsUnique, Object>
             return false;
         }
 
-        return result == null;
+        return result != null;
     }
 }
