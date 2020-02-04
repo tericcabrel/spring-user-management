@@ -1,6 +1,7 @@
 package com.tericcabrel.authorization.constraints;
 
 import com.tericcabrel.authorization.constraints.validators.IsUniqueValidator;
+import com.tericcabrel.authorization.constraints.validators.IsUniqueValidator.UpdateAction;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -24,6 +25,7 @@ public @interface IsUnique {
     Class <? extends Payload> [] payload() default {};
     String property();
     String repository();
+    UpdateAction action() default UpdateAction.INSERT;
 
     @Target({
         TYPE, FIELD,

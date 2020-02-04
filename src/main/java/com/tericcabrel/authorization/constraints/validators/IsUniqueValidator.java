@@ -15,6 +15,7 @@ public class IsUniqueValidator implements ConstraintValidator <IsUnique, Object>
 
     private String propertyName;
     private String repositoryName;
+    private UpdateAction action;
 
     private final ApplicationContext applicationContext;
 
@@ -26,6 +27,7 @@ public class IsUniqueValidator implements ConstraintValidator <IsUnique, Object>
     public void initialize(final IsUnique constraintAnnotation) {
         propertyName = constraintAnnotation.property();
         repositoryName = constraintAnnotation.repository();
+        action = constraintAnnotation.action();
     }
 
     @Override
@@ -38,16 +40,29 @@ public class IsUniqueValidator implements ConstraintValidator <IsUnique, Object>
             Object instance = this.applicationContext.getBean(finalRepositoryName);
 
             final Object propertyObj = BeanUtils.getProperty(value, propertyName);
+            final Object objId = BeanUtils.getProperty(value, "id");
 
             String finalPropertyName = Helpers.capitalize(propertyName);
 
             result = type.getMethod("findBy"+finalPropertyName, String.class).invoke(instance, propertyObj.toString());
+
+            if(action == UpdateAction.INSERT) {
+                return result == null;
+            } else {
+                Class<?> resultType = result.getClass();
+                String resultId = resultType.getMethod("getId").invoke(result).toString();
+
+                return resultId == objId;
+            }
         } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
 
             return false;
         }
+    }
 
-        return result == null;
+    public static enum UpdateAction {
+        INSERT,
+        UPDATE
     }
 }

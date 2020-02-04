@@ -21,6 +21,9 @@ import com.tericcabrel.authorization.constraints.FieldMatch;
     @IsUnique(property = "email", repository = "UserRepository", message = "This email already exists!")
 })
 public class UserDto {
+    @ApiModelProperty(hidden = true)
+    private String id;
+
     @ApiModelProperty(notes = "User first name", required = true)
     @NotBlank(message = "The first name is required")
     private String firstName;
@@ -66,6 +69,15 @@ public class UserDto {
     public UserDto() {
         enabled = true;
         roles = new HashSet<>();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public UserDto setId(String id) {
+        this.id = id;
+        return this;
     }
 
     public String getFirstName() {
