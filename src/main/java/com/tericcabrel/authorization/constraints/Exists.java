@@ -1,6 +1,6 @@
 package com.tericcabrel.authorization.constraints;
 
-import com.tericcabrel.authorization.constraints.validators.FieldMatchValidator;
+import com.tericcabrel.authorization.constraints.validators.ExistsValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,19 +11,19 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Constraint(validatedBy = FieldMatchValidator.class)
+@Constraint(validatedBy = ExistsValidator.class)
 @Target({
     TYPE, FIELD,
     ANNOTATION_TYPE
 })
 @Retention(RUNTIME)
 @Documented
-public @interface FieldMatch {
-    String message() default "{constraints.field-match}";
+public @interface Exists {
+    String message() default "{constraints.exists}";
     Class <?> [] groups() default {};
     Class <? extends Payload> [] payload() default {};
-    String first();
-    String second();
+    String property();
+    String repository();
 
     @Target({
         TYPE, FIELD,
@@ -32,6 +32,6 @@ public @interface FieldMatch {
     @Retention(RUNTIME)
     @Documented
     @interface List {
-        FieldMatch[] value();
+        Exists[] value();
     }
 }

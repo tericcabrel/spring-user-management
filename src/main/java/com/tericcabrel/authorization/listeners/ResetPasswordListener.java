@@ -10,12 +10,15 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
-import com.tericcabrel.authorization.models.User;
 import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
+
 
 @Component
 public class ResetPasswordListener implements ApplicationListener<OnResetPasswordEvent> {
@@ -52,7 +55,9 @@ public class ResetPasswordListener implements ApplicationListener<OnResetPasswor
         String token = UUID.randomUUID().toString();
         resetPasswordService.save(user, token);
 
-        String confirmationUrl = environment.getProperty("app.url.password-reset") + "?token=" + token;
+        String resetUrl = environment.getProperty("app.url.password-reset") + "?token=" + token;
+        String mailFrom = environment.getProperty("spring.mail.properties.mail.smtp.from");
+        String mailFromName = environment.getProperty("mail.from.name", "Identity");
 
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         final MimeMessageHelper email;
@@ -61,19 +66,19 @@ public class ResetPasswordListener implements ApplicationListener<OnResetPasswor
 
             email.setTo(user.getEmail());
             email.setSubject(MAIL_SUBJECT);
-            email.setFrom(environment.getProperty("mail.from.name", "Identity"));
+            email.setFrom(new InternetAddress(mailFrom, mailFromName));
 
             final Context ctx = new Context(LocaleContextHolder.getLocale());
             ctx.setVariable("email", user.getEmail());
             ctx.setVariable("name", user.getFirstName() + " " + user.getLastName());
-            ctx.setVariable("url", confirmationUrl);
+            ctx.setVariable("url", resetUrl);
 
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
 
             email.setText(htmlContent, true);
 
             mailSender.send(mimeMessage);
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }

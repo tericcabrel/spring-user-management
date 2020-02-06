@@ -13,7 +13,6 @@ import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger.web.UiConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,8 +39,8 @@ public class SwaggerConfiguration {
         return new ApiInfoBuilder().title("Identity authorization service")
                 .description("REST API to manage user's registration and authentication, role management and token generation and validation")
                 .contact(new Contact("Eric Cabrel TIOGO", "http://tericcabrel.com", "tericcabrel@gmail.com"))
-                // .license("Apache 2.0")
-                // .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
+                .license("Apache 2.0")
+                .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .version("1.0")
                 .build();
     }

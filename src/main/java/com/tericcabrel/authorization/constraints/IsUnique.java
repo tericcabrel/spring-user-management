@@ -1,6 +1,7 @@
 package com.tericcabrel.authorization.constraints;
 
-import com.tericcabrel.authorization.constraints.validators.FieldMatchValidator;
+import com.tericcabrel.authorization.constraints.validators.IsUniqueValidator;
+import com.tericcabrel.authorization.constraints.validators.IsUniqueValidator.UpdateAction;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,19 +12,20 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Constraint(validatedBy = FieldMatchValidator.class)
+@Constraint(validatedBy = IsUniqueValidator.class)
 @Target({
     TYPE, FIELD,
     ANNOTATION_TYPE
 })
 @Retention(RUNTIME)
 @Documented
-public @interface FieldMatch {
-    String message() default "{constraints.field-match}";
+public @interface IsUnique {
+    String message() default "{constraints.is-unique}";
     Class <?> [] groups() default {};
     Class <? extends Payload> [] payload() default {};
-    String first();
-    String second();
+    String property();
+    String repository();
+    UpdateAction action() default UpdateAction.INSERT;
 
     @Target({
         TYPE, FIELD,
@@ -32,6 +34,6 @@ public @interface FieldMatch {
     @Retention(RUNTIME)
     @Documented
     @interface List {
-        FieldMatch[] value();
+        IsUnique[] value();
     }
 }

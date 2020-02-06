@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.dtos;
+package com.tericcabrel.authorization.models.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,8 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.tericcabrel.authorization.models.Coordinates;
-import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.models.mongo.Coordinates;
+import com.tericcabrel.authorization.models.mongo.Role;
 
 @ApiModel(value = "UpdateUserParam", description = "Parameters required to update an user")
 public class UpdateUserDto {

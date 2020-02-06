@@ -20,15 +20,15 @@ import io.jsonwebtoken.SignatureException;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
-import com.tericcabrel.authorization.dtos.RefreshTokenDto;
-import com.tericcabrel.authorization.dtos.ValidateTokenDto;
-import com.tericcabrel.authorization.models.User;
-import com.tericcabrel.authorization.models.common.ServiceResponse;
-import com.tericcabrel.authorization.models.common.AuthToken;
+import com.tericcabrel.authorization.models.response.*;
+import com.tericcabrel.authorization.models.dto.RefreshTokenDto;
+import com.tericcabrel.authorization.models.dto.ValidateTokenDto;
+import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
 import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
+
 
 @Api(tags = "Token management", description = "Operations pertaining to token validation or refresh")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -53,9 +53,9 @@ public class TokenController {
 
     @ApiOperation(value = "Validate a token", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The token is valid"),
-        @ApiResponse(code = 400, message = "Invalid token | The token has expired"),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+        @ApiResponse(code = 200, message = "The token is valid", response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = "Invalid token | The token has expired", response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/validate")
     public ResponseEntity<ServiceResponse> validate(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
@@ -85,9 +85,9 @@ public class TokenController {
 
     @ApiOperation(value = "Refresh token by generating new one", response = ServiceResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The token is valid"),
-        @ApiResponse(code = 400, message = "Invalid token | The token is unallocated"),
-        @ApiResponse(code = 422, message = "One or many parameters in the request's body are invalid"),
+        @ApiResponse(code = 200, message = "New access token generated successfully", response = AuthTokenResponse.class),
+        @ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/refresh")
     public ResponseEntity<ServiceResponse> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
@@ -109,7 +109,7 @@ public class TokenController {
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
 
         return ResponseEntity.ok(
-            new ServiceResponse(HttpStatus.OK.value(), new AuthToken(token, refreshToken.getValue(), expirationDate.getTime()))
+            new ServiceResponse(HttpStatus.OK.value(), new AuthTokenResponse(token, refreshToken.getValue(), expirationDate.getTime()))
         );
     }
 }

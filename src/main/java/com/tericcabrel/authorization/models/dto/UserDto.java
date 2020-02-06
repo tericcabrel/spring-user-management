@@ -1,22 +1,29 @@
-package com.tericcabrel.authorization.dtos;
+package com.tericcabrel.authorization.models.dto;
 
 import javax.validation.constraints.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import com.tericcabrel.authorization.constraints.IsUnique;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import com.tericcabrel.authorization.models.Coordinates;
-import com.tericcabrel.authorization.models.Role;
+import com.tericcabrel.authorization.models.mongo.Coordinates;
+import com.tericcabrel.authorization.models.mongo.Role;
 import com.tericcabrel.authorization.constraints.FieldMatch;
 
 @ApiModel(value = "RegisterParam", description = "Parameters required to create or update user")
 @FieldMatch.List({
     @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
 })
+@IsUnique.List({
+    @IsUnique(property = "email", repository = "UserRepository", message = "This email already exists!")
+})
 public class UserDto {
+    @ApiModelProperty(hidden = true)
+    private String id;
+
     @ApiModelProperty(notes = "User first name", required = true)
     @NotBlank(message = "The first name is required")
     private String firstName;
@@ -56,11 +63,21 @@ public class UserDto {
     @ApiModelProperty(notes = "Geographic location of the user")
     private Coordinates coordinates;
 
+    @ApiModelProperty(hidden = true)
     private Set<Role> roles;
 
     public UserDto() {
         enabled = true;
         roles = new HashSet<>();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public UserDto setId(String id) {
+        this.id = id;
+        return this;
     }
 
     public String getFirstName() {

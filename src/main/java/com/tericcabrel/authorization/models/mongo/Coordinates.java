@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models;
+package com.tericcabrel.authorization.models.mongo;
 
 public class Coordinates {
     private float lat;

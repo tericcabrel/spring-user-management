@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import com.tericcabrel.authorization.models.BaseModel;
+import com.tericcabrel.authorization.models.mongo.BaseModel;
 
 @Component
 public class ModelUpdateListener extends AbstractMongoEventListener<BaseModel> {

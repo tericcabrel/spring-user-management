@@ -7,8 +7,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.stereotype.Component;
 
-import com.tericcabrel.authorization.models.Role;
-import com.tericcabrel.authorization.models.User;
+import com.tericcabrel.authorization.models.mongo.Role;
+import com.tericcabrel.authorization.models.mongo.User;
 
 @Component
 public class MongoEnsureIndexes implements ApplicationListener<ContextRefreshedEvent> {
