@@ -1,8 +1,8 @@
 package com.tericcabrel.authorization.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Helpers {
     /**
@@ -54,8 +54,8 @@ public class Helpers {
         return String.valueOf(chars);
     }
 
-    public static HashMap<String, List<String>> updateErrorHashMap(
-        HashMap<String, List<String>> errors, String field, String message
+    public static Map<String, List<String>> updateErrorHashMap(
+        Map<String, List<String>> errors, String field, String message
     ) {
         if (errors.containsKey(field)) {
             List<String> strings = errors.get(field);
