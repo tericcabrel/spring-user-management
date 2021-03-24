@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class, ThymeleafAutoConfiguration.class })
-public class IdentityAuthorizationApplication {
+public class AuthorizationApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(IdentityAuthorizationApplication.class, args);
+		SpringApplication.run(AuthorizationApplication.class, args);
 	}
 
 }

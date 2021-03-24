@@ -20,9 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.IOException;
-
-import org.hibernate.validator.constraints.Length;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
@@ -157,7 +156,7 @@ public class UserController {
         @RequestParam(name = "file", required = false) MultipartFile file,
         @RequestParam("action")
         @Pattern(regexp = "[ud]", message = "The valid value can be \"u\" or \"d\"")
-        @Length(max = 1, message = "This field length can\'t be greater than 1")
+        @Size(max = 1, message = "This field length can\'t be greater than 1")
         @NotBlank(message = "This field is required")
                     String action
     ) throws IOException {
