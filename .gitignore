@@ -32,6 +32,8 @@ build/
 uploads
 .DS_Store
 logs
-LOG_PATH_IS_UNDEFINED
 application.properties
+application-dev.properties
+application-test.properties
+application-prod.properties
 todo.txt
