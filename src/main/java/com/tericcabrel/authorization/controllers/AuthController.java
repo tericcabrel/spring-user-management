@@ -1,8 +1,8 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.models.response.GenericResponse;
 import io.swagger.annotations.*;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +19,6 @@ import com.tericcabrel.authorization.models.dto.LoginUserDto;
 import com.tericcabrel.authorization.models.dto.CreateUserDto;
 import com.tericcabrel.authorization.models.dto.ValidateTokenDto;
 import com.tericcabrel.authorization.models.response.*;
-import com.tericcabrel.authorization.models.mongo.Role;
 import com.tericcabrel.authorization.models.mongo.ConfirmAccount;
 import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.models.redis.RefreshToken;
@@ -70,35 +69,35 @@ public class AuthController {
         this.confirmAccountService = confirmAccountService;
     }
 
-    @ApiOperation(value = "Register a new user in the system", response = ServiceResponse.class)
+    @ApiOperation(value = "Register a new user in the system", response = GenericResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Registered successfully!", response = UserResponse.class),
-        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Registered successfully!", response = UserResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/register")
-    public ResponseEntity<ServiceResponse> register(@Valid @RequestBody CreateUserDto createUserDto) {
-        Role role = roleService.findByName(ROLE_USER);
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-
-        createUserDto.setRoles(roles);
+    public ResponseEntity<User> register(@Valid @RequestBody CreateUserDto createUserDto) {
+        createUserDto.setRoles(
+            new HashSet<>(
+                Collections.singletonList(roleService.findByName(ROLE_USER))
+            )
+        );
 
         User user = userService.save(createUserDto);
 
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
 
-        return ResponseEntity.ok(new ServiceResponse(HttpStatus.OK.value(), user));
+        return ResponseEntity.ok(user);
     }
 
-    @ApiOperation(value = "Authenticate an user", response = ServiceResponse.class)
+    @ApiOperation(value = "Authenticate an user", response = GenericResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Authenticated successfully!", response = AuthTokenResponse.class),
-        @ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet", response = BadRequestResponse.class),
-        @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
-        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Authenticated successfully!", response = AuthTokenResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet", response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/login")
-    public ResponseEntity<ServiceResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginUserDto loginUserDto) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginUserDto.getEmail(),
@@ -110,15 +109,15 @@ public class AuthController {
         Map<String, String> result = new HashMap<>();
 
         if (!user.isEnabled()) {
-            result.put("data", "Your account has been deactivated!");
+            result.put(DATA_KEY, "Your account has been deactivated!");
 
-            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(result);
         }
 
         if (!user.isConfirmed()) {
-            result.put("data", "Your account isn't confirmed yet!");
+            result.put(DATA_KEY, "Your account isn't confirmed yet!");
 
-            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(result);
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -130,33 +129,31 @@ public class AuthController {
         RefreshToken refreshTokenObject = new RefreshToken(user.getId(), refreshToken);
         refreshTokenRepository.save(refreshTokenObject);
 
-        return ResponseEntity.ok(
-            new ServiceResponse(HttpStatus.OK.value(), new AuthTokenResponse(token, refreshToken, expirationDate.getTime()))
-        );
+        return ResponseEntity.ok(new AuthTokenResponse(token, refreshToken, expirationDate.getTime()));
     }
 
-    @ApiOperation(value = "Confirm the account of an user", response = ServiceResponse.class)
+    @ApiOperation(value = "Confirm the account of an user", response = GenericResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Account confirmed successfully!", response = SuccessResponse.class),
-        @ApiResponse(code = 400, message = "The token is invalid | The token has been expired", response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Account confirmed successfully!", response = SuccessResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 400, message = "The token is invalid | The token has been expired", response = BadRequestResponse.class),
     })
     @PostMapping(value = "/confirm-account")
-    public ResponseEntity<ServiceResponse> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
+    public ResponseEntity<Object> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
         ConfirmAccount confirmAccount = confirmAccountService.findByToken(validateTokenDto.getToken());
         Map<String, String> result = new HashMap<>();
 
         if (confirmAccount == null) {
-            result.put("message", "The token is invalid!");
+            result.put(MESSAGE_KEY, INVALID_TOKEN_MESSAGE);
 
-            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(result);
         }
 
         if (confirmAccount.getExpireAt() < new Date().getTime()) {
-            result.put("message", "You token has been expired!");
+            result.put(MESSAGE_KEY, TOKEN_EXPIRED_MESSAGE);
 
             confirmAccountService.delete(confirmAccount.getId());
 
-            return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
+            return ResponseEntity.badRequest().body(result);
         }
 
         User user = userService.findById(confirmAccount.getUser().getId());
@@ -164,8 +161,8 @@ public class AuthController {
         user.setConfirmed(true);
         userService.update(user);
 
-        result.put("message", "Your account confirmed successfully!");
+        result.put(MESSAGE_KEY, "Your account confirmed successfully!");
 
-        return ResponseEntity.badRequest().body(new ServiceResponse(HttpStatus.OK.value(), result));
+        return ResponseEntity.badRequest().body(result);
     }
 }

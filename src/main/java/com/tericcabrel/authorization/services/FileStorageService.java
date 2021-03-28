@@ -69,4 +69,10 @@ public class FileStorageService {
             throw new FileNotFoundException("File not found " + fileName, ex);
         }
     }
+
+    public boolean deleteFile(String filePath) throws IOException {
+        Resource resource = this.loadFileAsResource(filePath);
+
+        return Files.deleteIfExists(resource.getFile().toPath());
+    }
 }

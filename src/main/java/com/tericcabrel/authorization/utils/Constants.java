@@ -14,4 +14,10 @@ public class Constants {
     public static final String UNAUTHORIZED_MESSAGE = "You are not authorized to view the resource";
     public static final String FORBIDDEN_MESSAGE = "You don't have the right to access to this resource";
     public static final String INVALID_DATA_MESSAGE = "One or many parameters in the request's body are invalid";
+
+    public static final String MESSAGE_KEY = "message";
+    public static final String DATA_KEY = "message";
+    public static final String INVALID_TOKEN_MESSAGE = "The token is invalid!";
+    public static final String TOKEN_EXPIRED_MESSAGE = "You token has been expired!";
+
 }

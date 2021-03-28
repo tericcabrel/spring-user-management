@@ -2,11 +2,10 @@ package com.tericcabrel.authorization.controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,13 +35,13 @@ import com.tericcabrel.authorization.utils.JwtTokenUtil;
 @RequestMapping("/token")
 public class TokenController {
 
-  private Log logger = LogFactory.getLog(this.getClass());
+  private final Log logger = LogFactory.getLog(this.getClass());
 
-  private JwtTokenUtil jwtTokenUtil;
+  private final JwtTokenUtil jwtTokenUtil;
 
-  private RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenRepository refreshTokenRepository;
 
-  private IUserService userService;
+  private final IUserService userService;
 
   public TokenController(
       JwtTokenUtil jwtTokenUtil, RefreshTokenRepository refreshTokenRepository,
@@ -53,70 +52,63 @@ public class TokenController {
     this.userService = userService;
   }
 
-  @ApiOperation(value = "Validate a token", response = ServiceResponse.class)
+  @ApiOperation(value = "Validate a token", response = GenericResponse.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "The token is valid", response = SuccessResponse.class),
-      @ApiResponse(code = 400, message = "Invalid token | The token has expired", response = BadRequestResponse.class),
-      @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 200, message = "The token is valid", response = SuccessResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid token | The token has expired", response = BadRequestResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/validate")
-  public ResponseEntity<ServiceResponse> validate(
-      @Valid @RequestBody ValidateTokenDto validateTokenDto) {
+  public ResponseEntity<Map<String, String>> validate(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
     String username = null;
-    HashMap<String, String> result = new HashMap<>();
+    Map<String, String> result = new HashMap<>();
 
     try {
       username = jwtTokenUtil.getUsernameFromToken(validateTokenDto.getToken());
     } catch (IllegalArgumentException e) {
       logger.error(JWT_ILLEGAL_ARGUMENT_MESSAGE, e);
-      result.put("message", "JWT_ILLEGAL_ARGUMENT_MESSAGE");
+      result.put(MESSAGE_KEY, "JWT_ILLEGAL_ARGUMENT_MESSAGE");
     } catch (ExpiredJwtException e) {
       logger.warn(JWT_EXPIRED_MESSAGE, e);
-      result.put("message", "JWT_EXPIRED_MESSAGE");
+      result.put(MESSAGE_KEY, "JWT_EXPIRED_MESSAGE");
     } catch (SignatureException e) {
       logger.error(JWT_SIGNATURE_MESSAGE);
-      result.put("message", "JWT_SIGNATURE_MESSAGE");
+      result.put(MESSAGE_KEY, "JWT_SIGNATURE_MESSAGE");
     }
 
     if (username != null) {
-      result.put("message", "success");
-      return ResponseEntity.ok(new ServiceResponse(200, result));
+      result.put(MESSAGE_KEY, "success");
+      return ResponseEntity.ok(result);
     }
 
-    return ResponseEntity.badRequest().body(new ServiceResponse(400, result));
+    return ResponseEntity.badRequest().body(result);
   }
 
-  @ApiOperation(value = "Refresh token by generating new one", response = ServiceResponse.class)
+  @ApiOperation(value = "Refresh token by generating new one", response = GenericResponse.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "New access token generated successfully", response = AuthTokenResponse.class),
-      @ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = BadRequestResponse.class),
-      @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 200, message = "New access token generated successfully", response = AuthTokenResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = BadRequestResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/refresh")
-  public ResponseEntity<ServiceResponse> refresh(
-      @Valid @RequestBody RefreshTokenDto refreshTokenDto) {
+  public ResponseEntity<Object> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
     RefreshToken refreshToken = refreshTokenRepository.findByValue(refreshTokenDto.getToken());
-    HashMap<String, String> result = new HashMap<>();
+    Map<String, String> result = new HashMap<>();
 
     if (refreshToken == null) {
-      result.put("message", "The token is Invalid!");
-      return ResponseEntity.badRequest()
-          .body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
+      result.put(MESSAGE_KEY, INVALID_TOKEN_MESSAGE);
+      return ResponseEntity.badRequest().body(result);
     }
 
     User user = userService.findById(refreshToken.getId());
     if (user == null) {
-      result.put("message", "The token is unallocated!");
-      return ResponseEntity.badRequest()
-          .body(new ServiceResponse(HttpStatus.BAD_REQUEST.value(), result));
+      result.put(MESSAGE_KEY, "The token is unallocated!");
+      return ResponseEntity.badRequest().body(result);
     }
 
     String token = jwtTokenUtil.createTokenFromUser(user);
     Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
 
-    return ResponseEntity.ok(
-        new ServiceResponse(HttpStatus.OK.value(),
-            new AuthTokenResponse(token, refreshToken.getValue(), expirationDate.getTime()))
-    );
+    return ResponseEntity.ok(new AuthTokenResponse(token, refreshToken.getValue(), expirationDate.getTime()));
   }
 }

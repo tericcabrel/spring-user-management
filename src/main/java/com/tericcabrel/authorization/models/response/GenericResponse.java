@@ -9,8 +9,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Setter
 @Getter
-public class ServiceResponse {
+public class GenericResponse<T> {
     private int status;
 
-    private Object data;
+    private T data;
 }
