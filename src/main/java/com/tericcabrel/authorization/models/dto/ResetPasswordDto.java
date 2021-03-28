@@ -6,11 +6,17 @@ import javax.validation.constraints.Size;
 import com.tericcabrel.authorization.constraints.FieldMatch;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @ApiModel(value = "ResetPasswordParam", description = "Parameters required to reset password")
 @FieldMatch.List({
     @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
 })
+@Accessors(chain = true)
+@Setter
+@Getter
 public class ResetPasswordDto {
     @ApiModelProperty(notes = "The token included in the reset link", required = true)
     @NotBlank(message = "The token is required")
@@ -24,31 +30,4 @@ public class ResetPasswordDto {
     @ApiModelProperty(notes = "Confirmation of the new value of the password", required = true)
     @NotBlank(message = "This field is required")
     private String confirmPassword;
-
-    public String getToken() {
-        return token;
-    }
-
-    public ResetPasswordDto setToken(String token) {
-        this.token = token;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public ResetPasswordDto setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public ResetPasswordDto setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-        return this;
-    }
 }

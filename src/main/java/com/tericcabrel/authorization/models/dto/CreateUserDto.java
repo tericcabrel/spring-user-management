@@ -12,6 +12,9 @@ import io.swagger.annotations.ApiModelProperty;
 import com.tericcabrel.authorization.models.mongo.Coordinates;
 import com.tericcabrel.authorization.models.mongo.Role;
 import com.tericcabrel.authorization.constraints.FieldMatch;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @ApiModel(value = "RegisterParam", description = "Parameters required to create or update user")
 @FieldMatch.List({
@@ -20,7 +23,10 @@ import com.tericcabrel.authorization.constraints.FieldMatch;
 @IsUnique.List({
     @IsUnique(property = "email", repository = "UserRepository", message = "This email already exists!")
 })
-public class UserDto {
+@Accessors(chain = true)
+@Setter
+@Getter
+public class CreateUserDto {
     @ApiModelProperty(hidden = true)
     private String id;
 
@@ -66,125 +72,8 @@ public class UserDto {
     @ApiModelProperty(hidden = true)
     private Set<Role> roles;
 
-    public UserDto() {
+    public CreateUserDto() {
         enabled = true;
         roles = new HashSet<>();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public UserDto setId(String id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public UserDto setFirstName(String firstName) {
-        this.firstName = firstName;
-        return this;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public UserDto setLastName(String lastName) {
-        this.lastName = lastName;
-        return this;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public UserDto setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public UserDto setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public UserDto setTimezone(String timezone) {
-        this.timezone = timezone;
-        return this;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public UserDto setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-        return this;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public UserDto setGender(String gender) {
-        this.gender = gender;
-        return this;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public UserDto setAvatar(String avatar) {
-        this.avatar = avatar;
-        return this;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public UserDto setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        return this;
-    }
-
-    public boolean isConfirmed() {
-        return confirmed;
-    }
-
-    public UserDto setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
-        return this;
-    }
-
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
-
-    public UserDto setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
-        return this;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public UserDto setRoles(Set<Role> roles) {
-        this.roles = roles;
-        return this;
     }
 }

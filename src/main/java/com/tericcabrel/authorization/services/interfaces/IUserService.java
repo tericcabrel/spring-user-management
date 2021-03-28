@@ -4,12 +4,12 @@ import java.util.List;
 
 import com.tericcabrel.authorization.models.dto.UpdatePasswordDto;
 import com.tericcabrel.authorization.models.dto.UpdateUserDto;
-import com.tericcabrel.authorization.models.dto.UserDto;
+import com.tericcabrel.authorization.models.dto.CreateUserDto;
 import com.tericcabrel.authorization.models.mongo.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface IUserService extends UserDetailsService {
-    User save(UserDto userDto);
+    User save(CreateUserDto createUserDto);
 
     List<User> findAll();
 

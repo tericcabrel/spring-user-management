@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.tericcabrel.authorization.models.dto.RoleDto;
+import com.tericcabrel.authorization.models.dto.CreateRoleDto;
 import com.tericcabrel.authorization.models.mongo.Role;
 import com.tericcabrel.authorization.repositories.mongo.RoleRepository;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
@@ -21,11 +21,11 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public Role save(RoleDto roleDto) {
+    public Role save(CreateRoleDto createRoleDto) {
         Role newRole = new Role();
 
-        newRole.setName(roleDto.getName())
-               .setDescription(roleDto.getDescription());
+        newRole.setName(createRoleDto.getName())
+               .setDescription(createRoleDto.getDescription());
 
         return roleRepository.save(newRole);
     }
@@ -56,12 +56,12 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public Role update(String id, RoleDto roleDto) {
+    public Role update(String id, CreateRoleDto createRoleDto) {
         Role role = findById(id);
 
         if(role != null) {
-            role.setName(roleDto.getName());
-            role.setDescription(roleDto.getDescription());
+            role.setName(createRoleDto.getName());
+            role.setDescription(createRoleDto.getDescription());
 
             roleRepository.save(role);
 

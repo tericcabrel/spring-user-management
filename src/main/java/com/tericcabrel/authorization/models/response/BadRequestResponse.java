@@ -1,30 +1,17 @@
 package com.tericcabrel.authorization.models.response;
 
-import java.util.HashMap;
+import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
+@Accessors(chain = true)
+@AllArgsConstructor
+@Setter
+@Getter
 public class BadRequestResponse {
     private int status;
 
-    private HashMap<String, String> data;
-
-    public BadRequestResponse(int status, HashMap<String, String> data) {
-        this.status = status;
-        this.data = data;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public HashMap<String, String> getData() {
-        return data;
-    }
-
-    public void setData(HashMap<String, String> result) {
-        this.data = result;
-    }
+    private Map<String, String> data;
 }

@@ -10,14 +10,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
 import java.util.*;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
 import com.tericcabrel.authorization.models.dto.LoginUserDto;
-import com.tericcabrel.authorization.models.dto.UserDto;
+import com.tericcabrel.authorization.models.dto.CreateUserDto;
 import com.tericcabrel.authorization.models.dto.ValidateTokenDto;
 import com.tericcabrel.authorization.models.response.*;
 import com.tericcabrel.authorization.models.mongo.Role;
@@ -39,19 +38,19 @@ import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private IUserService userService;
+    private final IUserService userService;
 
-    private IRoleService roleService;
+    private final IRoleService roleService;
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    private RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
-    private IConfirmAccountService confirmAccountService;
+    private final IConfirmAccountService confirmAccountService;
 
     public AuthController(
         AuthenticationManager authenticationManager,
@@ -77,14 +76,14 @@ public class AuthController {
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/register")
-    public ResponseEntity<ServiceResponse> register(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<ServiceResponse> register(@Valid @RequestBody CreateUserDto createUserDto) {
         Role role = roleService.findByName(ROLE_USER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
 
-        userDto.setRoles(roles);
+        createUserDto.setRoles(roles);
 
-        User user = userService.save(userDto);
+        User user = userService.save(createUserDto);
 
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
 
@@ -99,7 +98,7 @@ public class AuthController {
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/login")
-    public ResponseEntity<ServiceResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) throws AuthenticationException {
+    public ResponseEntity<ServiceResponse> login(@Valid @RequestBody LoginUserDto loginUserDto) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginUserDto.getEmail(),
@@ -108,7 +107,7 @@ public class AuthController {
         );
 
         User user = userService.findByEmail(loginUserDto.getEmail());
-        HashMap<String, String> result = new HashMap<>();
+        Map<String, String> result = new HashMap<>();
 
         if (!user.isEnabled()) {
             result.put("data", "Your account has been deactivated!");
@@ -144,7 +143,7 @@ public class AuthController {
     @PostMapping(value = "/confirm-account")
     public ResponseEntity<ServiceResponse> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
         ConfirmAccount confirmAccount = confirmAccountService.findByToken(validateTokenDto.getToken());
-        HashMap<String, String> result = new HashMap<>();
+        Map<String, String> result = new HashMap<>();
 
         if (confirmAccount == null) {
             result.put("message", "The token is invalid!");

@@ -15,8 +15,8 @@ import java.util.Arrays;
 import static com.tericcabrel.authorization.utils.Constants.*;
 
 import com.tericcabrel.authorization.models.response.*;
-import com.tericcabrel.authorization.models.dto.RoleDto;
-import com.tericcabrel.authorization.models.dto.RoleUpdateDto;
+import com.tericcabrel.authorization.models.dto.CreateRoleDto;
+import com.tericcabrel.authorization.models.dto.UpdateRoleDto;
 import com.tericcabrel.authorization.models.mongo.Role;
 import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
@@ -45,8 +45,8 @@ public class RoleController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<ServiceResponse> create(@Valid @RequestBody RoleDto roleDto){
-        Role role = roleService.save(roleDto);
+    public ResponseEntity<ServiceResponse> create(@Valid @RequestBody CreateRoleDto createRoleDto){
+        Role role = roleService.save(createRoleDto);
 
         return ResponseEntity.ok(new ServiceResponse(HttpStatus.OK.value(), role));
     }
@@ -84,8 +84,9 @@ public class RoleController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ServiceResponse> update(@PathVariable String id, @Valid @RequestBody RoleDto roleDto) {
-        return ResponseEntity.ok(new ServiceResponse(HttpStatus.OK.value(), roleService.update(id, roleDto)));
+    public ResponseEntity<ServiceResponse> update(@PathVariable String id, @Valid @RequestBody CreateRoleDto createRoleDto) {
+        return ResponseEntity.ok(new ServiceResponse(HttpStatus.OK.value(), roleService.update(id,
+            createRoleDto)));
     }
 
     @ApiOperation(value = "Delete a role", response = ServiceResponse.class)
@@ -111,10 +112,10 @@ public class RoleController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/assign")
-    public ResponseEntity assignRoles(@Valid @RequestBody RoleUpdateDto roleUpdateDto) {
-        User user = userService.findById(roleUpdateDto.getUserId());
+    public ResponseEntity assignRoles(@Valid @RequestBody UpdateRoleDto updateRoleDto) {
+        User user = userService.findById(updateRoleDto.getUserId());
 
-        Arrays.stream(roleUpdateDto.getRoles()).forEach(role -> {
+        Arrays.stream(updateRoleDto.getRoles()).forEach(role -> {
             Role roleObject = roleService.findByName(role);
 
             if (roleObject != null && !user.hasRole(role)) {
@@ -136,10 +137,10 @@ public class RoleController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/revoke")
-    public ResponseEntity revokeRoles(@Valid @RequestBody RoleUpdateDto roleUpdateDto) {
-        User user = userService.findById(roleUpdateDto.getUserId());
+    public ResponseEntity revokeRoles(@Valid @RequestBody UpdateRoleDto updateRoleDto) {
+        User user = userService.findById(updateRoleDto.getUserId());
 
-        Arrays.stream(roleUpdateDto.getRoles()).forEach(role -> {
+        Arrays.stream(updateRoleDto.getRoles()).forEach(role -> {
             Role roleObject = roleService.findByName(role);
 
             if (roleObject != null && user.hasRole(role)) {

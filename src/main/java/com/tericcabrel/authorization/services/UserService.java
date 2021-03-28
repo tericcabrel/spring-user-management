@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import com.tericcabrel.authorization.models.dto.UserDto;
+import com.tericcabrel.authorization.models.dto.CreateUserDto;
 import com.tericcabrel.authorization.models.dto.UpdatePasswordDto;
 import com.tericcabrel.authorization.models.dto.UpdateUserDto;
 import com.tericcabrel.authorization.models.mongo.User;
@@ -30,20 +30,20 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User save(UserDto userDto) {
+    public User save(CreateUserDto createUserDto) {
         User newUser = new User();
 
-        newUser.setEmail(userDto.getEmail())
-                .setFirstName(userDto.getFirstName())
-                .setLastName(userDto.getLastName())
-                .setPassword(bCryptEncoder.encode(userDto.getPassword()))
-                .setGender(userDto.getGender())
-                .setConfirmed(userDto.isConfirmed())
-                .setEnabled(userDto.isEnabled())
+        newUser.setEmail(createUserDto.getEmail())
+                .setFirstName(createUserDto.getFirstName())
+                .setLastName(createUserDto.getLastName())
+                .setPassword(bCryptEncoder.encode(createUserDto.getPassword()))
+                .setGender(createUserDto.getGender())
+                .setConfirmed(createUserDto.isConfirmed())
+                .setEnabled(createUserDto.isEnabled())
                 .setAvatar(null)
-                .setTimezone(userDto.getTimezone())
-                .setCoordinates(userDto.getCoordinates())
-                .setRoles(userDto.getRoles());
+                .setTimezone(createUserDto.getTimezone())
+                .setCoordinates(createUserDto.getCoordinates())
+                .setRoles(createUserDto.getRoles());
 
         return userRepository.save(newUser);
     }

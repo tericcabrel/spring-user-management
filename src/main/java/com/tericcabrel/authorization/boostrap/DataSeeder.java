@@ -11,8 +11,8 @@ import java.util.Set;
 import static com.tericcabrel.authorization.utils.Constants.ROLE_ADMIN;
 import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
 
-import com.tericcabrel.authorization.models.dto.RoleDto;
-import com.tericcabrel.authorization.models.dto.UserDto;
+import com.tericcabrel.authorization.models.dto.CreateRoleDto;
+import com.tericcabrel.authorization.models.dto.CreateUserDto;
 import com.tericcabrel.authorization.models.mongo.Role;
 import com.tericcabrel.authorization.models.mongo.User;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
@@ -45,20 +45,20 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
             Role role = roleService.findByName(key);
 
             if (role == null) {
-                RoleDto roleDto = new RoleDto();
+                CreateRoleDto createRoleDto = new CreateRoleDto();
 
-                roleDto.setName(key)
+                createRoleDto.setName(key)
                     .setDescription(value);
 
-                roleService.save(roleDto);
+                roleService.save(createRoleDto);
             }
         });
     }
 
     private void loadUsers() {
-        Set<UserDto> users = new HashSet<UserDto>() {};
+        Set<CreateUserDto> users = new HashSet<CreateUserDto>() {};
 
-        UserDto admin = new UserDto()
+        CreateUserDto admin = new CreateUserDto()
                 .setEmail("admin@admin.com")
                 .setFirstName("Admin")
                 .setLastName("User")
@@ -72,8 +72,8 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
         users.add(admin);
 
-        users.forEach((userDto) -> {
-            User obj = userService.findByEmail(userDto.getEmail());
+        users.forEach(createUserDto -> {
+            User obj = userService.findByEmail(createUserDto.getEmail());
             Role role;
 
             if (obj == null ){
@@ -82,9 +82,9 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
                 Set<Role> userRoles = new HashSet<>();
                 userRoles.add(role);
 
-                userDto.setRoles(userRoles);
+                createUserDto.setRoles(userRoles);
 
-                userService.save(userDto);
+                userService.save(createUserDto);
             }
         });
     }

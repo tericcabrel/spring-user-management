@@ -4,31 +4,19 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @ApiModel(value = "CreateRoleParam", description = "Parameters required to create role")
-public class RoleDto {
+@Accessors(chain = true)
+@Setter
+@Getter
+public class CreateRoleDto {
     @ApiModelProperty(notes = "Name of the role", required = true)
     @NotBlank(message = "The name is required")
     private String name;
 
     @ApiModelProperty(notes = "Description of the role")
     private String description;
-
-    public String getName() {
-        return name;
-    }
-
-    public RoleDto setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public RoleDto setDescription(String description) {
-        this.description = description;
-        return this;
-    }
 }

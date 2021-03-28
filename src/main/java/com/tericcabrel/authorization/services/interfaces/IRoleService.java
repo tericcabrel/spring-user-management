@@ -1,12 +1,12 @@
 package com.tericcabrel.authorization.services.interfaces;
 
-import com.tericcabrel.authorization.models.dto.RoleDto;
+import com.tericcabrel.authorization.models.dto.CreateRoleDto;
 import com.tericcabrel.authorization.models.mongo.Role;
 
 import java.util.List;
 
 public interface IRoleService {
-    Role save(RoleDto role);
+    Role save(CreateRoleDto role);
 
     List<Role> findAll();
 
@@ -16,5 +16,5 @@ public interface IRoleService {
 
     Role findById(String id);
 
-    Role update(String id, RoleDto roleDto);
+    Role update(String id, CreateRoleDto createRoleDto);
 }
