@@ -30,7 +30,7 @@ import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 
 
-@Api(tags = "Token management", description = "Operations pertaining to token validation or refresh")
+@Api(tags = SWG_TOKEN_TAG_NAME, description = SWG_TOKEN_TAG_DESCRIPTION)
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/token")
@@ -45,7 +45,8 @@ public class TokenController {
   private final IUserService userService;
 
   public TokenController(
-      JwtTokenUtil jwtTokenUtil, RefreshTokenRepository refreshTokenRepository,
+      JwtTokenUtil jwtTokenUtil,
+      RefreshTokenRepository refreshTokenRepository,
       IUserService userService
   ) {
     this.jwtTokenUtil = jwtTokenUtil;
@@ -53,10 +54,10 @@ public class TokenController {
     this.userService = userService;
   }
 
-  @ApiOperation(value = "Validate a token", response = SuccessResponse.class)
+  @ApiOperation(value = SWG_TOKEN_VALIDATE_OPERATION, response = SuccessResponse.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "The token is valid", response = SuccessResponse.class),
-      @ApiResponse(code = 400, message = "Invalid token | The token has expired", response = BadRequestResponse.class),
+      @ApiResponse(code = 200, message = SWG_TOKEN_VALIDATE_MESSAGE, response = SuccessResponse.class),
+      @ApiResponse(code = 400, message = SWG_TOKEN_VALIDATE_ERROR, response = BadRequestResponse.class),
       @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/validate")
@@ -68,27 +69,27 @@ public class TokenController {
       username = jwtTokenUtil.getUsernameFromToken(validateTokenDto.getToken());
     } catch (IllegalArgumentException e) {
       logger.error(JWT_ILLEGAL_ARGUMENT_MESSAGE, e);
-      result.put(MESSAGE_KEY, "JWT_ILLEGAL_ARGUMENT_MESSAGE");
+      result.put(MESSAGE_KEY, JWT_ILLEGAL_ARGUMENT_MESSAGE);
     } catch (ExpiredJwtException e) {
       logger.warn(JWT_EXPIRED_MESSAGE, e);
-      result.put(MESSAGE_KEY, "JWT_EXPIRED_MESSAGE");
+      result.put(MESSAGE_KEY, JWT_EXPIRED_MESSAGE);
     } catch (SignatureException e) {
       logger.error(JWT_SIGNATURE_MESSAGE);
-      result.put(MESSAGE_KEY, "JWT_SIGNATURE_MESSAGE");
+      result.put(MESSAGE_KEY, JWT_SIGNATURE_MESSAGE);
     }
 
     if (username != null) {
-      result.put(MESSAGE_KEY, "success");
+      result.put(MESSAGE_KEY, VALIDATE_TOKEN_SUCCESS_MESSAGE);
       return ResponseEntity.ok(result);
     }
 
     return ResponseEntity.badRequest().body(result);
   }
 
-  @ApiOperation(value = "Refresh token by generating new one", response = SuccessResponse.class)
+  @ApiOperation(value = SWG_TOKEN_REFRESH_OPERATION, response = SuccessResponse.class)
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "New access token generated successfully", response = AuthTokenResponse.class),
-      @ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = SuccessResponse.class),
+      @ApiResponse(code = 200, message = SWG_TOKEN_REFRESH_MESSAGE, response = AuthTokenResponse.class),
+      @ApiResponse(code = 400, message = SWG_TOKEN_REFRESH_ERROR, response = SuccessResponse.class),
       @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/refresh")
@@ -103,7 +104,7 @@ public class TokenController {
 
     User user = userService.findById(refreshToken.getId());
     if (user == null) {
-      result.put(MESSAGE_KEY, "The token is unallocated!");
+      result.put(MESSAGE_KEY, TOKEN_NOT_FOUND_MESSAGE);
       return ResponseEntity.badRequest().body(result);
     }
 

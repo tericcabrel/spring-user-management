@@ -15,10 +15,7 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
 
-import static com.tericcabrel.authorization.utils.Constants.INVALID_DATA_MESSAGE;
-import static com.tericcabrel.authorization.utils.Constants.INVALID_TOKEN_MESSAGE;
-import static com.tericcabrel.authorization.utils.Constants.MESSAGE_KEY;
-import static com.tericcabrel.authorization.utils.Constants.TOKEN_EXPIRED_MESSAGE;
+import static com.tericcabrel.authorization.utils.Constants.*;
 
 import com.tericcabrel.authorization.models.dto.ForgotPasswordDto;
 import com.tericcabrel.authorization.models.dto.ResetPasswordDto;
@@ -30,7 +27,7 @@ import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
 
 
-@Api(tags = "Password reset management", description = "Operations pertaining to user's reset password process")
+@Api(tags = SWG_RESPWD_TAG_NAME, description = SWG_RESPWD_TAG_DESCRIPTION)
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
@@ -52,10 +49,10 @@ public class ResetPasswordController {
         this.resetPasswordService = resetPasswordService;
     }
 
-    @ApiOperation(value = "Request a link to reset the password", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_RESPWD_FORGOT_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Reset link sent to the mail box successfully!", response = SuccessResponse.class),
-        @ApiResponse(code = 400, message = "No user found with the email provided", response = BadRequestResponse.class),
+        @ApiResponse(code = 200, message = SWG_RESPWD_FORGOT_MESSAGE, response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = SWG_RESPWD_FORGOT_ERROR, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/forgot-password")
@@ -64,22 +61,22 @@ public class ResetPasswordController {
         Map<String, String> result = new HashMap<>();
 
         if (user == null) {
-            result.put(MESSAGE_KEY, "No user found with this email!");
+            result.put(MESSAGE_KEY, NO_USER_FOUND_WITH_EMAIL_MESSAGE);
 
             return ResponseEntity.badRequest().body(result);
         }
 
         eventPublisher.publishEvent(new OnResetPasswordEvent(user));
 
-        result.put(MESSAGE_KEY, "A password reset link has been sent to your email box!");
+        result.put(MESSAGE_KEY, PASSWORD_LINK_SENT_MESSAGE);
 
         return ResponseEntity.ok(result);
     }
 
-    @ApiOperation(value = "Change the user password through a reset token", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_RESPWD_RESET_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The action completed successfully!", response = SuccessResponse.class),
-        @ApiResponse(code = 400, message = "The token is invalid or has expired", response = BadRequestResponse.class),
+        @ApiResponse(code = 200, message = SWG_RESPWD_RESET_MESSAGE, response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = SWG_RESPWD_RESET_ERROR, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/reset-password")
@@ -103,9 +100,8 @@ public class ResetPasswordController {
 
         userService.updatePassword(resetPassword.getUser().getId(), passwordResetDto.getPassword());
 
-        result.put(MESSAGE_KEY, "Your password has been resetted successfully!");
+        result.put(MESSAGE_KEY, RESET_PASSWORD_SUCCESS_MESSAGE);
 
-        // Avoid the user or malicious person to reuse the link to change the password
         resetPasswordService.delete(resetPassword.getId());
 
         return ResponseEntity.badRequest().body(result);

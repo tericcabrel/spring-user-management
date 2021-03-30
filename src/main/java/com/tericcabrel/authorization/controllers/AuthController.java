@@ -30,7 +30,7 @@ import com.tericcabrel.authorization.utils.Helpers;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 
 
-@Api(tags = "Authorization management", description = "Operations pertaining to registration, authentication and account confirmation")
+@Api(tags = SWG_AUTH_TAG_NAME, description = SWG_AUTH_TAG_DESCRIPTION)
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
@@ -68,9 +68,9 @@ public class AuthController {
         this.confirmAccountService = confirmAccountService;
     }
 
-    @ApiOperation(value = "Register a new user in the system", response = BadRequestResponse.class)
+    @ApiOperation(value = SWG_AUTH_REGISTER_OPERATION, response = BadRequestResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Registered successfully!", response = UserResponse.class),
+        @ApiResponse(code = 200, message = SWG_AUTH_REGISTER_MESSAGE, response = UserResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/register")
@@ -88,10 +88,10 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
-    @ApiOperation(value = "Authenticate an user", response = BadRequestResponse.class)
+    @ApiOperation(value = SWG_AUTH_LOGIN_OPERATION, response = BadRequestResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Authenticated successfully!", response = AuthTokenResponse.class),
-        @ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet", response = BadRequestResponse.class),
+        @ApiResponse(code = 200, message = SWG_AUTH_LOGIN_MESSAGE, response = AuthTokenResponse.class),
+        @ApiResponse(code = 400, message = SWG_AUTH_LOGIN_ERROR, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/login")
@@ -107,13 +107,13 @@ public class AuthController {
         Map<String, String> result = new HashMap<>();
 
         if (!user.isEnabled()) {
-            result.put(DATA_KEY, "Your account has been deactivated!");
+            result.put(DATA_KEY, ACCOUNT_DEACTIVATED_MESSAGE);
 
             return ResponseEntity.badRequest().body(result);
         }
 
         if (!user.isConfirmed()) {
-            result.put(DATA_KEY, "Your account isn't confirmed yet!");
+            result.put(DATA_KEY, ACCOUNT_NOT_CONFIRMED_MESSAGE);
 
             return ResponseEntity.badRequest().body(result);
         }
@@ -130,10 +130,10 @@ public class AuthController {
         return ResponseEntity.ok(new AuthTokenResponse(token, refreshToken, expirationDate.getTime()));
     }
 
-    @ApiOperation(value = "Confirm the account of an user", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_AUTH_CONFIRM_ACCOUNT_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Account confirmed successfully!", response = SuccessResponse.class),
-        @ApiResponse(code = 400, message = "The token is invalid | The token has been expired", response = BadRequestResponse.class),
+        @ApiResponse(code = 200, message = SWG_AUTH_CONFIRM_ACCOUNT_MESSAGE, response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = SWG_AUTH_CONFIRM_ACCOUNT_ERROR, response = BadRequestResponse.class),
     })
     @PostMapping(value = "/confirm-account")
     public ResponseEntity<Object> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
@@ -159,7 +159,7 @@ public class AuthController {
         user.setConfirmed(true);
         userService.update(user);
 
-        result.put(MESSAGE_KEY, "Your account confirmed successfully!");
+        result.put(MESSAGE_KEY, ACCOUNT_CONFIRMED_MESSAGE);
 
         return ResponseEntity.badRequest().body(result);
     }
