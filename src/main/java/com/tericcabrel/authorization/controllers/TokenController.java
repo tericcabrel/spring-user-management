@@ -2,6 +2,7 @@ package com.tericcabrel.authorization.controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -54,9 +55,9 @@ public class TokenController {
 
   @ApiOperation(value = "Validate a token", response = SuccessResponse.class)
   @ApiResponses(value = {
-      @io.swagger.annotations.ApiResponse(code = 200, message = "The token is valid", response = SuccessResponse.class),
-      @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid token | The token has expired", response = BadRequestResponse.class),
-      @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+      @ApiResponse(code = 200, message = "The token is valid", response = SuccessResponse.class),
+      @ApiResponse(code = 400, message = "Invalid token | The token has expired", response = BadRequestResponse.class),
+      @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/validate")
   public ResponseEntity<Map<String, String>> validate(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
@@ -86,9 +87,9 @@ public class TokenController {
 
   @ApiOperation(value = "Refresh token by generating new one", response = SuccessResponse.class)
   @ApiResponses(value = {
-      @io.swagger.annotations.ApiResponse(code = 200, message = "New access token generated successfully", response = AuthTokenResponse.class),
-      @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = SuccessResponse.class),
-      @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+      @ApiResponse(code = 200, message = "New access token generated successfully", response = AuthTokenResponse.class),
+      @ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = SuccessResponse.class),
+      @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/refresh")
   public ResponseEntity<Object> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {

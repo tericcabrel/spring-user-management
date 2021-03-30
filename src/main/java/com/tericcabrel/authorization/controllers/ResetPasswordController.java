@@ -4,6 +4,7 @@ import com.tericcabrel.authorization.models.response.BadRequestResponse;
 import com.tericcabrel.authorization.models.response.SuccessResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.Map;
 import org.springframework.context.ApplicationEventPublisher;
@@ -53,9 +54,9 @@ public class ResetPasswordController {
 
     @ApiOperation(value = "Request a link to reset the password", response = SuccessResponse.class)
     @ApiResponses(value = {
-            @io.swagger.annotations.ApiResponse(code = 200, message = "Reset link sent to the mail box successfully!", response = SuccessResponse.class),
-            @io.swagger.annotations.ApiResponse(code = 400, message = "No user found with the email provided", response = BadRequestResponse.class),
-            @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+        @ApiResponse(code = 200, message = "Reset link sent to the mail box successfully!", response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = "No user found with the email provided", response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) {
@@ -77,9 +78,9 @@ public class ResetPasswordController {
 
     @ApiOperation(value = "Change the user password through a reset token", response = SuccessResponse.class)
     @ApiResponses(value = {
-            @io.swagger.annotations.ApiResponse(code = 200, message = "The action completed successfully!", response = SuccessResponse.class),
-            @io.swagger.annotations.ApiResponse(code = 400, message = "The token is invalid or has expired", response = BadRequestResponse.class),
-            @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+        @ApiResponse(code = 200, message = "The action completed successfully!", response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = "The token is invalid or has expired", response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordDto passwordResetDto) {
