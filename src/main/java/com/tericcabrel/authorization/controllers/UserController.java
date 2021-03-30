@@ -3,8 +3,6 @@ package com.tericcabrel.authorization.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
-import java.nio.file.Files;
-import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
@@ -51,67 +49,67 @@ public class UserController {
         this.fileStorageService = fileStorageService;
     }
 
-    @ApiOperation(value = "Get all users", response = GenericResponse.class)
+    @ApiOperation(value = "Get all users", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "List retrieved successfully!", response = UserListResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = INVALID_DATA_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = INVALID_DATA_MESSAGE, response = BadRequestResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<List<User>> all(){
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<UserListResponse> all(){
+        return ResponseEntity.ok(new UserListResponse(userService.findAll()));
     }
 
-    @ApiOperation(value = "Get the authenticated user", response = GenericResponse.class)
+    @ApiOperation(value = "Get the authenticated user", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "User retrieved successfully!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
     })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
-    public ResponseEntity<User> currentUser(){
+    public ResponseEntity<UserResponse> currentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return ResponseEntity.ok(userService.findByEmail(authentication.getName()));
+        return ResponseEntity.ok(new UserResponse(userService.findByEmail(authentication.getName())));
     }
 
-    @ApiOperation(value = "Get one user", response = GenericResponse.class)
+    @ApiOperation(value = "Get one user", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Item retrieved successfully!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
-    public ResponseEntity<User> one(@PathVariable String id){
-        return ResponseEntity.ok(userService.findById(id));
+    public ResponseEntity<UserResponse> one(@PathVariable String id){
+        return ResponseEntity.ok(new UserResponse(userService.findById(id)));
     }
 
-    @ApiOperation(value = "Update an user", response = GenericResponse.class)
+    @ApiOperation(value = "Update an user", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "User updated successfully!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable String id, @RequestBody UpdateUserDto updateUserDto) {
-        return ResponseEntity.ok(userService.update(id, updateUserDto));
+    public ResponseEntity<UserResponse> update(@PathVariable String id, @RequestBody UpdateUserDto updateUserDto) {
+        return ResponseEntity.ok(new UserResponse(userService.update(id, updateUserDto)));
     }
 
-    @ApiOperation(value = "Update user password", response = GenericResponse.class)
+    @ApiOperation(value = "Update user password", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "The password updated successfully!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 400, message = "The current password is invalid", response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 400, message = "The current password is invalid", response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping("/{id}/password")
-    public ResponseEntity<User> updatePassword(
+    public ResponseEntity<UserResponse> updatePassword(
             @PathVariable String id, @Valid @RequestBody UpdatePasswordDto updatePasswordDto
     ) throws PasswordNotMatchException {
         User user = userService.updatePassword(id, updatePasswordDto);
@@ -120,14 +118,14 @@ public class UserController {
             throw new PasswordNotMatchException("The current password don't match!");
         }
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(new UserResponse(user));
     }
 
-    @ApiOperation(value = "Delete a user", response = GenericResponse.class)
+    @ApiOperation(value = "Delete a user", response = SuccessResponse.class)
     @ApiResponses(value = {
-        @io.swagger.annotations.ApiResponse(code = 204, message = "User deleted successfully!", response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "User deleted successfully!", response = SuccessResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = SuccessResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
@@ -137,16 +135,16 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @ApiOperation(value = "Change or delete user picture", response = GenericResponse.class)
+    @ApiOperation(value = "Change or delete user picture", response = SuccessResponse.class)
     @ApiResponses(value = {
-        @io.swagger.annotations.ApiResponse(code = 200, message = "The picture updated/deleted successfully!", response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 400, message = "An IOException occurred!", response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "The picture updated/deleted successfully!", response = SuccessResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 400, message = "An IOException occurred!", response = SuccessResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = SuccessResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = SuccessResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping("/{id}/picture")
-    public ResponseEntity<User> uploadPicture(
+    public ResponseEntity<UserResponse> uploadPicture(
         @PathVariable String id,
         @RequestParam(name = "file", required = false) MultipartFile file,
         @RequestParam("action")
@@ -179,6 +177,6 @@ public class UserController {
             logger.info("Unknown action!");
         }
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(new UserResponse(user));
     }
 }

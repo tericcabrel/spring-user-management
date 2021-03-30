@@ -36,11 +36,11 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @ApiOperation(value = "Create a role", response = GenericResponse.class)
+    @ApiOperation(value = "Create a role", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Role created successfully!", response = Role.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = Map.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = Map.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -51,49 +51,48 @@ public class RoleController {
         return ResponseEntity.ok(role);
     }
 
-    @ApiOperation(value = "Get all roles", response = GenericResponse.class)
+    @ApiOperation(value = "Get all roles", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "List retrieved successfully!", response = RoleListResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<GenericResponse<Object>> all(){
-        return ResponseEntity.ok(new GenericResponse<>(HttpStatus.OK.value(), roleService.findAll()));
+    public ResponseEntity<RoleListResponse> all(){
+        return ResponseEntity.ok(new RoleListResponse(roleService.findAll()));
     }
 
-    @ApiOperation(value = "Get one role", response = GenericResponse.class)
+    @ApiOperation(value = "Get one role", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Item retrieved successfully!", response = RoleResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<GenericResponse<Object>> one(@PathVariable String id){
-        return ResponseEntity.ok(new GenericResponse<>(HttpStatus.OK.value(), roleService.findById(id)));
+    public ResponseEntity<RoleResponse> one(@PathVariable String id){
+        return ResponseEntity.ok(new RoleResponse(roleService.findById(id)));
     }
 
-    @ApiOperation(value = "Update a role", response = GenericResponse.class)
+    @ApiOperation(value = "Update a role", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Role updated successfully!", response = RoleResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<GenericResponse<Object>> update(@PathVariable String id, @Valid @RequestBody CreateRoleDto createRoleDto) {
-        return ResponseEntity.ok(new GenericResponse<>(HttpStatus.OK.value(), roleService.update(id,
-            createRoleDto)));
+    public ResponseEntity<RoleResponse> update(@PathVariable String id, @Valid @RequestBody CreateRoleDto createRoleDto) {
+        return ResponseEntity.ok(new RoleResponse(roleService.update(id, createRoleDto)));
     }
 
-    @ApiOperation(value = "Delete a role", response = GenericResponse.class)
+    @ApiOperation(value = "Delete a role", response = SuccessResponse.class)
     @ApiResponses(value = {
-        @io.swagger.annotations.ApiResponse(code = 204, message = "Role deleted successfully!", response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "Role deleted successfully!", response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
@@ -103,16 +102,16 @@ public class RoleController {
         return ResponseEntity.noContent().build();
     }
 
-    @ApiOperation(value = "Assign roles to an user", response = GenericResponse.class)
+    @ApiOperation(value = "Assign roles to an user", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Roles successfully assigned to user!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/assign")
-    public ResponseEntity<User> assignRoles(@Valid @RequestBody UpdateRoleDto updateRoleDto) {
+    public ResponseEntity<UserResponse> assignRoles(@Valid @RequestBody UpdateRoleDto updateRoleDto) {
         User user = userService.findById(updateRoleDto.getUserId());
 
         Arrays.stream(updateRoleDto.getRoles()).forEach(role -> {
@@ -125,14 +124,14 @@ public class RoleController {
 
         userService.update(user);
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(new UserResponse(user));
     }
 
-    @ApiOperation(value = "Assign roles to an user", response = GenericResponse.class)
+    @ApiOperation(value = "Assign roles to an user", response = SuccessResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Roles successfully assigned to user!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")

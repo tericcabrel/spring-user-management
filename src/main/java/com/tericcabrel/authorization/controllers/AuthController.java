@@ -1,6 +1,5 @@
 package com.tericcabrel.authorization.controllers;
 
-import com.tericcabrel.authorization.models.response.GenericResponse;
 import io.swagger.annotations.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +68,7 @@ public class AuthController {
         this.confirmAccountService = confirmAccountService;
     }
 
-    @ApiOperation(value = "Register a new user in the system", response = GenericResponse.class)
+    @ApiOperation(value = "Register a new user in the system", response = BadRequestResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Registered successfully!", response = UserResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
@@ -89,11 +88,11 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
-    @ApiOperation(value = "Authenticate an user", response = GenericResponse.class)
+    @ApiOperation(value = "Authenticate an user", response = BadRequestResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Authenticated successfully!", response = AuthTokenResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet", response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 400, message = "Bad credentials | The account is deactivated | The account isn't confirmed yet", response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/login")
@@ -132,10 +131,10 @@ public class AuthController {
         return ResponseEntity.ok(new AuthTokenResponse(token, refreshToken, expirationDate.getTime()));
     }
 
-    @ApiOperation(value = "Confirm the account of an user", response = GenericResponse.class)
+    @ApiOperation(value = "Confirm the account of an user", response = SuccessResponse.class)
     @ApiResponses(value = {
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Account confirmed successfully!", response = GenericResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 400, message = "The token is invalid | The token has been expired", response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Account confirmed successfully!", response = SuccessResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 400, message = "The token is invalid | The token has been expired", response = BadRequestResponse.class),
     })
     @PostMapping(value = "/confirm-account")
     public ResponseEntity<Object> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
