@@ -54,8 +54,8 @@ public class UserController {
     @ApiOperation(value = "Get all users", response = GenericResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "List retrieved successfully!", response = UserListResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = INVALID_DATA_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = INVALID_DATA_MESSAGE, response = GenericResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
@@ -66,7 +66,7 @@ public class UserController {
     @ApiOperation(value = "Get the authenticated user", response = GenericResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "User retrieved successfully!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
     })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
@@ -79,8 +79,8 @@ public class UserController {
     @ApiOperation(value = "Get one user", response = GenericResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Item retrieved successfully!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
@@ -91,8 +91,8 @@ public class UserController {
     @ApiOperation(value = "Update an user", response = GenericResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "User updated successfully!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -104,9 +104,9 @@ public class UserController {
     @ApiOperation(value = "Update user password", response = GenericResponse.class)
     @ApiResponses(value = {
         @io.swagger.annotations.ApiResponse(code = 200, message = "The password updated successfully!", response = UserResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 400, message = "The current password is invalid", response = BadRequestResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 400, message = "The current password is invalid", response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -123,11 +123,11 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @ApiOperation(value = "Delete an user", response = GenericResponse.class)
+    @ApiOperation(value = "Delete a user", response = GenericResponse.class)
     @ApiResponses(value = {
-        @io.swagger.annotations.ApiResponse(code = 204, message = "User deleted successfully!", response = SuccessResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "User deleted successfully!", response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
@@ -139,10 +139,10 @@ public class UserController {
 
     @ApiOperation(value = "Change or delete user picture", response = GenericResponse.class)
     @ApiResponses(value = {
-        @io.swagger.annotations.ApiResponse(code = 200, message = "The picture updated/deleted successfully!", response = SuccessResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 400, message = "An IOException occurred!", response = BadRequestResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
-        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "The picture updated/deleted successfully!", response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 400, message = "An IOException occurred!", response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = GenericResponse.class),
+        @io.swagger.annotations.ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = GenericResponse.class),
         @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping("/{id}/picture")

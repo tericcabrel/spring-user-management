@@ -54,8 +54,8 @@ public class TokenController {
 
   @ApiOperation(value = "Validate a token", response = GenericResponse.class)
   @ApiResponses(value = {
-      @io.swagger.annotations.ApiResponse(code = 200, message = "The token is valid", response = SuccessResponse.class),
-      @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid token | The token has expired", response = BadRequestResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 200, message = "The token is valid", response = GenericResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid token | The token has expired", response = GenericResponse.class),
       @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/validate")
@@ -87,7 +87,7 @@ public class TokenController {
   @ApiOperation(value = "Refresh token by generating new one", response = GenericResponse.class)
   @ApiResponses(value = {
       @io.swagger.annotations.ApiResponse(code = 200, message = "New access token generated successfully", response = AuthTokenResponse.class),
-      @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = BadRequestResponse.class),
+      @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid token | The token is unallocated", response = GenericResponse.class),
       @io.swagger.annotations.ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/refresh")
