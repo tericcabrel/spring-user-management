@@ -22,7 +22,7 @@ import com.tericcabrel.authorization.services.interfaces.IRoleService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 
 
-@Api(tags = "Role management", description = "Operations pertaining to role creation, update, assign, revoke, fetch and delete")
+@Api(tags = SWG_ROLE_TAG_NAME, description = SWG_ROLE_TAG_DESCRIPTION)
 @RestController
 @RequestMapping(value = "/roles")
 public class RoleController {
@@ -35,9 +35,9 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @ApiOperation(value = "Create a role", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_CREATE_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Role created successfully!", response = Role.class),
+        @ApiResponse(code = 200, message = SWG_ROLE_CREATE_MESSAGE, response = Role.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
@@ -50,9 +50,9 @@ public class RoleController {
         return ResponseEntity.ok(role);
     }
 
-    @ApiOperation(value = "Get all roles", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_LIST_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "List retrieved successfully!", response = RoleListResponse.class),
+        @ApiResponse(code = 200, message = SWG_ROLE_LIST_MESSAGE, response = RoleListResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
@@ -62,9 +62,9 @@ public class RoleController {
         return ResponseEntity.ok(new RoleListResponse(roleService.findAll()));
     }
 
-    @ApiOperation(value = "Get one role", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_ITEM_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Item retrieved successfully!", response = RoleResponse.class),
+        @ApiResponse(code = 200, message = SWG_ROLE_ITEM_MESSAGE, response = RoleResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
@@ -74,9 +74,9 @@ public class RoleController {
         return ResponseEntity.ok(new RoleResponse(roleService.findById(id)));
     }
 
-    @ApiOperation(value = "Update a role", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_UPDATE_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Role updated successfully!", response = RoleResponse.class),
+        @ApiResponse(code = 200, message = SWG_ROLE_UPDATE_MESSAGE, response = RoleResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
@@ -87,9 +87,9 @@ public class RoleController {
         return ResponseEntity.ok(new RoleResponse(roleService.update(id, createRoleDto)));
     }
 
-    @ApiOperation(value = "Delete a role", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_DELETE_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 204, message = "Role deleted successfully!", response = BadRequestResponse.class),
+        @ApiResponse(code = 204, message = SWG_ROLE_DELETE_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
@@ -101,9 +101,9 @@ public class RoleController {
         return ResponseEntity.noContent().build();
     }
 
-    @ApiOperation(value = "Assign roles to an user", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_ASSIGN_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Roles successfully assigned to user!", response = UserResponse.class),
+        @ApiResponse(code = 200, message = SWG_ROLE_ASSIGN_MESSAGE, response = UserResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
@@ -126,9 +126,9 @@ public class RoleController {
         return ResponseEntity.ok().body(new UserResponse(user));
     }
 
-    @ApiOperation(value = "Assign roles to an user", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_REVOKE_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Roles successfully assigned to user!", response = UserResponse.class),
+        @ApiResponse(code = 200, message = SWG_ROLE_REVOKE_MESSAGE, response = UserResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),

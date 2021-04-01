@@ -27,6 +27,8 @@ public class Constants {
     public static final String RESET_PASSWORD_SUCCESS_MESSAGE = "Your password has been resetted successfully!";
     public static final String VALIDATE_TOKEN_SUCCESS_MESSAGE = "valid";
     public static final String TOKEN_NOT_FOUND_MESSAGE = "You token has been expired!";
+    public static final String PASSWORD_NOT_MATCH_MESSAGE = "The current password don't match!";
+    public static final String USER_PICTURE_NO_ACTION_MESSAGE = "Unknown action!";
 
     public static final String SWG_AUTH_TAG_NAME = "Registration & Authentication";
     public static final String SWG_AUTH_TAG_DESCRIPTION = "Operations pertaining to registration, authentication and account confirmation";
@@ -56,4 +58,40 @@ public class Constants {
     public static final String SWG_TOKEN_REFRESH_OPERATION = "Refresh token by generating new one";
     public static final String SWG_TOKEN_REFRESH_MESSAGE = "New access token generated successfully";
     public static final String SWG_TOKEN_REFRESH_ERROR = "Invalid token | The token is unallocated";
+
+    public static final String SWG_USER_TAG_NAME = "Users";
+    public static final String SWG_USER_TAG_DESCRIPTION = "Operations pertaining to user's update, retrieve and delete";
+    public static final String SWG_USER_LIST_OPERATION = "Get all users";
+    public static final String SWG_USER_LIST_MESSAGE = "List retrieved successfully!";
+    public static final String SWG_USER_LOGGED_OPERATION = "Get the authenticated user";
+    public static final String SWG_USER_LOGGED_MESSAGE = "User retrieved successfully!";
+    public static final String SWG_USER_ITEM_OPERATION = "Get one user";
+    public static final String SWG_USER_ITEM_MESSAGE = "Item retrieved successfully!";
+    public static final String SWG_USER_UPDATE_OPERATION = "Update an user";
+    public static final String SWG_USER_UPDATE_MESSAGE = "User updated successfully!";
+    public static final String SWG_USER_UPDATE_PWD_OPERATION = "Update user password";
+    public static final String SWG_USER_UPDATE_PWD_MESSAGE = "The password updated successfully!";
+    public static final String SWG_USER_UPDATE_PWD_ERROR = "The current password is invalid";
+    public static final String SWG_USER_DELETE_OPERATION = "Delete a user";
+    public static final String SWG_USER_DELETE_MESSAGE = "User deleted successfully!";
+    public static final String SWG_USER_PICTURE_OPERATION = "Change or delete user picture";
+    public static final String SWG_USER_PICTURE_MESSAGE = "The picture updated/deleted successfully!";
+    public static final String SWG_USER_PICTURE_ERROR = "An IOException occurred!";
+
+    public static final String SWG_ROLE_TAG_NAME = "Roles";
+    public static final String SWG_ROLE_TAG_DESCRIPTION = "Operations pertaining to role creation, update, assign, revoke, retrieve and delete";
+    public static final String SWG_ROLE_CREATE_OPERATION = "Create a role";
+    public static final String SWG_ROLE_CREATE_MESSAGE = "Role created successfully!";
+    public static final String SWG_ROLE_LIST_OPERATION = "Get all users";
+    public static final String SWG_ROLE_LIST_MESSAGE = "List retrieved successfully!";
+    public static final String SWG_ROLE_ITEM_OPERATION = "Get one user";
+    public static final String SWG_ROLE_ITEM_MESSAGE = "Item retrieved successfully!";
+    public static final String SWG_ROLE_UPDATE_OPERATION = "Update an user";
+    public static final String SWG_ROLE_UPDATE_MESSAGE = "User updated successfully!";
+    public static final String SWG_ROLE_DELETE_OPERATION = "Delete a user";
+    public static final String SWG_ROLE_DELETE_MESSAGE = "User deleted successfully!";
+    public static final String SWG_ROLE_ASSIGN_OPERATION = "Assign roles to an user";
+    public static final String SWG_ROLE_ASSIGN_MESSAGE = "Roles successfully assigned to user!";
+    public static final String SWG_ROLE_REVOKE_OPERATION = "Revoke roles to an user";
+    public static final String SWG_ROLE_REVOKE_MESSAGE = "Roles successfully revoked to user!";
 }

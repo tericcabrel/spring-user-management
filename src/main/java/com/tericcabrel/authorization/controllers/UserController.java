@@ -34,7 +34,7 @@ import com.tericcabrel.authorization.services.FileStorageService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 
 
-@Api(tags = "User management", description = "Operations pertaining to user's update, fetch and delete")
+@Api(tags = SWG_USER_TAG_NAME, description = SWG_USER_TAG_DESCRIPTION)
 @RestController
 @RequestMapping(value = "/users")
 @Validated
@@ -50,9 +50,9 @@ public class UserController {
         this.fileStorageService = fileStorageService;
     }
 
-    @ApiOperation(value = "Get all users", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_USER_LIST_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "List retrieved successfully!", response = UserListResponse.class),
+        @ApiResponse(code = 200, message = SWG_USER_LIST_MESSAGE, response = UserListResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = INVALID_DATA_MESSAGE, response = BadRequestResponse.class),
     })
@@ -62,9 +62,9 @@ public class UserController {
         return ResponseEntity.ok(new UserListResponse(userService.findAll()));
     }
 
-    @ApiOperation(value = "Get the authenticated user", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_USER_LOGGED_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "User retrieved successfully!", response = UserResponse.class),
+        @ApiResponse(code = 200, message = SWG_USER_LOGGED_MESSAGE, response = UserResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
     })
     @PreAuthorize("isAuthenticated()")
@@ -75,9 +75,9 @@ public class UserController {
         return ResponseEntity.ok(new UserResponse(userService.findByEmail(authentication.getName())));
     }
 
-    @ApiOperation(value = "Get one user", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_USER_ITEM_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Item retrieved successfully!", response = UserResponse.class),
+        @ApiResponse(code = 200, message = SWG_USER_ITEM_MESSAGE, response = UserResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
@@ -87,9 +87,9 @@ public class UserController {
         return ResponseEntity.ok(new UserResponse(userService.findById(id)));
     }
 
-    @ApiOperation(value = "Update an user", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_USER_UPDATE_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "User updated successfully!", response = UserResponse.class),
+        @ApiResponse(code = 200, message = SWG_USER_UPDATE_MESSAGE, response = UserResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
@@ -100,10 +100,10 @@ public class UserController {
         return ResponseEntity.ok(new UserResponse(userService.update(id, updateUserDto)));
     }
 
-    @ApiOperation(value = "Update user password", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_USER_UPDATE_PWD_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The password updated successfully!", response = UserResponse.class),
-        @ApiResponse(code = 400, message = "The current password is invalid", response = BadRequestResponse.class),
+        @ApiResponse(code = 200, message = SWG_USER_UPDATE_PWD_MESSAGE, response = UserResponse.class),
+        @ApiResponse(code = 400, message = SWG_USER_UPDATE_PWD_ERROR, response = BadRequestResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
@@ -116,15 +116,15 @@ public class UserController {
         User user = userService.updatePassword(id, updatePasswordDto);
 
         if (user == null) {
-            throw new PasswordNotMatchException("The current password don't match!");
+            throw new PasswordNotMatchException(PASSWORD_NOT_MATCH_MESSAGE);
         }
 
         return ResponseEntity.ok(new UserResponse(user));
     }
 
-    @ApiOperation(value = "Delete a user", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_USER_DELETE_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 204, message = "User deleted successfully!", response = SuccessResponse.class),
+        @ApiResponse(code = 204, message = SWG_USER_DELETE_MESSAGE, response = SuccessResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = SuccessResponse.class),
     })
@@ -136,10 +136,10 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @ApiOperation(value = "Change or delete user picture", response = SuccessResponse.class)
+    @ApiOperation(value = SWG_USER_PICTURE_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The picture updated/deleted successfully!", response = SuccessResponse.class),
-        @ApiResponse(code = 400, message = "An IOException occurred!", response = SuccessResponse.class),
+        @ApiResponse(code = 200, message = SWG_USER_PICTURE_MESSAGE, response = SuccessResponse.class),
+        @ApiResponse(code = 400, message = SWG_USER_PICTURE_ERROR, response = SuccessResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = SuccessResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = SuccessResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
@@ -175,7 +175,7 @@ public class UserController {
                 }
             }
         } else {
-            logger.info("Unknown action!");
+            logger.info(USER_PICTURE_NO_ACTION_MESSAGE);
         }
 
         return ResponseEntity.ok().body(new UserResponse(user));
