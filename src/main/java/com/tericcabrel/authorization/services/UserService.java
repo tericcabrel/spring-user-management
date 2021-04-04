@@ -20,7 +20,7 @@ import com.tericcabrel.authorization.services.interfaces.IUserService;
 
 @Service
 public class UserService implements IUserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptEncoder; // Fails when injected by the constructor
