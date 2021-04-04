@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models.dto;
+package com.tericcabrel.authorization.models.dtos;
 
 import com.tericcabrel.authorization.constraints.Exists;
 import io.swagger.annotations.ApiModel;

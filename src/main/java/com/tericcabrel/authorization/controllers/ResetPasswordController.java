@@ -17,11 +17,11 @@ import java.util.HashMap;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
-import com.tericcabrel.authorization.models.dto.ForgotPasswordDto;
-import com.tericcabrel.authorization.models.dto.ResetPasswordDto;
+import com.tericcabrel.authorization.models.dtos.ForgotPasswordDto;
+import com.tericcabrel.authorization.models.dtos.ResetPasswordDto;
 import com.tericcabrel.authorization.models.response.InvalidDataResponse;
-import com.tericcabrel.authorization.models.mongo.ResetPassword;
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.entities.ResetPassword;
+import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;

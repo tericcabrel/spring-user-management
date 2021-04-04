@@ -1,7 +1,7 @@
 package com.tericcabrel.authorization.services.interfaces;
 
-import com.tericcabrel.authorization.models.mongo.ConfirmAccount;
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.entities.ConfirmAccount;
+import com.tericcabrel.authorization.models.entities.User;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models.mongo;
+package com.tericcabrel.authorization.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -40,10 +40,14 @@ public class User extends BaseModel {
     private Coordinates coordinates;
 
     @DBRef
-    private Set<Role> roles;
+    private Set<Role> roles; // TODO not a list
+
+    @DBRef
+    private Set<Permission> permissions;
 
     public User() {
         roles = new HashSet<>();
+        permissions = new HashSet<>();
     }
 
     public User(String firstName, String lastName, String email, String password, String gender) {
@@ -55,6 +59,7 @@ public class User extends BaseModel {
         this.enabled = true;
         this.confirmed = false;
         roles = new HashSet<>();
+        permissions = new HashSet<>();
     }
 
     public User addRole(Role role) {
@@ -75,5 +80,30 @@ public class User extends BaseModel {
         this.roles = newRoles.collect(Collectors.toSet());
 
         return this;
+    }
+
+    public User addPermission(Permission permission) {
+        this.permissions.add(permission);
+
+        return this;
+    }
+
+    public boolean hasPermission(String permissionName) {
+        Optional<Permission> permissionItem = this.permissions.stream().filter(permission -> permission.getName().equals(permissionName)).findFirst();
+
+        return permissionItem.isPresent();
+    }
+
+    public User removePermission(Permission permission) {
+        Stream<Permission> newPermissions = this.permissions.stream().filter(permission1 -> !permission1.getName().equals(permission.getName()));
+
+        this.permissions = newPermissions.collect(Collectors.toSet());
+
+        return this;
+    }
+
+    public Set<Permission> allPermissions() {
+        // TODO concat user permissions and role permission
+        return new HashSet<>();
     }
 }

@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models.mongo;
+package com.tericcabrel.authorization.models.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @Data
-@Document(collection = "password_resets")
-public class ResetPassword extends BaseModel {
+@Document(collection = "accounts_confirmation")
+public class ConfirmAccount extends BaseModel {
     @DBRef
     private User user;
 

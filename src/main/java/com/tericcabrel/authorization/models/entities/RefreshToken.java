@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models.redis;
+package com.tericcabrel.authorization.models.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

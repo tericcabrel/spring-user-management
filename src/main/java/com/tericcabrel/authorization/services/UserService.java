@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import com.tericcabrel.authorization.models.dto.CreateUserDto;
-import com.tericcabrel.authorization.models.dto.UpdatePasswordDto;
-import com.tericcabrel.authorization.models.dto.UpdateUserDto;
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.dtos.CreateUserDto;
+import com.tericcabrel.authorization.models.dtos.UpdatePasswordDto;
+import com.tericcabrel.authorization.models.dtos.UpdateUserDto;
+import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.repositories.mongo.UserRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 

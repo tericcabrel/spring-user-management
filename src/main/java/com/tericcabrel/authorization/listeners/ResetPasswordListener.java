@@ -15,7 +15,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
 import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
 

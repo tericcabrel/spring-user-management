@@ -20,9 +20,9 @@ import static com.tericcabrel.authorization.utils.Constants.*;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 
 public class AuthenticationFilter extends OncePerRequestFilter {
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    private JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
 
     public AuthenticationFilter(UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil) {
         this.userDetailsService = userDetailsService;
@@ -65,7 +65,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
 
-                logger.info("authenticated user " + username + ", setting security context");
+                logger.info("authenticated user " + username);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

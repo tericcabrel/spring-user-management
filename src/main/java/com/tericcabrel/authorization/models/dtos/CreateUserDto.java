@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models.dto;
+package com.tericcabrel.authorization.models.dtos;
 
 import javax.validation.constraints.*;
 
@@ -9,8 +9,8 @@ import com.tericcabrel.authorization.constraints.IsUnique;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import com.tericcabrel.authorization.models.mongo.Coordinates;
-import com.tericcabrel.authorization.models.mongo.Role;
+import com.tericcabrel.authorization.models.entities.Coordinates;
+import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.constraints.FieldMatch;
 import lombok.Getter;
 import lombok.Setter;

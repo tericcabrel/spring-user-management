@@ -1,7 +1,7 @@
 package com.tericcabrel.authorization.services.interfaces;
 
-import com.tericcabrel.authorization.models.mongo.ResetPassword;
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.entities.ResetPassword;
+import com.tericcabrel.authorization.models.entities.User;
 
 import java.util.List;
 

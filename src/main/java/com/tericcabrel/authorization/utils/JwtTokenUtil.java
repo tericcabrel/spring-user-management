@@ -19,8 +19,8 @@ import io.jsonwebtoken.*;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
-import com.tericcabrel.authorization.models.mongo.Role;
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.entities.Role;
+import com.tericcabrel.authorization.models.entities.User;
 
 @Component
 public class JwtTokenUtil implements Serializable {

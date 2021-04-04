@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models.dto;
+package com.tericcabrel.authorization.models.dtos;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

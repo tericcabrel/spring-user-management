@@ -21,10 +21,10 @@ import io.jsonwebtoken.SignatureException;
 import static com.tericcabrel.authorization.utils.Constants.*;
 
 import com.tericcabrel.authorization.models.response.*;
-import com.tericcabrel.authorization.models.dto.RefreshTokenDto;
-import com.tericcabrel.authorization.models.dto.ValidateTokenDto;
-import com.tericcabrel.authorization.models.mongo.User;
-import com.tericcabrel.authorization.models.redis.RefreshToken;
+import com.tericcabrel.authorization.models.dtos.RefreshTokenDto;
+import com.tericcabrel.authorization.models.dtos.ValidateTokenDto;
+import com.tericcabrel.authorization.models.entities.User;
+import com.tericcabrel.authorization.models.entities.RefreshToken;
 import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;

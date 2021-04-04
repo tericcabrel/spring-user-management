@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.models.dto;
+package com.tericcabrel.authorization.models.dtos;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

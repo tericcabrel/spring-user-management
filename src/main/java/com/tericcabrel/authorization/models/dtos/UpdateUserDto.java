@@ -1,13 +1,12 @@
-package com.tericcabrel.authorization.models.dto;
+package com.tericcabrel.authorization.models.dtos;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import com.tericcabrel.authorization.models.mongo.Coordinates;
-import com.tericcabrel.authorization.models.mongo.Role;
+import com.tericcabrel.authorization.models.entities.Coordinates;
+import com.tericcabrel.authorization.models.entities.Role;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

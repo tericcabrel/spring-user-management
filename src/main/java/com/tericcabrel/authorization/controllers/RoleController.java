@@ -14,10 +14,10 @@ import java.util.Arrays;
 import static com.tericcabrel.authorization.utils.Constants.*;
 
 import com.tericcabrel.authorization.models.response.*;
-import com.tericcabrel.authorization.models.dto.CreateRoleDto;
-import com.tericcabrel.authorization.models.dto.UpdateRoleDto;
-import com.tericcabrel.authorization.models.mongo.Role;
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
+import com.tericcabrel.authorization.models.dtos.UpdateRoleDto;
+import com.tericcabrel.authorization.models.entities.Role;
+import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 

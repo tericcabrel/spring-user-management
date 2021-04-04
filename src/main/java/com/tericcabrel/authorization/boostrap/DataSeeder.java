@@ -11,10 +11,10 @@ import java.util.Set;
 import static com.tericcabrel.authorization.utils.Constants.ROLE_ADMIN;
 import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
 
-import com.tericcabrel.authorization.models.dto.CreateRoleDto;
-import com.tericcabrel.authorization.models.dto.CreateUserDto;
-import com.tericcabrel.authorization.models.mongo.Role;
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
+import com.tericcabrel.authorization.models.dtos.CreateUserDto;
+import com.tericcabrel.authorization.models.entities.Role;
+import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
 

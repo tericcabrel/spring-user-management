@@ -18,7 +18,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 

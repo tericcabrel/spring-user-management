@@ -1,6 +1,6 @@
 package com.tericcabrel.authorization.models.response;
 
-import com.tericcabrel.authorization.models.mongo.User;
+import com.tericcabrel.authorization.models.entities.User;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

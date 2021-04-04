@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.tericcabrel.authorization.models.dto.CreateRoleDto;
-import com.tericcabrel.authorization.models.mongo.Role;
+import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
+import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.repositories.mongo.RoleRepository;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
 

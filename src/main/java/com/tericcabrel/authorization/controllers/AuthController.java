@@ -14,13 +14,13 @@ import java.util.*;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
-import com.tericcabrel.authorization.models.dto.LoginUserDto;
-import com.tericcabrel.authorization.models.dto.CreateUserDto;
-import com.tericcabrel.authorization.models.dto.ValidateTokenDto;
+import com.tericcabrel.authorization.models.dtos.LoginUserDto;
+import com.tericcabrel.authorization.models.dtos.CreateUserDto;
+import com.tericcabrel.authorization.models.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.models.response.*;
-import com.tericcabrel.authorization.models.mongo.ConfirmAccount;
-import com.tericcabrel.authorization.models.mongo.User;
-import com.tericcabrel.authorization.models.redis.RefreshToken;
+import com.tericcabrel.authorization.models.entities.ConfirmAccount;
+import com.tericcabrel.authorization.models.entities.User;
+import com.tericcabrel.authorization.models.entities.RefreshToken;
 import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.IRoleService;
 import com.tericcabrel.authorization.services.interfaces.IUserService;
