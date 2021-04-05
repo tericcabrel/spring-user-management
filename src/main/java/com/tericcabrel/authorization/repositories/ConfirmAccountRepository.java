@@ -1,11 +1,10 @@
-package com.tericcabrel.authorization.repositories.mongo;
+package com.tericcabrel.authorization.repositories;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import com.tericcabrel.authorization.models.entities.ConfirmAccount;
-
 
 @Repository
 public interface ConfirmAccountRepository extends MongoRepository<ConfirmAccount, ObjectId> {

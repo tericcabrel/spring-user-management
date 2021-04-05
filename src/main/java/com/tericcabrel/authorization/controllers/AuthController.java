@@ -1,6 +1,9 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.models.entities.Role;
 import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +24,7 @@ import com.tericcabrel.authorization.models.response.*;
 import com.tericcabrel.authorization.models.entities.ConfirmAccount;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.models.entities.RefreshToken;
-import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
+import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.RoleService;
 import com.tericcabrel.authorization.services.interfaces.UserService;
 import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
@@ -35,6 +38,7 @@ import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final UserService userService;
 
@@ -71,15 +75,23 @@ public class AuthController {
     @ApiOperation(value = SWG_AUTH_REGISTER_OPERATION, response = BadRequestResponse.class)
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = SWG_AUTH_REGISTER_MESSAGE, response = UserResponse.class),
+        @ApiResponse(code = 400, message = SWG_AUTH_REGISTER_ERROR, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/register")
-    public ResponseEntity<User> register(@Valid @RequestBody CreateUserDto createUserDto) {
-        createUserDto.setRoles(
-            new HashSet<>(
-                Collections.singletonList(roleService.findByName(ROLE_USER))
-            )
-        );
+    public ResponseEntity<Object> register(@Valid @RequestBody CreateUserDto createUserDto) {
+        Optional<Role> roleUser = roleService.findByName(ROLE_USER);
+
+        if (roleUser.isEmpty()) {
+            Map<String, String> result = new HashMap<>();
+            result.put("message", SWG_AUTH_REGISTER_ERROR);
+
+            logger.error("Register User: " + ROLE_NOT_FOUND_MESSAGE);
+
+            return ResponseEntity.badRequest().body(result);
+        }
+
+        createUserDto.setRoles(new HashSet<>(Collections.singletonList(roleUser.get())));
 
         User user = userService.save(createUserDto);
 

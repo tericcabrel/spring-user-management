@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.repositories.mongo;
+package com.tericcabrel.authorization.repositories;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.tericcabrel.authorization.models.entities.User;
 
-@Repository(value = "com.tericcabrel.authorization.repositories.mongo.UserRepository")
+@Repository(value = "com.tericcabrel.authorization.repositories.UserRepository")
 public interface UserRepository extends MongoRepository<User, ObjectId> {
     User findByEmail(String email);
 }

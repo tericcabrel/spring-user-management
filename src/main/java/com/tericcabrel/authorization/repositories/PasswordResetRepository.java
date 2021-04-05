@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.repositories.mongo;
+package com.tericcabrel.authorization.repositories;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;

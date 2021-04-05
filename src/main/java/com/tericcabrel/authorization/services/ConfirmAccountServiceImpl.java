@@ -7,7 +7,7 @@ import java.util.*;
 
 import com.tericcabrel.authorization.models.entities.ConfirmAccount;
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.repositories.mongo.ConfirmAccountRepository;
+import com.tericcabrel.authorization.repositories.ConfirmAccountRepository;
 
 
 @Service(value = "confirmAccountService")

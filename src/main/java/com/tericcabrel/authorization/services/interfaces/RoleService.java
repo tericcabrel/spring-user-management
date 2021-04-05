@@ -4,6 +4,7 @@ import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
 import com.tericcabrel.authorization.models.entities.Role;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RoleService {
     Role save(CreateRoleDto role);
@@ -12,7 +13,7 @@ public interface RoleService {
 
     void delete(String id);
 
-    Role findByName(String name);
+    Optional<Role> findByName(String name);
 
     Role findById(String id);
 

@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,6 @@ import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.services.interfaces.RoleService;
 import com.tericcabrel.authorization.services.interfaces.UserService;
-
 
 @Api(tags = SWG_ROLE_TAG_NAME, description = SWG_ROLE_TAG_DESCRIPTION)
 @RestController
@@ -114,10 +114,10 @@ public class RoleController {
         User user = userService.findById(updateRoleDto.getUserId());
 
         Arrays.stream(updateRoleDto.getRoles()).forEach(role -> {
-            Role roleObject = roleService.findByName(role);
+            Optional<Role> roleObject = roleService.findByName(role);
 
-            if (roleObject != null && !user.hasRole(role)) {
-                user.addRole(roleObject);
+            if (roleObject.isPresent() && !user.hasRole(role)) {
+                user.addRole(roleObject.get());
             }
         });
 
@@ -139,10 +139,10 @@ public class RoleController {
         User user = userService.findById(updateRoleDto.getUserId());
 
         Arrays.stream(updateRoleDto.getRoles()).forEach(role -> {
-            Role roleObject = roleService.findByName(role);
+            Optional<Role> roleObject = roleService.findByName(role);
 
-            if (roleObject != null && user.hasRole(role)) {
-                user.removeRole(roleObject);
+            if (roleObject.isPresent() && user.hasRole(role)) {
+                user.removeRole(roleObject.get());
             }
         });
 

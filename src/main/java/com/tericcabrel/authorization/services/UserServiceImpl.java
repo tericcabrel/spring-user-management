@@ -14,7 +14,7 @@ import com.tericcabrel.authorization.models.dtos.CreateUserDto;
 import com.tericcabrel.authorization.models.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.models.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.repositories.mongo.UserRepository;
+import com.tericcabrel.authorization.repositories.UserRepository;
 
 
 @Service

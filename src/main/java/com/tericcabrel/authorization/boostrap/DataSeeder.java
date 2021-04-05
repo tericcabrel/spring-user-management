@@ -1,6 +1,8 @@
 package com.tericcabrel.authorization.boostrap;
 
+import com.tericcabrel.authorization.services.interfaces.PermissionLoader;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -26,16 +28,21 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     private final UserService userService;
 
-    public DataSeeder(RoleService roleService, UserService userService) {
+    private final PermissionLoader permissionLoader;
+
+    public DataSeeder(RoleService roleService, UserService userService, PermissionLoader permissionLoader) {
         this.roleService = roleService;
         this.userService = userService;
+        this.permissionLoader = permissionLoader;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        this.loadRoles();
+        loadRoles();
 
-        this.loadUsers();
+        permissionLoader.load();
+
+        loadUsers();
     }
 
     private void loadRoles() {
@@ -45,49 +52,50 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
         rolesMap.put(ROLE_SUPER_ADMIN, "Super admin role");
 
         rolesMap.forEach((key, value) -> {
-            Role role = roleService.findByName(key);
+            Optional<Role> role = roleService.findByName(key);
 
-            if (role == null) {
+            role.ifPresent(roleFound -> {
                 CreateRoleDto createRoleDto = new CreateRoleDto();
 
                 createRoleDto.setName(key)
                     .setDescription(value);
 
                 roleService.save(createRoleDto);
-            }
+            });
         });
     }
 
     private void loadUsers() {
-        Set<CreateUserDto> users = new HashSet<CreateUserDto>() {};
+        Set<CreateUserDto> users = new HashSet<>() {};
 
-        CreateUserDto admin = new CreateUserDto()
-                .setEmail("admin@admin.com")
-                .setFirstName("Admin")
-                .setLastName("User")
+        CreateUserDto superAdmin = new CreateUserDto()
+                .setEmail("sadmin@authoz.com")
+                .setFirstName("Super")
+                .setLastName("Admin")
                 .setConfirmed(true)
                 .setEnabled(true)
                 .setAvatar(null)
                 .setGender("M")
-                .setTimezone("Africa/Douala")
+                .setTimezone("Europe/Paris")
                 .setCoordinates(null)
                 .setPassword("secret");
 
-        users.add(admin);
+        users.add(superAdmin);
 
         users.forEach(createUserDto -> {
             User obj = userService.findByEmail(createUserDto.getEmail());
-            Role role;
 
             if (obj == null ){
-                role = roleService.findByName(ROLE_ADMIN);
+                Optional<Role> role = roleService.findByName(ROLE_SUPER_ADMIN);
 
-                Set<Role> userRoles = new HashSet<>();
-                userRoles.add(role);
+                role.ifPresent(roleFound -> {
+                    Set<Role> userRoles = new HashSet<>();
+                    userRoles.add(role.get());
 
-                createUserDto.setRoles(userRoles);
+                    createUserDto.setRoles(userRoles);
 
-                userService.save(createUserDto);
+                    userService.save(createUserDto);
+                });
             }
         });
     }

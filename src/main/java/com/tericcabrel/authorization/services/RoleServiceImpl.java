@@ -9,11 +9,11 @@ import java.util.Optional;
 
 import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
 import com.tericcabrel.authorization.models.entities.Role;
-import com.tericcabrel.authorization.repositories.mongo.RoleRepository;
+import com.tericcabrel.authorization.repositories.RoleRepository;
 
 @Service(value = "roleService")
 public class RoleServiceImpl implements com.tericcabrel.authorization.services.interfaces.RoleService {
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
@@ -43,7 +43,7 @@ public class RoleServiceImpl implements com.tericcabrel.authorization.services.i
     }
 
     @Override
-    public Role findByName(String name) {
+    public Optional<Role> findByName(String name) {
         return roleRepository.findByName(name);
     }
 

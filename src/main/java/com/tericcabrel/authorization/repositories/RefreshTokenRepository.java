@@ -1,4 +1,4 @@
-package com.tericcabrel.authorization.repositories.redis;
+package com.tericcabrel.authorization.repositories;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

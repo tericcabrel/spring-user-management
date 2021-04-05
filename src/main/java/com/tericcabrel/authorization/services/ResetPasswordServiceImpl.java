@@ -7,7 +7,7 @@ import java.util.*;
 
 import com.tericcabrel.authorization.models.entities.ResetPassword;
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.repositories.mongo.PasswordResetRepository;
+import com.tericcabrel.authorization.repositories.PasswordResetRepository;
 
 @Service(value = "passwordResetService")
 public class ResetPasswordServiceImpl implements

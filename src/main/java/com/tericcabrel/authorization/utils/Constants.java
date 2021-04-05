@@ -30,11 +30,13 @@ public class Constants {
     public static final String TOKEN_NOT_FOUND_MESSAGE = "You token has been expired!";
     public static final String PASSWORD_NOT_MATCH_MESSAGE = "The current password don't match!";
     public static final String USER_PICTURE_NO_ACTION_MESSAGE = "Unknown action!";
+    public static final String ROLE_NOT_FOUND_MESSAGE = "Role not found!";
 
     public static final String SWG_AUTH_TAG_NAME = "Registration & Authentication";
     public static final String SWG_AUTH_TAG_DESCRIPTION = "Operations pertaining to registration, authentication and account confirmation";
     public static final String SWG_AUTH_REGISTER_OPERATION = "Register a new user in the system";
     public static final String SWG_AUTH_REGISTER_MESSAGE = "User registered successfully!";
+    public static final String SWG_AUTH_REGISTER_ERROR = "Failed to register the user";
     public static final String SWG_AUTH_LOGIN_OPERATION = "Authenticate an user";
     public static final String SWG_AUTH_LOGIN_MESSAGE = "Authenticated successfully!";
     public static final String SWG_AUTH_LOGIN_ERROR = "Bad credentials | The account is deactivated | The account isn't confirmed yet";
