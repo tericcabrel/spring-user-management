@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponses;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ import com.tericcabrel.authorization.models.response.SuccessResponse;
 import com.tericcabrel.authorization.services.interfaces.PermissionService;
 
 @Api(tags = SWG_PERMISSION_TAG_NAME, description = SWG_PERMISSION_TAG_DESCRIPTION)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "/permissions")
 public class PermissionController {

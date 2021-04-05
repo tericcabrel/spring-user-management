@@ -64,7 +64,7 @@ public class UserController {
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = INVALID_DATA_MESSAGE, response = BadRequestResponse.class),
     })
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('read:users')")
     @GetMapping
     public ResponseEntity<UserListResponse> all(){
         return ResponseEntity.ok(new UserListResponse(userService.findAll()));
@@ -89,7 +89,7 @@ public class UserController {
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
     })
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAuthority('read:user')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> one(@PathVariable String id){
         return ResponseEntity.ok(new UserResponse(userService.findById(id)));
@@ -102,7 +102,7 @@ public class UserController {
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAuthority('update:user')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(@PathVariable String id, @RequestBody UpdateUserDto updateUserDto) {
         return ResponseEntity.ok(new UserResponse(userService.update(id, updateUserDto)));
@@ -116,7 +116,7 @@ public class UserController {
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAuthority('change:password')")
     @PutMapping("/{id}/password")
     public ResponseEntity<UserResponse> updatePassword(
             @PathVariable String id, @Valid @RequestBody UpdatePasswordDto updatePasswordDto
@@ -136,7 +136,7 @@ public class UserController {
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = SuccessResponse.class),
     })
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('delete:user')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         userService.delete(id);
@@ -152,6 +152,7 @@ public class UserController {
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = SuccessResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
+    @PreAuthorize("hasAuthority('change:picture')")
     @PostMapping("/{id}/picture")
     public ResponseEntity<UserResponse> uploadPicture(
         @PathVariable String id,
@@ -197,7 +198,7 @@ public class UserController {
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('assign:permission')")
     @PutMapping("/{id}/permissions")
     public ResponseEntity<UserResponse> assignPermissions(@PathVariable String id, @Valid @RequestBody UpdateUserPermissionDto updateUserPermissionDto) {
         User user = userService.findById(id);
@@ -222,7 +223,7 @@ public class UserController {
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('revoke:permission')")
     @DeleteMapping("/{id}/permissions")
     public ResponseEntity<User> revokePermissions(@PathVariable String id, @Valid @RequestBody UpdateUserPermissionDto updateUserPermissionDto) {
         User user = userService.findById(id);
