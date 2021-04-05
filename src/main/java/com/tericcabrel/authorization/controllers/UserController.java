@@ -30,8 +30,8 @@ import com.tericcabrel.authorization.models.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.models.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.exceptions.PasswordNotMatchException;
-import com.tericcabrel.authorization.services.FileStorageService;
-import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.services.FileStorageServiceImpl;
+import com.tericcabrel.authorization.services.interfaces.UserService;
 
 
 @Api(tags = SWG_USER_TAG_NAME, description = SWG_USER_TAG_DESCRIPTION)
@@ -41,13 +41,13 @@ import com.tericcabrel.authorization.services.interfaces.IUserService;
 public class UserController {
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    private final IUserService userService;
+    private final UserService userService;
 
-    private final FileStorageService fileStorageService;
+    private final FileStorageServiceImpl fileStorageServiceImpl;
 
-    public UserController(IUserService userService, FileStorageService fileStorageService) {
+    public UserController(UserService userService, FileStorageServiceImpl fileStorageServiceImpl) {
         this.userService = userService;
-        this.fileStorageService = fileStorageService;
+        this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
 
     @ApiOperation(value = SWG_USER_LIST_OPERATION, response = SuccessResponse.class)
@@ -158,7 +158,7 @@ public class UserController {
         UpdateUserDto updateUserDto = new UpdateUserDto();
 
         if (action.equals("u")) {
-            String fileName = fileStorageService.storeFile(file);
+            String fileName = fileStorageServiceImpl.storeFile(file);
 
             updateUserDto.setAvatar(fileName);
 
@@ -167,7 +167,7 @@ public class UserController {
             user = userService.findById(id);
 
             if (user.getAvatar() != null) {
-                boolean deleted = fileStorageService.deleteFile(user.getAvatar());
+                boolean deleted = fileStorageServiceImpl.deleteFile(user.getAvatar());
 
                 if (deleted) {
                     user.setAvatar(null);

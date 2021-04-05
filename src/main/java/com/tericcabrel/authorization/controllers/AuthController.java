@@ -22,9 +22,9 @@ import com.tericcabrel.authorization.models.entities.ConfirmAccount;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.models.entities.RefreshToken;
 import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
-import com.tericcabrel.authorization.services.interfaces.IRoleService;
-import com.tericcabrel.authorization.services.interfaces.IUserService;
-import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
+import com.tericcabrel.authorization.services.interfaces.RoleService;
+import com.tericcabrel.authorization.services.interfaces.UserService;
+import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 import com.tericcabrel.authorization.utils.Helpers;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
@@ -36,9 +36,9 @@ import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final IUserService userService;
+    private final UserService userService;
 
-    private final IRoleService roleService;
+    private final RoleService roleService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -48,16 +48,16 @@ public class AuthController {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    private final IConfirmAccountService confirmAccountService;
+    private final ConfirmAccountService confirmAccountService;
 
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtTokenUtil jwtTokenUtil,
-        IUserService userService,
-        IRoleService roleService,
+        UserService userService,
+        RoleService roleService,
         RefreshTokenRepository refreshTokenRepository,
         ApplicationEventPublisher eventPublisher,
-        IConfirmAccountService confirmAccountService
+        ConfirmAccountService confirmAccountService
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;

@@ -1,0 +1,107 @@
+[
+  {
+    "name": "read:users",
+    "description": "Retrieve the list of users",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "read:user",
+    "description": "Retrieve one user",
+    "roles": ["ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "update:user",
+    "description": "Update user's information",
+    "roles": ["ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "change:password",
+    "description": "Change my own password",
+    "roles": ["ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "delete:user",
+    "description": "Delete a user",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "create:admin",
+    "description": "Create a user with role Admin",
+    "roles": ["ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "delete:admin",
+    "description": "Delete a user with role Admin",
+    "roles": ["ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "change:picture",
+    "description": "Change my own profile picture",
+    "roles": ["ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "create:role",
+    "description": "Create a new role",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "read:roles",
+    "description": "Retrieve the list of roles",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "read:role",
+    "description": "Retrieve a role",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "update:role",
+    "description": "Update a role",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "delete:role",
+    "description": "Delete a role",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "change:role",
+    "description": "Change the role",
+    "roles": ["ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "read:permissions",
+    "description": "Retrieve the list of permissions",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "read:permission",
+    "description": "Retrieve a permission",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "update:permission",
+    "description": "Update a permission",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "assign:permission",
+    "description": "Assign a permission to a user",
+    "roles": ["ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "revoke:permission",
+    "description": "Revoke permission to a user",
+    "roles": ["ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "add:permission",
+    "description": "Add permission to a role",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  },
+  {
+    "name": "remove:permission",
+    "description": "Remove a permission to a role",
+    "roles": ["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]
+  }
+]

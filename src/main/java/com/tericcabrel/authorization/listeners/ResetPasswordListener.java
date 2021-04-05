@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
-import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
+import com.tericcabrel.authorization.services.interfaces.ResetPasswordService;
 
 
 @Component
@@ -27,14 +27,14 @@ public class ResetPasswordListener implements ApplicationListener<OnResetPasswor
 
     private Environment environment;
 
-    private IResetPasswordService resetPasswordService;
+    private ResetPasswordService resetPasswordService;
 
     private JavaMailSender mailSender;
 
     private TemplateEngine htmlTemplateEngine;
 
     public ResetPasswordListener(
-            IResetPasswordService resetPasswordService,
+            ResetPasswordService resetPasswordService,
             JavaMailSender mailSender,
             Environment environment,
             TemplateEngine htmlTemplateEngine

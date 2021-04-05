@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.boostrap;
 
+import java.util.Map;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -9,22 +10,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.tericcabrel.authorization.utils.Constants.ROLE_ADMIN;
+import static com.tericcabrel.authorization.utils.Constants.ROLE_SUPER_ADMIN;
 import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
 
 import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
 import com.tericcabrel.authorization.models.dtos.CreateUserDto;
 import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.services.interfaces.IRoleService;
-import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.services.interfaces.RoleService;
+import com.tericcabrel.authorization.services.interfaces.UserService;
 
 @Component
 public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
-    private IRoleService roleService;
+    private final RoleService roleService;
 
-    private IUserService userService;
+    private final UserService userService;
 
-    public DataSeeder(IRoleService roleService, IUserService userService) {
+    public DataSeeder(RoleService roleService, UserService userService) {
         this.roleService = roleService;
         this.userService = userService;
     }
@@ -37,11 +39,12 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void loadRoles() {
-        HashMap<String, String> roles = new HashMap<>();
-        roles.put(ROLE_USER, "User role");
-        roles.put(ROLE_ADMIN, "Admin role");
+        Map<String, String> rolesMap = new HashMap<>();
+        rolesMap.put(ROLE_USER, "User role");
+        rolesMap.put(ROLE_ADMIN, "Admin role");
+        rolesMap.put(ROLE_SUPER_ADMIN, "Super admin role");
 
-        roles.forEach((key, value) -> {
+        rolesMap.forEach((key, value) -> {
             Role role = roleService.findByName(key);
 
             if (role == null) {

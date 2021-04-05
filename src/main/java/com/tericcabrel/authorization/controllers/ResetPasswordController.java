@@ -22,8 +22,8 @@ import com.tericcabrel.authorization.models.dtos.ResetPasswordDto;
 import com.tericcabrel.authorization.models.response.InvalidDataResponse;
 import com.tericcabrel.authorization.models.entities.ResetPassword;
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
-import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.services.interfaces.ResetPasswordService;
+import com.tericcabrel.authorization.services.interfaces.UserService;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
 
 
@@ -33,16 +33,16 @@ import com.tericcabrel.authorization.events.OnResetPasswordEvent;
 @RequestMapping("/auth")
 public class ResetPasswordController {
 
-    private final IUserService userService;
+    private final UserService userService;
 
     private final ApplicationEventPublisher eventPublisher;
 
-    private final IResetPasswordService resetPasswordService;
+    private final ResetPasswordService resetPasswordService;
 
     public ResetPasswordController(
-        IUserService userService,
+        UserService userService,
         ApplicationEventPublisher eventPublisher,
-        IResetPasswordService resetPasswordService
+        ResetPasswordService resetPasswordService
     ) {
         this.userService = userService;
         this.eventPublisher = eventPublisher;

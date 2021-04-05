@@ -12,7 +12,7 @@ import com.tericcabrel.authorization.models.entities.User;
 
 @Component
 public class MongoEnsureIndexes implements ApplicationListener<ContextRefreshedEvent> {
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
     public MongoEnsureIndexes(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;

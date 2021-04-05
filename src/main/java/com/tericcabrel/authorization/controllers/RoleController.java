@@ -18,19 +18,19 @@ import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
 import com.tericcabrel.authorization.models.dtos.UpdateRoleDto;
 import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.services.interfaces.IRoleService;
-import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.services.interfaces.RoleService;
+import com.tericcabrel.authorization.services.interfaces.UserService;
 
 
 @Api(tags = SWG_ROLE_TAG_NAME, description = SWG_ROLE_TAG_DESCRIPTION)
 @RestController
 @RequestMapping(value = "/roles")
 public class RoleController {
-    private final IRoleService roleService;
+    private final RoleService roleService;
 
-    private final IUserService userService;
+    private final UserService userService;
 
-    public RoleController(IUserService userService, IRoleService roleService) {
+    public RoleController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }

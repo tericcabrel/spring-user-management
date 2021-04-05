@@ -13,7 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.tericcabrel.authorization.services.UserService;
+import com.tericcabrel.authorization.services.UserServiceImpl;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 
 @Configuration
@@ -22,7 +22,7 @@ import com.tericcabrel.authorization.utils.JwtTokenUtil;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     private JwtTokenUtil jwtTokenUtil;
 
@@ -41,13 +41,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
+        auth.userDetailsService(userServiceImpl)
                 .passwordEncoder(encoder());
     }
 
     @Bean
     public AuthenticationFilter authenticationTokenFilterBean() throws Exception {
-        return new AuthenticationFilter(userService, jwtTokenUtil);
+        return new AuthenticationFilter(userServiceImpl, jwtTokenUtil);
     }
 
     @Override

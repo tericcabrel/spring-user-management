@@ -8,7 +8,7 @@ import com.tericcabrel.authorization.models.dtos.CreateUserDto;
 import com.tericcabrel.authorization.models.entities.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface IUserService extends UserDetailsService {
+public interface UserService extends UserDetailsService {
     User save(CreateUserDto createUserDto);
 
     List<User> findAll();

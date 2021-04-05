@@ -10,13 +10,12 @@ import java.util.Optional;
 import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
 import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.repositories.mongo.RoleRepository;
-import com.tericcabrel.authorization.services.interfaces.IRoleService;
 
 @Service(value = "roleService")
-public class RoleService implements IRoleService {
+public class RoleServiceImpl implements com.tericcabrel.authorization.services.interfaces.RoleService {
     private RoleRepository roleRepository;
 
-    public RoleService(RoleRepository roleRepository) {
+    public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 

@@ -19,6 +19,8 @@ public class Role extends BaseModel {
 
     private String description;
 
+    private boolean isDefault;
+
     @DBRef
     private Set<Permission> permissions;
 

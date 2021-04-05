@@ -7,6 +7,7 @@ public class Constants {
     static final String AUTHORITIES_KEY = "scopes";
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
 
     public static final String JWT_ILLEGAL_ARGUMENT_MESSAGE = "An error occured during getting username from token";
     public static final String JWT_EXPIRED_MESSAGE = "The token is expired and not valid anymore";

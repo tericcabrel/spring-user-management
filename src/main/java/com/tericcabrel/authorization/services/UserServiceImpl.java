@@ -15,17 +15,16 @@ import com.tericcabrel.authorization.models.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.models.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.repositories.mongo.UserRepository;
-import com.tericcabrel.authorization.services.interfaces.IUserService;
 
 
 @Service
-public class UserService implements IUserService {
+public class UserServiceImpl implements com.tericcabrel.authorization.services.interfaces.UserService {
     private final UserRepository userRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptEncoder; // Fails when injected by the constructor
 
-    public UserService(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

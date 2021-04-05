@@ -20,12 +20,12 @@ import com.tericcabrel.authorization.exceptions.FileNotFoundException;
 import com.tericcabrel.authorization.exceptions.FileStorageException;
 
 @Service
-public class FileStorageService {
+public class FileStorageServiceImpl {
 
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageService(Environment env) {
+    public FileStorageServiceImpl(Environment env) {
         this.fileStorageLocation = Paths.get(env.getProperty("app.file.upload-dir", "./uploads/avatars"))
                 .toAbsolutePath().normalize();
 

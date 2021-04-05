@@ -26,7 +26,7 @@ import com.tericcabrel.authorization.models.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.models.entities.RefreshToken;
 import com.tericcabrel.authorization.repositories.redis.RefreshTokenRepository;
-import com.tericcabrel.authorization.services.interfaces.IUserService;
+import com.tericcabrel.authorization.services.interfaces.UserService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 
 
@@ -42,12 +42,12 @@ public class TokenController {
 
   private final RefreshTokenRepository refreshTokenRepository;
 
-  private final IUserService userService;
+  private final UserService userService;
 
   public TokenController(
       JwtTokenUtil jwtTokenUtil,
       RefreshTokenRepository refreshTokenRepository,
-      IUserService userService
+      UserService userService
   ) {
     this.jwtTokenUtil = jwtTokenUtil;
     this.refreshTokenRepository = refreshTokenRepository;

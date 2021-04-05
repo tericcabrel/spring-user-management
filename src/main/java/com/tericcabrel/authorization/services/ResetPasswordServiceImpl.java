@@ -8,13 +8,13 @@ import java.util.*;
 import com.tericcabrel.authorization.models.entities.ResetPassword;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.repositories.mongo.PasswordResetRepository;
-import com.tericcabrel.authorization.services.interfaces.IResetPasswordService;
 
 @Service(value = "passwordResetService")
-public class ResetPasswordService implements IResetPasswordService {
+public class ResetPasswordServiceImpl implements
+    com.tericcabrel.authorization.services.interfaces.ResetPasswordService {
     private PasswordResetRepository passwordResetRepository;
 
-    public ResetPasswordService(PasswordResetRepository passwordResetRepository) {
+    public ResetPasswordServiceImpl(PasswordResetRepository passwordResetRepository) {
         this.passwordResetRepository = passwordResetRepository;
     }
 

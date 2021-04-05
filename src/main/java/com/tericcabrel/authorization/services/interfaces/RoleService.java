@@ -5,7 +5,7 @@ import com.tericcabrel.authorization.models.entities.Role;
 
 import java.util.List;
 
-public interface IRoleService {
+public interface RoleService {
     Role save(CreateRoleDto role);
 
     List<Role> findAll();

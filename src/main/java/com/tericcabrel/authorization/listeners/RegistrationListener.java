@@ -19,7 +19,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.services.interfaces.IConfirmAccountService;
+import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 
 @Component
@@ -31,14 +31,14 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     private Environment environment;
 
-    private IConfirmAccountService confirmAccountService;
+    private ConfirmAccountService confirmAccountService;
 
     private JavaMailSender mailSender;
 
     private TemplateEngine htmlTemplateEngine;
 
     public RegistrationListener(
-            IConfirmAccountService confirmAccountService,
+            ConfirmAccountService confirmAccountService,
             JavaMailSender mailSender,
             Environment environment,
             TemplateEngine htmlTemplateEngine
