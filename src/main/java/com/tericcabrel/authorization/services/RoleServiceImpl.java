@@ -21,12 +21,7 @@ public class RoleServiceImpl implements com.tericcabrel.authorization.services.i
 
     @Override
     public Role save(CreateRoleDto createRoleDto) {
-        Role newRole = new Role();
-
-        newRole.setName(createRoleDto.getName())
-               .setDescription(createRoleDto.getDescription());
-
-        return roleRepository.save(newRole);
+        return roleRepository.save(createRoleDto.toRole());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.models.dtos;
 
+import com.tericcabrel.authorization.models.entities.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -19,4 +20,13 @@ public class CreateRoleDto {
 
     @ApiModelProperty(notes = "Description of the role")
     private String description;
+
+    private boolean isDefault;
+
+    public Role toRole() {
+        return new Role()
+            .setName(this.name)
+            .setDescription(this.description)
+            .setDefault(this.isDefault);
+    }
 }

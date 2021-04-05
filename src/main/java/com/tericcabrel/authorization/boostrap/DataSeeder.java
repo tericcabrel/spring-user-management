@@ -58,7 +58,8 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
                 CreateRoleDto createRoleDto = new CreateRoleDto();
 
                 createRoleDto.setName(key)
-                    .setDescription(value);
+                    .setDescription(value)
+                    .setDefault(true);
 
                 roleService.save(createRoleDto);
             });
