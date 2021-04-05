@@ -1,9 +1,16 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.models.dtos.UpdateRoleDto;
+import com.tericcabrel.authorization.models.dtos.UpdateUserPermissionDto;
+import com.tericcabrel.authorization.models.entities.Permission;
+import com.tericcabrel.authorization.models.entities.Role;
+import com.tericcabrel.authorization.services.interfaces.PermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Arrays;
+import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
@@ -43,10 +50,13 @@ public class UserController {
 
     private final UserService userService;
 
+    private final PermissionService permissionService;
+
     private final FileStorageServiceImpl fileStorageServiceImpl;
 
-    public UserController(UserService userService, FileStorageServiceImpl fileStorageServiceImpl) {
+    public UserController(UserService userService, PermissionService permissionService, FileStorageServiceImpl fileStorageServiceImpl) {
         this.userService = userService;
+        this.permissionService = permissionService;
         this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
 
@@ -179,5 +189,56 @@ public class UserController {
         }
 
         return ResponseEntity.ok().body(new UserResponse(user));
+    }
+
+
+    @ApiOperation(value = SWG_USER_PERMISSION_ASSIGN_OPERATION, response = SuccessResponse.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = SWG_USER_PERMISSION_ASSIGN_MESSAGE, response = UserResponse.class),
+        @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+    })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/{id}/permissions")
+    public ResponseEntity<UserResponse> assignPermissions(@PathVariable String id, @Valid @RequestBody UpdateUserPermissionDto updateUserPermissionDto) {
+        User user = userService.findById(id);
+
+        Arrays.stream(updateUserPermissionDto.getPermissions()).forEach(permissionName -> {
+            Optional<Permission> permission = permissionService.findByName(permissionName);
+
+            if (permission.isPresent() && !user.hasPermission(permissionName)) {
+                user.addPermission(permission.get());
+            }
+        });
+
+        userService.update(user);
+
+        return ResponseEntity.ok().body(new UserResponse(user));
+    }
+
+    @ApiOperation(value = SWG_USER_PERMISSION_REVOKE_OPERATION, response = SuccessResponse.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = SWG_USER_PERMISSION_REVOKE_MESSAGE, response = UserResponse.class),
+        @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
+        @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
+        @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
+    })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{id}/permissions")
+    public ResponseEntity<User> revokePermissions(@PathVariable String id, @Valid @RequestBody UpdateUserPermissionDto updateUserPermissionDto) {
+        User user = userService.findById(id);
+
+        Arrays.stream(updateUserPermissionDto.getPermissions()).forEach(permissionName -> {
+            Optional<Permission> permission = permissionService.findByName(permissionName);
+
+            if (permission.isPresent() && user.hasPermission(permissionName)) {
+                user.removePermission(permission.get());
+            }
+        });
+
+        userService.update(user);
+
+        return ResponseEntity.ok().body(user);
     }
 }

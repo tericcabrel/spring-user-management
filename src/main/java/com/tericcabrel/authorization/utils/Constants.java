@@ -80,6 +80,10 @@ public class Constants {
     public static final String SWG_USER_PICTURE_OPERATION = "Change or delete user picture";
     public static final String SWG_USER_PICTURE_MESSAGE = "The picture updated/deleted successfully!";
     public static final String SWG_USER_PICTURE_ERROR = "An IOException occurred!";
+    public static final String SWG_USER_PERMISSION_ASSIGN_OPERATION = "Assign permissions to user";
+    public static final String SWG_USER_PERMISSION_ASSIGN_MESSAGE = "Permissions successfully assigned to user!";
+    public static final String SWG_USER_PERMISSION_REVOKE_OPERATION = "Revoke permissions to user";
+    public static final String SWG_USER_PERMISSION_REVOKE_MESSAGE = "Permissions successfully revoked to user!";
 
     public static final String SWG_ROLE_TAG_NAME = "Roles";
     public static final String SWG_ROLE_TAG_DESCRIPTION = "Operations pertaining to role creation, update, assign, revoke, retrieve and delete";
