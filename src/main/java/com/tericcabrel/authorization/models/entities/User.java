@@ -79,7 +79,12 @@ public class User extends BaseModel {
     }
 
     public Set<Permission> allPermissions() {
-        // TODO concat user permissions and role permission
-        return new HashSet<>();
+        Set<Permission> userPermissions = this.permissions;
+        Set<Permission> userRolePermissions = this.role.getPermissions();
+
+        Set<Permission> all = new HashSet<>(userPermissions);
+        all.addAll(userRolePermissions);
+
+        return all;
     }
 }

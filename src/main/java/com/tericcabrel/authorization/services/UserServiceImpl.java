@@ -77,10 +77,6 @@ public class UserServiceImpl implements com.tericcabrel.authorization.services.i
         User user = findById(id);
 
         if(user != null) {
-            // All properties must exists in the DTO even if you don't intend to update it
-            // Otherwise, it will set to null
-            // BeanUtils.copyProperties(userDto, user, "password");
-
             if(updateUserDto.getFirstName() != null) {
                 user.setFirstName(updateUserDto.getFirstName());
             }
@@ -141,7 +137,6 @@ public class UserServiceImpl implements com.tericcabrel.authorization.services.i
         return user;
     }
 
-
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
 
@@ -150,14 +145,16 @@ public class UserServiceImpl implements com.tericcabrel.authorization.services.i
         }
 
         return new org.springframework.security.core.userdetails.User(
-            user.getEmail(), user.getPassword(), true, true, true, true, getAuthority(user)
+            user.getEmail(), user.getPassword(), user.isEnabled(), true, true, user.isConfirmed(), getAuthority(user)
         );
     }
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        // user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+
         authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
+
+        user.allPermissions().forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
 
         return authorities;
     }
