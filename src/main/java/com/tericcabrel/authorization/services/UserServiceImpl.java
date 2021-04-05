@@ -42,7 +42,7 @@ public class UserServiceImpl implements com.tericcabrel.authorization.services.i
                 .setAvatar(null)
                 .setTimezone(createUserDto.getTimezone())
                 .setCoordinates(createUserDto.getCoordinates())
-                .setRoles(createUserDto.getRoles());
+                .setRole(createUserDto.getRole());
 
         return userRepository.save(newUser);
     }
@@ -156,7 +156,8 @@ public class UserServiceImpl implements com.tericcabrel.authorization.services.i
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+        // user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+        authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
 
         return authorities;
     }

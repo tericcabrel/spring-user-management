@@ -8,8 +8,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.tericcabrel.authorization.utils.Constants.ROLE_ADMIN;
 import static com.tericcabrel.authorization.utils.Constants.ROLE_SUPER_ADMIN;
@@ -67,8 +65,6 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void loadUsers() {
-        Set<CreateUserDto> users = new HashSet<>() {};
-
         CreateUserDto superAdmin = new CreateUserDto()
                 .setEmail("sadmin@authoz.com")
                 .setFirstName("Super")
@@ -81,23 +77,17 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
                 .setCoordinates(null)
                 .setPassword("secret");
 
-        users.add(superAdmin);
 
-        users.forEach(createUserDto -> {
-            User obj = userService.findByEmail(createUserDto.getEmail());
+            User obj = userService.findByEmail(superAdmin.getEmail());
 
             if (obj == null ){
                 Optional<Role> role = roleService.findByName(ROLE_SUPER_ADMIN);
 
                 role.ifPresent(roleFound -> {
-                    Set<Role> userRoles = new HashSet<>();
-                    userRoles.add(role.get());
+                    superAdmin.setRole(role.get());
 
-                    createUserDto.setRoles(userRoles);
-
-                    userService.save(createUserDto);
+                    userService.save(superAdmin);
                 });
             }
-        });
     }
 }

@@ -1,20 +1,17 @@
 package com.tericcabrel.authorization.models.dtos;
 
 import javax.validation.constraints.*;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import com.tericcabrel.authorization.constraints.IsUnique;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import com.tericcabrel.authorization.models.entities.Coordinates;
-import com.tericcabrel.authorization.models.entities.Role;
-import com.tericcabrel.authorization.constraints.FieldMatch;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import com.tericcabrel.authorization.constraints.IsUnique;
+import com.tericcabrel.authorization.constraints.FieldMatch;
+import com.tericcabrel.authorization.models.entities.Role;
+import com.tericcabrel.authorization.models.entities.Coordinates;
+
 
 @ApiModel(value = "RegisterParam", description = "Parameters required to create or update user")
 @FieldMatch.List({
@@ -69,11 +66,9 @@ public class CreateUserDto {
     @ApiModelProperty(notes = "Geographic location of the user")
     private Coordinates coordinates;
 
-    @ApiModelProperty(hidden = true)
-    private Set<Role> roles;
+    private Role role;
 
     public CreateUserDto() {
         enabled = true;
-        roles = new HashSet<>();
     }
 }

@@ -91,7 +91,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(result);
         }
 
-        createUserDto.setRoles(new HashSet<>(Collections.singletonList(roleUser.get())));
+        createUserDto.setRole(roleUser.get());
 
         User user = userService.save(createUserDto);
 

@@ -40,13 +40,12 @@ public class User extends BaseModel {
     private Coordinates coordinates;
 
     @DBRef
-    private Set<Role> roles; // TODO not a list
+    private Role role;
 
     @DBRef
     private Set<Permission> permissions;
 
     public User() {
-        roles = new HashSet<>();
         permissions = new HashSet<>();
     }
 
@@ -58,34 +57,12 @@ public class User extends BaseModel {
         this.gender = gender;
         this.enabled = true;
         this.confirmed = false;
-        roles = new HashSet<>();
         permissions = new HashSet<>();
     }
 
-    public User addRole(Role role) {
-        this.roles.add(role);
-
-        return this;
-    }
-
-    public boolean hasRole(String roleName) {
-        Optional<Role> roleItem = this.roles.stream().filter(role -> role.getName().equals(roleName)).findFirst();
-
-        return roleItem.isPresent();
-    }
-
-    public User removeRole(Role role) {
-        Stream<Role> newRoles = this.roles.stream().filter(role1 -> !role1.getName().equals(role.getName()));
-
-        this.roles = newRoles.collect(Collectors.toSet());
-
-        return this;
-    }
-
-    public User addPermission(Permission permission) {
+    public void addPermission(Permission permission) {
         this.permissions.add(permission);
 
-        return this;
     }
 
     public boolean hasPermission(String permissionName) {
@@ -94,12 +71,11 @@ public class User extends BaseModel {
         return permissionItem.isPresent();
     }
 
-    public User removePermission(Permission permission) {
+    public void removePermission(Permission permission) {
         Stream<Permission> newPermissions = this.permissions.stream().filter(permission1 -> !permission1.getName().equals(permission.getName()));
 
         this.permissions = newPermissions.collect(Collectors.toSet());
 
-        return this;
     }
 
     public Set<Permission> allPermissions() {

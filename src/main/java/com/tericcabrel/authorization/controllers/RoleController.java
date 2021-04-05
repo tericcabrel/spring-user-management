@@ -141,7 +141,7 @@ public class RoleController {
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/{id}/permissions")
+    @DeleteMapping("/{id}/permissions")
     public ResponseEntity<RoleResponse> removePermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto) {
         Role role = roleService.findById(id);
 

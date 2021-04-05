@@ -19,7 +19,6 @@ import io.jsonwebtoken.*;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
 
-import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.models.entities.User;
 
 @Component
@@ -64,7 +63,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public String createTokenFromUser(User user) {
-        String authorities = user.getRoles().stream().map(Role::getName).collect(Collectors.joining());
+        String authorities = user.getRole().getName();
 
         return generateToken(user.getEmail(), authorities);
     }
