@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiResponses;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,9 +19,7 @@ import static com.tericcabrel.authorization.utils.Constants.*;
 
 import com.tericcabrel.authorization.models.response.*;
 import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
-import com.tericcabrel.authorization.models.dtos.UpdateRoleDto;
 import com.tericcabrel.authorization.models.entities.Role;
-import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.services.interfaces.RoleService;
 import com.tericcabrel.authorization.services.interfaces.UserService;
 
