@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Data
-@Document(collection = "roles")
+@Document(collection = "permissions")
 public class Permission extends BaseModel {
   private String name;
 

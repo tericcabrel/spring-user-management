@@ -47,7 +47,7 @@ public class PermissionLoaderImpl implements PermissionLoader {
       Optional<Role> role = roleRepository.findByName(roleName);
 
       role.ifPresent(roleFound -> {
-        if (roleFound.hasPermission(permission.getName())) {
+        if (!roleFound.hasPermission(permission.getName())) {
           roleFound.addPermission(permission);
 
           roleRepository.save(roleFound);
@@ -58,7 +58,14 @@ public class PermissionLoaderImpl implements PermissionLoader {
 
   private void loadPermissions(List<PermissionLoadDto> permissionLoadDtoList) {
     permissionLoadDtoList.parallelStream().forEach(permissionLoadDto -> {
-      Permission permissionCreated = permissionRepository.save(permissionLoadDto.toPermission());
+      Permission permissionCreated;
+      Optional<Permission> permission = permissionRepository.findByName(permissionLoadDto.getName());
+
+      if (permission.isEmpty()) {
+        permissionCreated = permissionRepository.save(permissionLoadDto.toPermission());
+      } else {
+        permissionCreated = permission.get();
+      }
 
       addPermissionToRole(permissionCreated, permissionLoadDto.getRoleNames());
     });
@@ -72,7 +79,7 @@ public class PermissionLoaderImpl implements PermissionLoader {
       permissionRepository.deleteAll();
     }
 
-    Resource resource = new ClassPathResource("classpath:permission.json");
+    Resource resource = new ClassPathResource("permission.json");
 
     try (InputStream inputStream = resource.getInputStream()) {
 

@@ -54,7 +54,7 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
         rolesMap.forEach((key, value) -> {
             Optional<Role> role = roleService.findByName(key);
 
-            role.ifPresent(roleFound -> {
+            if (role.isEmpty()) {
                 CreateRoleDto createRoleDto = new CreateRoleDto();
 
                 createRoleDto.setName(key)
@@ -62,7 +62,7 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
                     .setDefault(true);
 
                 roleService.save(createRoleDto);
-            });
+            }
         });
     }
 

@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.boostrap;
 
+import com.tericcabrel.authorization.models.entities.Permission;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.domain.Sort;
@@ -26,6 +27,10 @@ public class MongoEnsureIndexes implements ApplicationListener<ContextRefreshedE
 
         mongoTemplate.indexOps(Role.class).ensureIndex(
                 new Index().on("name", Sort.Direction.ASC).unique()
+        );
+
+        mongoTemplate.indexOps(Permission.class).ensureIndex(
+            new Index().on("name", Sort.Direction.ASC).unique()
         );
     }
 }
