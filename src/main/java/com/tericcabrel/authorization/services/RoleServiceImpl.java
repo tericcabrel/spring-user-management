@@ -64,4 +64,9 @@ public class RoleServiceImpl implements com.tericcabrel.authorization.services.i
 
         return null;
     }
+
+    @Override
+    public Role update(Role role) {
+        return roleRepository.save(role);
+    }
 }

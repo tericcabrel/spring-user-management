@@ -1,5 +1,8 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.models.dtos.UpdateRolePermissionDto;
+import com.tericcabrel.authorization.models.entities.Permission;
+import com.tericcabrel.authorization.services.interfaces.PermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -7,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,11 +32,14 @@ import com.tericcabrel.authorization.services.interfaces.UserService;
 public class RoleController {
     private final RoleService roleService;
 
+    private final PermissionService permissionService;
+
     private final UserService userService;
 
-    public RoleController(UserService userService, RoleService roleService) {
-        this.userService = userService;
+    public RoleController(UserService userService, PermissionService permissionService, RoleService roleService) {
         this.roleService = roleService;
+        this.permissionService = permissionService;
+        this.userService = userService;
     }
 
     @ApiOperation(value = SWG_ROLE_CREATE_OPERATION, response = SuccessResponse.class)
@@ -101,53 +108,53 @@ public class RoleController {
         return ResponseEntity.noContent().build();
     }
 
-    @ApiOperation(value = SWG_ROLE_ASSIGN_OPERATION, response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_ASSIGN_PERMISSION_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = SWG_ROLE_ASSIGN_MESSAGE, response = UserResponse.class),
+        @ApiResponse(code = 200, message = SWG_ROLE_ASSIGN_PERMISSION_MESSAGE, response = UserResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/assign")
-    public ResponseEntity<UserResponse> assignRoles(@Valid @RequestBody UpdateRoleDto updateRoleDto) {
-        User user = userService.findById(updateRoleDto.getUserId());
+    @PutMapping("/{id}/permissions")
+    public ResponseEntity<RoleResponse> addPermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto) {
+        Role role = roleService.findById(id);
 
-        Arrays.stream(updateRoleDto.getRoles()).forEach(role -> {
-            Optional<Role> roleObject = roleService.findByName(role);
+        Arrays.stream(updateRolePermissionDto.getPermissions()).forEach(permissionName -> {
+            Optional<Permission> permission = permissionService.findByName(permissionName);
 
-            if (roleObject.isPresent() && !user.hasRole(role)) {
-                user.addRole(roleObject.get());
+            if (permission.isPresent() && !role.hasPermission(permissionName)) {
+                role.addPermission(permission.get());
             }
         });
 
-        userService.update(user);
+        Role roleUpdated = roleService.update(role);
 
-        return ResponseEntity.ok().body(new UserResponse(user));
+        return ResponseEntity.ok().body(new RoleResponse(roleUpdated));
     }
 
-    @ApiOperation(value = SWG_ROLE_REVOKE_OPERATION, response = SuccessResponse.class)
+    @ApiOperation(value = SWG_ROLE_REMOVE_PERMISSION_OPERATION, response = SuccessResponse.class)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = SWG_ROLE_REVOKE_MESSAGE, response = UserResponse.class),
+        @ApiResponse(code = 200, message = SWG_ROLE_REMOVE_PERMISSION_MESSAGE, response = UserResponse.class),
         @ApiResponse(code = 401, message = UNAUTHORIZED_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 403, message = FORBIDDEN_MESSAGE, response = BadRequestResponse.class),
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/revoke")
-    public ResponseEntity<User> revokeRoles(@Valid @RequestBody UpdateRoleDto updateRoleDto) {
-        User user = userService.findById(updateRoleDto.getUserId());
+    @PutMapping("/{id}/permissions")
+    public ResponseEntity<RoleResponse> removePermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto) {
+        Role role = roleService.findById(id);
 
-        Arrays.stream(updateRoleDto.getRoles()).forEach(role -> {
-            Optional<Role> roleObject = roleService.findByName(role);
+        Arrays.stream(updateRolePermissionDto.getPermissions()).forEach(permissionName -> {
+            Optional<Permission> permission = permissionService.findByName(permissionName);
 
-            if (roleObject.isPresent() && user.hasRole(role)) {
-                user.removeRole(roleObject.get());
+            if (permission.isPresent() && role.hasPermission(permissionName)) {
+                role.removePermission(permission.get());
             }
         });
 
-        userService.update(user);
+        Role roleUpdated = roleService.update(role);
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(new RoleResponse(roleUpdated));
     }
 }

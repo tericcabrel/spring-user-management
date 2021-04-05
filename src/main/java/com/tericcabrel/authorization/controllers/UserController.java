@@ -1,9 +1,7 @@
 package com.tericcabrel.authorization.controllers;
 
-import com.tericcabrel.authorization.models.dtos.UpdateRoleDto;
 import com.tericcabrel.authorization.models.dtos.UpdateUserPermissionDto;
 import com.tericcabrel.authorization.models.entities.Permission;
-import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.services.interfaces.PermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -97,8 +97,8 @@ public class Constants {
     public static final String SWG_ROLE_UPDATE_MESSAGE = "User updated successfully!";
     public static final String SWG_ROLE_DELETE_OPERATION = "Delete a user";
     public static final String SWG_ROLE_DELETE_MESSAGE = "User deleted successfully!";
-    public static final String SWG_ROLE_ASSIGN_OPERATION = "Assign roles to an user";
-    public static final String SWG_ROLE_ASSIGN_MESSAGE = "Roles successfully assigned to user!";
-    public static final String SWG_ROLE_REVOKE_OPERATION = "Revoke roles to an user";
-    public static final String SWG_ROLE_REVOKE_MESSAGE = "Roles successfully revoked to user!";
+    public static final String SWG_ROLE_ASSIGN_PERMISSION_OPERATION = "Add permissions to a role";
+    public static final String SWG_ROLE_ASSIGN_PERMISSION_MESSAGE = "Permissions successfully added to the role!";
+    public static final String SWG_ROLE_REMOVE_PERMISSION_OPERATION = "Remove permissions to a role";
+    public static final String SWG_ROLE_REMOVE_PERMISSION_MESSAGE = "Permissions successfully removed from role!";
 }

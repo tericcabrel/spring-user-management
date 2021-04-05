@@ -18,4 +18,5 @@ public interface RoleService {
     Role findById(String id);
 
     Role update(String id, CreateRoleDto createRoleDto);
+    Role update(Role role);
 }
