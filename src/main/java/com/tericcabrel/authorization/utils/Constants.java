@@ -104,10 +104,18 @@ public class Constants {
     public static final String SWG_ROLE_REMOVE_PERMISSION_OPERATION = "Remove permissions to a role";
     public static final String SWG_ROLE_REMOVE_PERMISSION_MESSAGE = "Permissions successfully removed from role!";
 
-    public static final String SWG_PERMISSION_TAG_NAME = "Roles";
+    public static final String SWG_PERMISSION_TAG_NAME = "Permissions";
     public static final String SWG_PERMISSION_TAG_DESCRIPTION = "Retrieve permissions";
     public static final String SWG_PERMISSION_LIST_OPERATION = "Get all permissions";
     public static final String SWG_PERMISSION_LIST_MESSAGE = "List retrieved successfully!";
     public static final String SWG_PERMISSION_ITEM_OPERATION = "Get one permission";
     public static final String SWG_PERMISSION_ITEM_MESSAGE = "Item retrieved successfully!";
+
+    public static final String SWG_ADMIN_TAG_NAME = "Admins";
+    public static final String SWG_ADMIN_TAG_DESCRIPTION = "Manage Admin users";
+    public static final String SWG_ADMIN_CREATE_OPERATION = "Create an admin user";
+    public static final String SWG_ADMIN_CREATE_MESSAGE = "Admin registered successfully!";
+    public static final String SWG_ADMIN_CREATE_ERROR = "Failed to create the admin";
+    public static final String SWG_ADMIN_DELETE_OPERATION = "Delete an admin";
+    public static final String SWG_ADMIN_DELETE_MESSAGE = "Admin deleted successfully!";
 }
