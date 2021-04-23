@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -71,8 +72,14 @@ public class RoleController {
     })
     @PreAuthorize("hasAuthority('read:role')")
     @GetMapping("/{id}")
-    public ResponseEntity<RoleResponse> one(@PathVariable String id){
-        return ResponseEntity.ok(new RoleResponse(roleService.findById(id)));
+    public ResponseEntity<RoleResponse> one(@PathVariable String id) throws ResourceNotFoundException {
+        Optional<Role> role = roleService.findById(id);
+
+        if (role.isEmpty()) {
+            throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
+        }
+
+        return ResponseEntity.ok(new RoleResponse(role.get()));
     }
 
     @ApiOperation(value = SWG_ROLE_UPDATE_OPERATION, response = SuccessResponse.class)
@@ -111,8 +118,15 @@ public class RoleController {
     })
     @PreAuthorize("hasAuthority('add:permission')")
     @PutMapping("/{id}/permissions")
-    public ResponseEntity<RoleResponse> addPermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto) {
-        Role role = roleService.findById(id);
+    public ResponseEntity<RoleResponse> addPermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto)
+        throws ResourceNotFoundException {
+        Optional<Role> roleOptional = roleService.findById(id);
+
+        if (roleOptional.isEmpty()) {
+            throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
+        }
+
+        Role role = roleOptional.get();
 
         Arrays.stream(updateRolePermissionDto.getPermissions()).forEach(permissionName -> {
             Optional<Permission> permission = permissionService.findByName(permissionName);
@@ -136,8 +150,15 @@ public class RoleController {
     })
     @PreAuthorize("hasAuthority('remove:permission')")
     @DeleteMapping("/{id}/permissions")
-    public ResponseEntity<RoleResponse> removePermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto) {
-        Role role = roleService.findById(id);
+    public ResponseEntity<RoleResponse> removePermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto)
+        throws ResourceNotFoundException {
+        Optional<Role> roleOptional = roleService.findById(id);
+
+        if (roleOptional.isEmpty()) {
+            throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
+        }
+
+        Role role = roleOptional.get();
 
         Arrays.stream(updateRolePermissionDto.getPermissions()).forEach(permissionName -> {
             Optional<Permission> permission = permissionService.findByName(permissionName);

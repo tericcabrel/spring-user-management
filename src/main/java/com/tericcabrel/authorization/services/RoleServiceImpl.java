@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.services;
 
+import com.tericcabrel.authorization.services.interfaces.RoleService;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import com.tericcabrel.authorization.models.entities.Role;
 import com.tericcabrel.authorization.repositories.RoleRepository;
 
 @Service(value = "roleService")
-public class RoleServiceImpl implements com.tericcabrel.authorization.services.interfaces.RoleService {
+public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     public RoleServiceImpl(RoleRepository roleRepository) {
@@ -43,23 +44,23 @@ public class RoleServiceImpl implements com.tericcabrel.authorization.services.i
     }
 
     @Override
-    public Role findById(String id) {
-        Optional<Role> optionalRole = roleRepository.findById(new ObjectId(id));
-
-        return optionalRole.orElse(null);
+    public Optional<Role> findById(String id) {
+        return roleRepository.findById(new ObjectId(id));
     }
 
     @Override
     public Role update(String id, CreateRoleDto createRoleDto) {
-        Role role = findById(id);
+        Optional<Role> role = findById(id);
 
-        if(role != null) {
-            role.setName(createRoleDto.getName());
-            role.setDescription(createRoleDto.getDescription());
 
-            roleRepository.save(role);
+        if(role.isPresent()) {
+            Role roleToUpdate = role.get();
 
-            return role;
+            roleToUpdate
+                .setName(createRoleDto.getName())
+                .setDescription(createRoleDto.getDescription());
+
+            return roleRepository.save(roleToUpdate);
         }
 
         return null;

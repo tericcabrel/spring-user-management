@@ -15,7 +15,7 @@ public interface RoleService {
 
     Optional<Role> findByName(String name);
 
-    Role findById(String id);
+    Optional<Role> findById(String id);
 
     Role update(String id, CreateRoleDto createRoleDto);
     Role update(Role role);
