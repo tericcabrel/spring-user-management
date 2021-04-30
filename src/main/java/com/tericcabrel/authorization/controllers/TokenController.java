@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -93,7 +94,8 @@ public class TokenController {
       @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
   })
   @PostMapping(value = "/refresh")
-  public ResponseEntity<Object> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
+  public ResponseEntity<Object> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto)
+      throws ResourceNotFoundException {
     RefreshToken refreshToken = refreshTokenRepository.findByValue(refreshTokenDto.getToken());
     Map<String, String> result = new HashMap<>();
 

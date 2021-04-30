@@ -73,13 +73,9 @@ public class RoleController {
     @PreAuthorize("hasAuthority('read:role')")
     @GetMapping("/{id}")
     public ResponseEntity<RoleResponse> one(@PathVariable String id) throws ResourceNotFoundException {
-        Optional<Role> role = roleService.findById(id);
+        Role role = roleService.findById(id);
 
-        if (role.isEmpty()) {
-            throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
-        }
-
-        return ResponseEntity.ok(new RoleResponse(role.get()));
+        return ResponseEntity.ok(new RoleResponse(role));
     }
 
     @ApiOperation(value = SWG_ROLE_UPDATE_OPERATION, response = SuccessResponse.class)
@@ -91,7 +87,8 @@ public class RoleController {
     })
     @PreAuthorize("hasAuthority('update:role')")
     @PutMapping("/{id}")
-    public ResponseEntity<RoleResponse> update(@PathVariable String id, @Valid @RequestBody CreateRoleDto createRoleDto) {
+    public ResponseEntity<RoleResponse> update(@PathVariable String id, @Valid @RequestBody CreateRoleDto createRoleDto)
+        throws ResourceNotFoundException {
         return ResponseEntity.ok(new RoleResponse(roleService.update(id, createRoleDto)));
     }
 
@@ -120,13 +117,7 @@ public class RoleController {
     @PutMapping("/{id}/permissions")
     public ResponseEntity<RoleResponse> addPermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto)
         throws ResourceNotFoundException {
-        Optional<Role> roleOptional = roleService.findById(id);
-
-        if (roleOptional.isEmpty()) {
-            throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
-        }
-
-        Role role = roleOptional.get();
+        Role role = roleService.findById(id);
 
         Arrays.stream(updateRolePermissionDto.getPermissions()).forEach(permissionName -> {
             Optional<Permission> permission = permissionService.findByName(permissionName);
@@ -152,13 +143,7 @@ public class RoleController {
     @DeleteMapping("/{id}/permissions")
     public ResponseEntity<RoleResponse> removePermissions(@PathVariable String id, @Valid @RequestBody UpdateRolePermissionDto updateRolePermissionDto)
         throws ResourceNotFoundException {
-        Optional<Role> roleOptional = roleService.findById(id);
-
-        if (roleOptional.isEmpty()) {
-            throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
-        }
-
-        Role role = roleOptional.get();
+        Role role = roleService.findById(id);
 
         Arrays.stream(updateRolePermissionDto.getPermissions()).forEach(permissionName -> {
             Optional<Permission> permission = permissionService.findByName(permissionName);

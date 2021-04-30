@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import com.tericcabrel.authorization.models.dtos.UpdateUserPermissionDto;
 import com.tericcabrel.authorization.models.entities.Permission;
 import com.tericcabrel.authorization.services.interfaces.PermissionService;
@@ -77,7 +78,7 @@ public class UserController {
     })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> currentUser(){
+    public ResponseEntity<UserResponse> currentUser() throws ResourceNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         return ResponseEntity.ok(new UserResponse(userService.findByEmail(authentication.getName())));
@@ -91,7 +92,8 @@ public class UserController {
     })
     @PreAuthorize("hasAuthority('read:user')")
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> one(@PathVariable String id){
+    public ResponseEntity<UserResponse> one(@PathVariable String id)
+        throws ResourceNotFoundException {
         return ResponseEntity.ok(new UserResponse(userService.findById(id)));
     }
 
@@ -104,7 +106,8 @@ public class UserController {
     })
     @PreAuthorize("hasAuthority('update:user')")
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(@PathVariable String id, @RequestBody UpdateUserDto updateUserDto) {
+    public ResponseEntity<UserResponse> update(@PathVariable String id, @RequestBody UpdateUserDto updateUserDto)
+        throws ResourceNotFoundException {
         return ResponseEntity.ok(new UserResponse(userService.update(id, updateUserDto)));
     }
 
@@ -120,7 +123,7 @@ public class UserController {
     @PutMapping("/{id}/password")
     public ResponseEntity<UserResponse> updatePassword(
             @PathVariable String id, @Valid @RequestBody UpdatePasswordDto updatePasswordDto
-    ) throws PasswordNotMatchException {
+    ) throws PasswordNotMatchException, ResourceNotFoundException {
         User user = userService.updatePassword(id, updatePasswordDto);
 
         if (user == null) {
@@ -162,7 +165,7 @@ public class UserController {
         @Size(max = 1, message = "This field length can't be greater than 1")
         @NotBlank(message = "This field is required")
                     String action
-    ) throws IOException {
+    ) throws IOException, ResourceNotFoundException {
         User user = null;
         UpdateUserDto updateUserDto = new UpdateUserDto();
 
@@ -200,7 +203,8 @@ public class UserController {
     })
     @PreAuthorize("hasAuthority('assign:permission')")
     @PutMapping("/{id}/permissions")
-    public ResponseEntity<UserResponse> assignPermissions(@PathVariable String id, @Valid @RequestBody UpdateUserPermissionDto updateUserPermissionDto) {
+    public ResponseEntity<UserResponse> assignPermissions(@PathVariable String id, @Valid @RequestBody UpdateUserPermissionDto updateUserPermissionDto)
+        throws ResourceNotFoundException {
         User user = userService.findById(id);
 
         Arrays.stream(updateUserPermissionDto.getPermissions()).forEach(permissionName -> {
@@ -225,7 +229,8 @@ public class UserController {
     })
     @PreAuthorize("hasAuthority('revoke:permission')")
     @DeleteMapping("/{id}/permissions")
-    public ResponseEntity<User> revokePermissions(@PathVariable String id, @Valid @RequestBody UpdateUserPermissionDto updateUserPermissionDto) {
+    public ResponseEntity<User> revokePermissions(@PathVariable String id, @Valid @RequestBody UpdateUserPermissionDto updateUserPermissionDto)
+        throws ResourceNotFoundException {
         User user = userService.findById(id);
 
         Arrays.stream(updateUserPermissionDto.getPermissions()).forEach(permissionName -> {

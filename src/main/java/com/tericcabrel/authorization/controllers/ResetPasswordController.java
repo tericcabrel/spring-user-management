@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import com.tericcabrel.authorization.models.response.BadRequestResponse;
 import com.tericcabrel.authorization.models.response.SuccessResponse;
 import io.swagger.annotations.Api;
@@ -56,7 +57,8 @@ public class ResetPasswordController {
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/forgot-password")
-    public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) {
+    public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto)
+        throws ResourceNotFoundException {
         User user = userService.findByEmail(forgotPasswordDto.getEmail());
         Map<String, String> result = new HashMap<>();
 
@@ -80,7 +82,8 @@ public class ResetPasswordController {
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/reset-password")
-    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordDto passwordResetDto) {
+    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordDto passwordResetDto)
+        throws ResourceNotFoundException {
         ResetPassword resetPassword = resetPasswordService.findByToken(passwordResetDto.getToken());
         Map<String, String> result = new HashMap<>();
 

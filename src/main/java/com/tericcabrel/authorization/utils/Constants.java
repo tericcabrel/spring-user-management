@@ -33,6 +33,7 @@ public class Constants {
     public static final String USER_PICTURE_NO_ACTION_MESSAGE = "Unknown action!";
     public static final String ROLE_NOT_FOUND_MESSAGE = "Role not found!";
     public static final String PERMISSION_NOT_FOUND_MESSAGE = "Permission not found!";
+    public static final String USER_NOT_FOUND_MESSAGE = "User not found!";
 
     public static final String SWG_AUTH_TAG_NAME = "Registration & Authentication";
     public static final String SWG_AUTH_TAG_DESCRIPTION = "Operations pertaining to registration, authentication and account confirmation";

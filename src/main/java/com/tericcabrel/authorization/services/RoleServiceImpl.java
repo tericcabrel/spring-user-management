@@ -1,5 +1,8 @@
 package com.tericcabrel.authorization.services;
 
+import static com.tericcabrel.authorization.utils.Constants.ROLE_NOT_FOUND_MESSAGE;
+
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import com.tericcabrel.authorization.services.interfaces.RoleService;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -39,31 +42,36 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Optional<Role> findByName(String name) {
-        return roleRepository.findByName(name);
-    }
+    public Role findByName(String name) throws ResourceNotFoundException {
+        Optional<Role> roleOptional = roleRepository.findByName(name);
 
-    @Override
-    public Optional<Role> findById(String id) {
-        return roleRepository.findById(new ObjectId(id));
-    }
-
-    @Override
-    public Role update(String id, CreateRoleDto createRoleDto) {
-        Optional<Role> role = findById(id);
-
-
-        if(role.isPresent()) {
-            Role roleToUpdate = role.get();
-
-            roleToUpdate
-                .setName(createRoleDto.getName())
-                .setDescription(createRoleDto.getDescription());
-
-            return roleRepository.save(roleToUpdate);
+        if (roleOptional.isEmpty()) {
+            throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
         }
 
-        return null;
+        return roleOptional.get();
+    }
+
+    @Override
+    public Role findById(String id) throws ResourceNotFoundException {
+        Optional<Role> roleOptional = roleRepository.findById(new ObjectId(id));
+
+        if (roleOptional.isEmpty()) {
+            throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
+        }
+
+        return roleOptional.get();
+    }
+
+    @Override
+    public Role update(String id, CreateRoleDto createRoleDto) throws ResourceNotFoundException {
+        Role roleToUpdate = findById(id);
+
+        roleToUpdate
+            .setName(createRoleDto.getName())
+            .setDescription(createRoleDto.getDescription());
+
+        return roleRepository.save(roleToUpdate);
     }
 
     @Override

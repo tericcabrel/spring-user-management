@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.controllers;
 
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import com.tericcabrel.authorization.models.entities.Role;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -79,10 +80,11 @@ public class AuthController {
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody CreateUserDto createUserDto) {
-        Optional<Role> roleUser = roleService.findByName(ROLE_USER);
+    public ResponseEntity<Object> register(@Valid @RequestBody CreateUserDto createUserDto)
+        throws ResourceNotFoundException {
+        Role roleUser = roleService.findByName(ROLE_USER);
 
-        if (roleUser.isEmpty()) {
+        if (roleUser == null) {
             Map<String, String> result = new HashMap<>();
             result.put("message", SWG_AUTH_REGISTER_ERROR);
 
@@ -91,7 +93,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(result);
         }
 
-        createUserDto.setRole(roleUser.get());
+        createUserDto.setRole(roleUser);
 
         User user = userService.save(createUserDto);
 
@@ -107,7 +109,8 @@ public class AuthController {
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/login")
-    public ResponseEntity<Object> login(@Valid @RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginUserDto loginUserDto)
+        throws ResourceNotFoundException {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginUserDto.getEmail(),
@@ -148,7 +151,8 @@ public class AuthController {
         @ApiResponse(code = 400, message = SWG_AUTH_CONFIRM_ACCOUNT_ERROR, response = BadRequestResponse.class),
     })
     @PostMapping(value = "/confirm-account")
-    public ResponseEntity<Object> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto) {
+    public ResponseEntity<Object> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto)
+        throws ResourceNotFoundException {
         ConfirmAccount confirmAccount = confirmAccountService.findByToken(validateTokenDto.getToken());
         Map<String, String> result = new HashMap<>();
 

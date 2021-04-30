@@ -63,13 +63,9 @@ public class AdminController {
   @PostMapping(value = "")
   public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserDto createUserDto)
       throws ResourceNotFoundException {
-    Optional<Role> roleUser = roleService.findByName(ROLE_ADMIN);
+    Role roleUser = roleService.findByName(ROLE_ADMIN);
 
-    if (roleUser.isEmpty()) {
-      throw new ResourceNotFoundException(ROLE_NOT_FOUND_MESSAGE);
-    }
-
-    createUserDto.setRole(roleUser.get())
+    createUserDto.setRole(roleUser)
         .setConfirmed(true)
         .setEnabled(true);
 

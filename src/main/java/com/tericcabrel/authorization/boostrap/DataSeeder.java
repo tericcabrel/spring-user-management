@@ -1,8 +1,9 @@
 package com.tericcabrel.authorization.boostrap;
 
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import com.tericcabrel.authorization.services.interfaces.PermissionLoader;
 import java.util.Map;
-import java.util.Optional;
+import lombok.SneakyThrows;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,7 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
         this.permissionLoader = permissionLoader;
     }
 
+    @SneakyThrows
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         loadRoles();
@@ -50,9 +52,14 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
         rolesMap.put(ROLE_SUPER_ADMIN, "Super admin role");
 
         rolesMap.forEach((key, value) -> {
-            Optional<Role> role = roleService.findByName(key);
+            Role role = null;
+            try {
+                role = roleService.findByName(key);
+            } catch (ResourceNotFoundException e) {
+                e.printStackTrace();
+            }
 
-            if (role.isEmpty()) {
+            if (role == null) {
                 CreateRoleDto createRoleDto = new CreateRoleDto();
 
                 createRoleDto.setName(key)
@@ -64,7 +71,7 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
         });
     }
 
-    private void loadUsers() {
+    private void loadUsers() throws ResourceNotFoundException {
         CreateUserDto superAdmin = new CreateUserDto()
                 .setEmail("sadmin@authoz.com")
                 .setFirstName("Super")
@@ -81,13 +88,11 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
             User obj = userService.findByEmail(superAdmin.getEmail());
 
             if (obj == null ){
-                Optional<Role> role = roleService.findByName(ROLE_SUPER_ADMIN);
+                Role role = roleService.findByName(ROLE_SUPER_ADMIN);
 
-                role.ifPresent(roleFound -> {
-                    superAdmin.setRole(role.get());
+                superAdmin.setRole(role);
 
-                    userService.save(superAdmin);
-                });
+                userService.save(superAdmin);
             }
     }
 }

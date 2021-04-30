@@ -1,5 +1,6 @@
 package com.tericcabrel.authorization.services.interfaces;
 
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import java.util.List;
 
 import com.tericcabrel.authorization.models.dtos.UpdatePasswordDto;
@@ -15,15 +16,16 @@ public interface UserService extends UserDetailsService {
 
     void delete(String id);
 
-    User findByEmail(String email);
+    User findByEmail(String email) throws ResourceNotFoundException;
 
-    User findById(String id);
+    User findById(String id) throws ResourceNotFoundException;
 
-    User update(String id, UpdateUserDto updateUserDto);
+    User update(String id, UpdateUserDto updateUserDto) throws ResourceNotFoundException;
 
     void update(User user);
 
-    User updatePassword(String id, UpdatePasswordDto updatePasswordDto);
+    User updatePassword(String id, UpdatePasswordDto updatePasswordDto)
+        throws ResourceNotFoundException;
 
-    User updatePassword(String id, String newPassword);
+    User updatePassword(String id, String newPassword) throws ResourceNotFoundException;
 }

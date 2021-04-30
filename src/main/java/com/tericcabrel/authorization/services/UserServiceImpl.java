@@ -1,5 +1,8 @@
 package com.tericcabrel.authorization.services;
 
+import static com.tericcabrel.authorization.utils.Constants.USER_NOT_FOUND_MESSAGE;
+
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,10 +18,11 @@ import com.tericcabrel.authorization.models.dtos.UpdatePasswordDto;
 import com.tericcabrel.authorization.models.dtos.UpdateUserDto;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.repositories.UserRepository;
+import com.tericcabrel.authorization.services.interfaces.UserService;
 
 
 @Service
-public class UserServiceImpl implements com.tericcabrel.authorization.services.interfaces.UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Autowired
@@ -61,47 +65,51 @@ public class UserServiceImpl implements com.tericcabrel.authorization.services.i
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    public User findByEmail(String email) throws ResourceNotFoundException {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-    @Override
-    public User findById(String id) {
-        Optional<User> optionalUser = userRepository.findById(new ObjectId(id));
-
-        return optionalUser.orElse(null);
-    }
-
-    @Override
-    public User update(String id, UpdateUserDto updateUserDto) {
-        User user = findById(id);
-
-        if(user != null) {
-            if(updateUserDto.getFirstName() != null) {
-                user.setFirstName(updateUserDto.getFirstName());
-            }
-            if(updateUserDto.getLastName() != null) {
-                user.setLastName(updateUserDto.getLastName());
-            }
-            if(updateUserDto.getTimezone() != null) {
-                user.setTimezone(updateUserDto.getTimezone());
-            }
-            if(updateUserDto.getGender() != null) {
-                user.setGender(updateUserDto.getGender());
-            }
-            if(updateUserDto.getAvatar() != null) {
-                user.setAvatar(updateUserDto.getAvatar());
-            }
-            if(updateUserDto.getCoordinates() != null) {
-                user.setCoordinates(updateUserDto.getCoordinates());
-            }
-
-            userRepository.save(user);
-
-            return user;
+        if (optionalUser.isEmpty()) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND_MESSAGE);
         }
 
-        return null;
+        return optionalUser.get();
+    }
+
+    @Override
+    public User findById(String id) throws ResourceNotFoundException {
+        Optional<User> optionalUser = userRepository.findById(new ObjectId(id));
+
+        if (optionalUser.isEmpty()) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND_MESSAGE);
+        }
+
+        return optionalUser.get();
+    }
+
+    @Override
+    public User update(String id, UpdateUserDto updateUserDto) throws ResourceNotFoundException {
+        User user = findById(id);
+
+        if(updateUserDto.getFirstName() != null) {
+            user.setFirstName(updateUserDto.getFirstName());
+        }
+        if(updateUserDto.getLastName() != null) {
+            user.setLastName(updateUserDto.getLastName());
+        }
+        if(updateUserDto.getTimezone() != null) {
+            user.setTimezone(updateUserDto.getTimezone());
+        }
+        if(updateUserDto.getGender() != null) {
+            user.setGender(updateUserDto.getGender());
+        }
+        if(updateUserDto.getAvatar() != null) {
+            user.setAvatar(updateUserDto.getAvatar());
+        }
+        if(updateUserDto.getCoordinates() != null) {
+            user.setCoordinates(updateUserDto.getCoordinates());
+        }
+
+        return userRepository.save(user);
     }
 
     public void update(User user) {
@@ -109,40 +117,35 @@ public class UserServiceImpl implements com.tericcabrel.authorization.services.i
     }
 
     @Override
-    public User updatePassword(String id, UpdatePasswordDto updatePasswordDto) {
+    public User updatePassword(String id, UpdatePasswordDto updatePasswordDto) throws ResourceNotFoundException {
         User user = findById(id);
 
-        if(user != null) {
-            if (bCryptEncoder.matches(updatePasswordDto.getCurrentPassword(), user.getPassword())) {
-                user.setPassword(bCryptEncoder.encode(updatePasswordDto.getNewPassword()));
+        if (bCryptEncoder.matches(updatePasswordDto.getCurrentPassword(), user.getPassword())) {
+            user.setPassword(bCryptEncoder.encode(updatePasswordDto.getNewPassword()));
 
-                userRepository.save(user);
-            } else {
-                return null;
-            }
+            return userRepository.save(user);
         }
 
-        return user;
+        return null;
     }
 
     @Override
-    public User updatePassword(String id, String newPassword) {
+    public User updatePassword(String id, String newPassword) throws ResourceNotFoundException {
         User user = findById(id);
 
-        if(user != null) {
-            user.setPassword(bCryptEncoder.encode(newPassword));
-            userRepository.save(user);
-        }
+        user.setPassword(bCryptEncoder.encode(newPassword));
 
-        return user;
+        return userRepository.save(user);
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username);
+        Optional<User> userOptional = userRepository.findByEmail(username);
 
-        if(user == null){
+        if(userOptional.isEmpty()){
             throw new UsernameNotFoundException("Invalid username or password.");
         }
+
+        User user = userOptional.get();
 
         return new org.springframework.security.core.userdetails.User(
             user.getEmail(), user.getPassword(), user.isEnabled(), true, true, user.isConfirmed(), getAuthority(user)

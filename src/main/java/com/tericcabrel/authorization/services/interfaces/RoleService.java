@@ -1,10 +1,10 @@
 package com.tericcabrel.authorization.services.interfaces;
 
+import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
 import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
 import com.tericcabrel.authorization.models.entities.Role;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RoleService {
     Role save(CreateRoleDto role);
@@ -13,10 +13,10 @@ public interface RoleService {
 
     void delete(String id);
 
-    Optional<Role> findByName(String name);
+    Role findByName(String name) throws ResourceNotFoundException;
 
-    Optional<Role> findById(String id);
+    Role findById(String id) throws ResourceNotFoundException;
 
-    Role update(String id, CreateRoleDto createRoleDto);
+    Role update(String id, CreateRoleDto createRoleDto) throws ResourceNotFoundException;
     Role update(Role role);
 }
