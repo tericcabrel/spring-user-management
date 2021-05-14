@@ -27,5 +27,7 @@ public interface UserService extends UserDetailsService {
     User updatePassword(String id, UpdatePasswordDto updatePasswordDto)
         throws ResourceNotFoundException;
 
-    User updatePassword(String id, String newPassword) throws ResourceNotFoundException;
+    void updatePassword(String id, String newPassword) throws ResourceNotFoundException;
+
+    void confirm(String id) throws ResourceNotFoundException;
 }

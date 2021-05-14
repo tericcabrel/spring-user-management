@@ -1,8 +1,10 @@
 package com.tericcabrel.authorization.controllers;
 
 import com.tericcabrel.authorization.exceptions.ResourceNotFoundException;
+import com.tericcabrel.authorization.models.entities.UserAccount;
 import com.tericcabrel.authorization.models.response.BadRequestResponse;
 import com.tericcabrel.authorization.models.response.SuccessResponse;
+import com.tericcabrel.authorization.services.interfaces.UserAccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -13,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.HashMap;
 
 import static com.tericcabrel.authorization.utils.Constants.*;
@@ -21,9 +22,7 @@ import static com.tericcabrel.authorization.utils.Constants.*;
 import com.tericcabrel.authorization.models.dtos.ForgotPasswordDto;
 import com.tericcabrel.authorization.models.dtos.ResetPasswordDto;
 import com.tericcabrel.authorization.models.response.InvalidDataResponse;
-import com.tericcabrel.authorization.models.entities.ResetPassword;
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.services.interfaces.ResetPasswordService;
 import com.tericcabrel.authorization.services.interfaces.UserService;
 import com.tericcabrel.authorization.events.OnResetPasswordEvent;
 
@@ -38,16 +37,16 @@ public class ResetPasswordController {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    private final ResetPasswordService resetPasswordService;
+    private final UserAccountService userAccountService;
 
     public ResetPasswordController(
         UserService userService,
         ApplicationEventPublisher eventPublisher,
-        ResetPasswordService resetPasswordService
+        UserAccountService userAccountService
     ) {
         this.userService = userService;
         this.eventPublisher = eventPublisher;
-        this.resetPasswordService = resetPasswordService;
+        this.userAccountService = userAccountService;
     }
 
     @ApiOperation(value = SWG_RESPWD_FORGOT_OPERATION, response = SuccessResponse.class)
@@ -84,28 +83,22 @@ public class ResetPasswordController {
     @PostMapping(value = "/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordDto passwordResetDto)
         throws ResourceNotFoundException {
-        ResetPassword resetPassword = resetPasswordService.findByToken(passwordResetDto.getToken());
+        UserAccount userAccount = userAccountService.findByToken(passwordResetDto.getToken());
         Map<String, String> result = new HashMap<>();
 
-        if (resetPassword == null) {
-            result.put(MESSAGE_KEY, INVALID_TOKEN_MESSAGE);
-
-            return ResponseEntity.badRequest().body(result);
-        }
-
-        if (resetPassword.getExpireAt() < new Date().getTime()) {
+        if (userAccount.isExpired()) {
             result.put(MESSAGE_KEY, TOKEN_EXPIRED_MESSAGE);
 
-            resetPasswordService.delete(resetPassword.getId());
+            userAccountService.delete(userAccount.getId());
 
             return ResponseEntity.badRequest().body(result);
         }
 
-        userService.updatePassword(resetPassword.getUser().getId(), passwordResetDto.getPassword());
+        userService.updatePassword(userAccount.getUser().getId(), passwordResetDto.getPassword());
 
         result.put(MESSAGE_KEY, RESET_PASSWORD_SUCCESS_MESSAGE);
 
-        resetPasswordService.delete(resetPassword.getId());
+        userAccountService.delete(userAccount.getId());
 
         return ResponseEntity.badRequest().body(result);
     }

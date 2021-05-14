@@ -22,13 +22,13 @@ import com.tericcabrel.authorization.models.dtos.LoginUserDto;
 import com.tericcabrel.authorization.models.dtos.CreateUserDto;
 import com.tericcabrel.authorization.models.dtos.ValidateTokenDto;
 import com.tericcabrel.authorization.models.response.*;
-import com.tericcabrel.authorization.models.entities.ConfirmAccount;
+import com.tericcabrel.authorization.models.entities.UserAccount;
 import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.models.entities.RefreshToken;
 import com.tericcabrel.authorization.repositories.RefreshTokenRepository;
 import com.tericcabrel.authorization.services.interfaces.RoleService;
 import com.tericcabrel.authorization.services.interfaces.UserService;
-import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
+import com.tericcabrel.authorization.services.interfaces.UserAccountService;
 import com.tericcabrel.authorization.utils.JwtTokenUtil;
 import com.tericcabrel.authorization.utils.Helpers;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
@@ -53,7 +53,7 @@ public class AuthController {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    private final ConfirmAccountService confirmAccountService;
+    private final UserAccountService userAccountService;
 
     public AuthController(
         AuthenticationManager authenticationManager,
@@ -62,7 +62,7 @@ public class AuthController {
         RoleService roleService,
         RefreshTokenRepository refreshTokenRepository,
         ApplicationEventPublisher eventPublisher,
-        ConfirmAccountService confirmAccountService
+        UserAccountService userAccountService
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -70,7 +70,7 @@ public class AuthController {
         this.roleService = roleService;
         this.refreshTokenRepository = refreshTokenRepository;
         this.eventPublisher = eventPublisher;
-        this.confirmAccountService = confirmAccountService;
+        this.userAccountService = userAccountService;
     }
 
     @ApiOperation(value = SWG_AUTH_REGISTER_OPERATION, response = BadRequestResponse.class)
@@ -80,26 +80,25 @@ public class AuthController {
         @ApiResponse(code = 422, message = INVALID_DATA_MESSAGE, response = InvalidDataResponse.class),
     })
     @PostMapping(value = "/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody CreateUserDto createUserDto)
-        throws ResourceNotFoundException {
-        Role roleUser = roleService.findByName(ROLE_USER);
+    public ResponseEntity<Object> register(@Valid @RequestBody CreateUserDto createUserDto) {
+        try {
+            Role roleUser = roleService.findByName(ROLE_USER);
 
-        if (roleUser == null) {
-            Map<String, String> result = new HashMap<>();
-            result.put("message", SWG_AUTH_REGISTER_ERROR);
+            createUserDto.setRole(roleUser);
 
-            logger.error("Register User: " + ROLE_NOT_FOUND_MESSAGE);
+            User user = userService.save(createUserDto);
 
-            return ResponseEntity.badRequest().body(result);
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
+
+            return ResponseEntity.ok(user);
+        } catch (ResourceNotFoundException e) {
+                Map<String, String> result = new HashMap<>();
+                result.put("message", SWG_AUTH_REGISTER_ERROR);
+
+                logger.error("Register User: " + ROLE_NOT_FOUND_MESSAGE);
+
+                return ResponseEntity.badRequest().body(result);
         }
-
-        createUserDto.setRole(roleUser);
-
-        User user = userService.save(createUserDto);
-
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
-
-        return ResponseEntity.ok(user);
     }
 
     @ApiOperation(value = SWG_AUTH_LOGIN_OPERATION, response = BadRequestResponse.class)
@@ -134,13 +133,12 @@ public class AuthController {
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String token = jwtTokenUtil.createTokenFromAuth(authentication);
 
+        final String token = jwtTokenUtil.createTokenFromAuth(authentication);
         Date expirationDate = jwtTokenUtil.getExpirationDateFromToken(token);
         String refreshToken = Helpers.generateRandomString(25);
 
-        RefreshToken refreshTokenObject = new RefreshToken(user.getId(), refreshToken);
-        refreshTokenRepository.save(refreshTokenObject);
+        refreshTokenRepository.save(new RefreshToken(user.getId(), refreshToken));
 
         return ResponseEntity.ok(new AuthTokenResponse(token, refreshToken, expirationDate.getTime()));
     }
@@ -153,27 +151,18 @@ public class AuthController {
     @PostMapping(value = "/confirm-account")
     public ResponseEntity<Object> confirmAccount(@Valid @RequestBody ValidateTokenDto validateTokenDto)
         throws ResourceNotFoundException {
-        ConfirmAccount confirmAccount = confirmAccountService.findByToken(validateTokenDto.getToken());
+        UserAccount userAccount = userAccountService.findByToken(validateTokenDto.getToken());
         Map<String, String> result = new HashMap<>();
 
-        if (confirmAccount == null) {
-            result.put(MESSAGE_KEY, INVALID_TOKEN_MESSAGE);
-
-            return ResponseEntity.badRequest().body(result);
-        }
-
-        if (confirmAccount.getExpireAt() < new Date().getTime()) {
+        if (userAccount.isExpired()) {
             result.put(MESSAGE_KEY, TOKEN_EXPIRED_MESSAGE);
 
-            confirmAccountService.delete(confirmAccount.getId());
+            userAccountService.delete(userAccount.getId());
 
             return ResponseEntity.badRequest().body(result);
         }
 
-        User user = userService.findById(confirmAccount.getUser().getId());
-
-        user.setConfirmed(true);
-        userService.update(user);
+        userService.confirm(userAccount.getUser().getId());
 
         result.put(MESSAGE_KEY, ACCOUNT_CONFIRMED_MESSAGE);
 

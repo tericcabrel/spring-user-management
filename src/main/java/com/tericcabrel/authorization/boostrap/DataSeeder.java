@@ -16,8 +16,6 @@ import static com.tericcabrel.authorization.utils.Constants.ROLE_USER;
 
 import com.tericcabrel.authorization.models.dtos.CreateRoleDto;
 import com.tericcabrel.authorization.models.dtos.CreateUserDto;
-import com.tericcabrel.authorization.models.entities.Role;
-import com.tericcabrel.authorization.models.entities.User;
 import com.tericcabrel.authorization.services.interfaces.RoleService;
 import com.tericcabrel.authorization.services.interfaces.UserService;
 
@@ -52,14 +50,9 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
         rolesMap.put(ROLE_SUPER_ADMIN, "Super admin role");
 
         rolesMap.forEach((key, value) -> {
-            Role role = null;
             try {
-                role = roleService.findByName(key);
+                roleService.findByName(key);
             } catch (ResourceNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            if (role == null) {
                 CreateRoleDto createRoleDto = new CreateRoleDto();
 
                 createRoleDto.setName(key)
@@ -84,15 +77,12 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
                 .setCoordinates(null)
                 .setPassword("secret");
 
+        try {
+            userService.findByEmail(superAdmin.getEmail());
+        } catch (ResourceNotFoundException e) {
+            superAdmin.setRole(roleService.findByName(ROLE_SUPER_ADMIN));
 
-            User obj = userService.findByEmail(superAdmin.getEmail());
-
-            if (obj == null ){
-                Role role = roleService.findByName(ROLE_SUPER_ADMIN);
-
-                superAdmin.setRole(role);
-
-                userService.save(superAdmin);
-            }
+            userService.save(superAdmin);
+        }
     }
 }

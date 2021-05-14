@@ -112,6 +112,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
     public void update(User user) {
         userRepository.save(user);
     }
@@ -130,12 +131,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updatePassword(String id, String newPassword) throws ResourceNotFoundException {
+    public void updatePassword(String id, String newPassword) throws ResourceNotFoundException {
         User user = findById(id);
 
         user.setPassword(bCryptEncoder.encode(newPassword));
 
-        return userRepository.save(user);
+        userRepository.save(user);
+    }
+
+    public void confirm(String id) throws ResourceNotFoundException {
+        User user = findById(id);
+
+        user.setConfirmed(true);
+
+        userRepository.save(user);
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

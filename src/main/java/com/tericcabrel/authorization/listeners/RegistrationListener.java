@@ -19,7 +19,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.tericcabrel.authorization.models.entities.User;
-import com.tericcabrel.authorization.services.interfaces.ConfirmAccountService;
+import com.tericcabrel.authorization.services.interfaces.UserAccountService;
 import com.tericcabrel.authorization.events.OnRegistrationCompleteEvent;
 
 @Component
@@ -29,21 +29,21 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private static final String PNG_MIME = "image/png";
     private static final String MAIL_SUBJECT = "Registration Confirmation";
 
-    private Environment environment;
+    private final Environment environment;
 
-    private ConfirmAccountService confirmAccountService;
+    private final UserAccountService userAccountService;
 
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    private TemplateEngine htmlTemplateEngine;
+    private final TemplateEngine htmlTemplateEngine;
 
     public RegistrationListener(
-            ConfirmAccountService confirmAccountService,
+            UserAccountService userAccountService,
             JavaMailSender mailSender,
             Environment environment,
             TemplateEngine htmlTemplateEngine
     ) {
-        this.confirmAccountService = confirmAccountService;
+        this.userAccountService = userAccountService;
         this.mailSender = mailSender;
         this.environment = environment;
         this.htmlTemplateEngine = htmlTemplateEngine;
@@ -57,7 +57,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
-        confirmAccountService.save(user, token);
+        userAccountService.save(user, token);
 
         String confirmationUrl = environment.getProperty("app.url.confirm-account") + "?token=" + token;
         String mailFrom = environment.getProperty("spring.mail.properties.mail.smtp.from");
