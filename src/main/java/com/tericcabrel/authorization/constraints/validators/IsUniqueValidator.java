@@ -33,7 +33,7 @@ public class IsUniqueValidator implements ConstraintValidator <IsUnique, Object>
     @Override
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
         Object result;
-        String finalRepositoryName = "com.tericcabrel.authorization.repositories.mongo." + repositoryName;
+        String finalRepositoryName = "com.tericcabrel.authorization.repositories." + repositoryName;
 
         try {
             Class<?> type = Class.forName(finalRepositoryName);
@@ -43,6 +43,10 @@ public class IsUniqueValidator implements ConstraintValidator <IsUnique, Object>
             final Object objId = BeanUtils.getProperty(value, "id");
 
             String finalPropertyName = Helpers.capitalize(propertyName);
+
+            if (propertyObj == null) {
+                return true;
+            }
 
             result = type.getMethod("findBy"+finalPropertyName, String.class).invoke(instance, propertyObj.toString());
 

@@ -31,7 +31,7 @@ public class ExistsValidator implements ConstraintValidator <Exists, Object> {
     @Override
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
         Object result;
-        String finalRepositoryName = "com.tericcabrel.authorization.repositories.mongo." + repositoryName;
+        String finalRepositoryName = "com.tericcabrel.authorization.repositories." + repositoryName;
 
         try {
             Class<?> type = Class.forName(finalRepositoryName);

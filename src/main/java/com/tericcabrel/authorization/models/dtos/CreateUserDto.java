@@ -17,9 +17,9 @@ import com.tericcabrel.authorization.models.entities.Coordinates;
 @FieldMatch.List({
     @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
 })
-@IsUnique.List({
+/*@IsUnique.List({
     @IsUnique(property = "email", repository = "UserRepository", message = "This email already exists!")
-})
+})*/
 @Accessors(chain = true)
 @Setter
 @Getter

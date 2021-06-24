@@ -24,7 +24,6 @@ public abstract class BaseIT {
 
   static {
     MONGO_DB_CONTAINER = new MongoDBContainer(DockerImageName.parse("mongo:4.4.6"));
-
     MONGO_DB_CONTAINER.start();
   }
 
